@@ -1,0 +1,24 @@
+{
+	"constant": {
+		"field-required": "This field is required"
+	},
+	"page": {
+		"home": "Home",
+		"history": "History",
+		"about": "About"
+	},
+	"menu": {
+		"setting": {
+			"button": "Settings"
+		},
+		"home": "Home",
+		"history": "History",
+		"about": "About"
+	},
+	"settings": {
+		"header": "Settings",
+		"language": "Language",
+		"dark-mode": "Dark mode",
+		"close": "Close"
+	}
+}

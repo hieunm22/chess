@@ -1,0 +1,24 @@
+{
+	"constant": {
+		"field-required": "Trường này bắt buộc nhập"
+	},
+	"page": {
+		"home": "Trang chủ",
+		"history": "Lịch sử",
+		"about": "Thông tin"
+	},
+	"menu": {
+		"setting": {
+			"button": "Cài đặt"
+		},
+		"home": "Trang chủ",
+		"history": "Lịch sử",
+		"about": "Thông tin"
+	},
+	"settings": {
+		"header": "Cài đặt",
+		"language": "Ngôn ngữ",
+		"dark-mode": "Chế độ tối",
+		"close": "Đóng"
+	}
+}

@@ -1,0 +1,10 @@
+@media screen and (max-width: 400px) {
+	:root {
+		--tile-size: 46px;
+	}
+
+	.grid-cell {
+		font-size: 36px;
+		margin-top: 5px;
+	}	
+}
