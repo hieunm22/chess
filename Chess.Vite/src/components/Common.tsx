@@ -15,6 +15,11 @@ function createStyledElementWithColor<T extends ElementType>(BaseComponent: T) {
 	return styled(BaseComponent)<ElementWithColorType>`
 		${props => props.color ? `color: ${props.color};` : ""};
 		background-color: ${props => getTileBackgroundColor(props.$selected, props.$available)};
+		
+		${props => props.$isAnimating ? `
+			transition: transform 0.3s ease-in-out;
+			transform: translate(${props.$translateX || 0}%, ${props.$translateY || 0}%);
+		` : ``}
 	`
 }
 

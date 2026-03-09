@@ -27,7 +27,8 @@ export function initNewGame() {
 		board,
 		selected: null,
 		availableMoves: [],
-		teamTurn: "white" as Team
+		teamTurn: "white" as Team,
+    animatingPiece: null
 	}
 }
 
