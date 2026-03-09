@@ -2,8 +2,8 @@ export interface GameState {
 	board: Tile[]
 	selected: Tile | null
 	availableMoves: number[]
-  teamTurn: Team
-  animatingPiece: AnimatingPiece | null
+	teamTurn: Team
+	animatingPiece: AnimatingPiece | null
 }
 
 export interface Tile {

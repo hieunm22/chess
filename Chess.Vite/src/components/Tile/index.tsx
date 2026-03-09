@@ -54,11 +54,15 @@ const Tile = ({ element, index }: TileProps) => {
 					}
 
 					const targetTile = gameStateClone[index]
-					if (targetTile.piece === "king" && targetTile.team !== selectedTeam) {
+					if (
+						targetTile.piece === "king" &&
+						targetTile.team !== selectedTeam
+					) {
 						alert(`${selectedTeam} wins!`)
 					}
-					
-					const isPromotion = selectedPiece === "pawn" && (index < 8 || index >= 56)
+
+					const isPromotion =
+						selectedPiece === "pawn" && (index < 8 || index >= 56)
 					if (isPromotion) {
 						gameStateClone[index].piece = "queen" // auto-promote to queen for simplicity
 					}
@@ -81,7 +85,7 @@ const Tile = ({ element, index }: TileProps) => {
 					animatingPiece: null
 				}))
 			}
-      return
+			return
 		}
 		const availableMoves = getAvailableMoves(
 			gameStateClone,
@@ -100,7 +104,7 @@ const Tile = ({ element, index }: TileProps) => {
 	const getTileContent = () => {
 		const isAnimatingSource = state.animatingPiece?.fromId === index
 		const isAnimatingTarget = state.animatingPiece?.toId === index
-		
+
 		// Show piece at source during animation
 		if (isAnimatingSource && state.animatingPiece) {
 			return (

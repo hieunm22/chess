@@ -8,8 +8,8 @@
 }
 
 .board {
-  display: grid;
-  background-color: #b58863;
+	display: grid;
+	background-color: #b58863;
 	grid-template-columns: repeat(8, var(--tile-size));
 	grid-template-rows: repeat(8, var(--tile-size));
 }

@@ -18,7 +18,7 @@ export interface ElementWithColorType {
 	$friend?: boolean
 	$selected?: boolean
 	$available?: boolean
-  $isAnimating?: boolean
-  $translateX?: number
-  $translateY?: number
+	$isAnimating?: boolean
+	$translateX?: number
+	$translateY?: number
 }

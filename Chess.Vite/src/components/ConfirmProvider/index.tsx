@@ -42,7 +42,7 @@ export const ConfirmProvider = ({ children }: { children: React.ReactNode }) => 
 		const rgb = bg.match(/\d+/g)
 		if (rgb) {
 			const rgba = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`
-			const modalContent = document.querySelector('.modal-content')
+			const modalContent = document.querySelector(".modal-content")
 			if (modalContent instanceof HTMLElement) {
 				modalContent.style.backgroundColor = rgba
 			}

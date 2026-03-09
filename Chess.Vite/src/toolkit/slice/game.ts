@@ -5,8 +5,8 @@ const initialState: GameState = {
 	board: [],
 	selected: null,
 	availableMoves: [],
-  teamTurn: "white",
-  animatingPiece: null
+	teamTurn: "white",
+	animatingPiece: null
 }
 
 const gameSlice = createSlice({
@@ -17,8 +17,8 @@ const gameSlice = createSlice({
 			state.board = body.payload.board
 			state.selected = body.payload.selected
 			state.availableMoves = body.payload.availableMoves
-      state.teamTurn = body.payload.teamTurn
-      state.animatingPiece = body.payload.animatingPiece
+			state.teamTurn = body.payload.teamTurn
+			state.animatingPiece = body.payload.animatingPiece
 		}
 	}
 })
