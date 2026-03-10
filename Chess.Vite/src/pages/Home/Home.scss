@@ -3,8 +3,10 @@
 }
 
 .game-container {
-	justify-content: center;
-	display: flex;
+  width: fit-content;
+  max-width: 560px;
+  margin: 0 auto;
+  margin-top: 1rem;
 }
 
 .board {

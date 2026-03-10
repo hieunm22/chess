@@ -27,7 +27,7 @@ const Tile = ({ element, index: newIndex }: TileProps) => {
 			}))
 			return
 		}
-		
+
 		// if the clicked tile is an available move, move the piece
 		if (state.availableMoves.includes(newIndex)) {
 			// check if new index is opponent's king

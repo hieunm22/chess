@@ -22,9 +22,10 @@ const createTransform = (props: ElementWithAnimationType) => {
 	if (!props.$move) {
 		return "translate(0, 0)"
 	}
-	const dx = props.$dx * 70
-	const dy = props.$dy * 70
-	return `translate(${dx}px, ${dy}px)`
+
+	const computedStyle = getComputedStyle(document.documentElement)
+	const tileSize = computedStyle.getPropertyValue("--tile-size") || "70px"
+	return `translate(calc(${tileSize} * ${props.$dx}), calc(${tileSize} * ${props.$dy}))`
 }
 
 function createAnimatedElement<T extends ElementType>(BaseComponent: T) {

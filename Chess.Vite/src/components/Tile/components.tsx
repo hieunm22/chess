@@ -14,9 +14,13 @@ export const TileContent = (props: TileProps) => {
 			piece: null,
 			team: null
 		}
-		gameStateClone[element.animateTo!] = {
-			id: element.animateTo!,
-			piece: state.selected!.piece,
+		const toIdx = element.animateTo!
+		const isPromotion = state.selected!.piece === "pawn" && (toIdx < 8 || toIdx >= 56)
+		const newPieceName = isPromotion ? "queen" : state.selected!.piece
+
+		gameStateClone[toIdx] = {
+			id: toIdx,
+			piece: newPieceName,
 			team: state.selected!.team
 		}
 		dispatch(setGameState({
