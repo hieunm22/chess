@@ -1,6 +1,6 @@
 import type { ElementType } from "react"
 import styled from "styled-components"
-import type { ElementWithColorType } from "types/Common"
+import type { ElementWithAnimationType, ElementWithColorType } from "types/Common"
 
 export const Empty = () => <></>
 
@@ -15,12 +15,23 @@ function createStyledElementWithColor<T extends ElementType>(BaseComponent: T) {
 	return styled(BaseComponent)<ElementWithColorType>`
 		${props => props.color ? `color: ${props.color};` : ""};
 		background-color: ${props => getTileBackgroundColor(props.$selected, props.$available)};
-		
-		${props => props.$isAnimating ? `
-			transition: transform 0.3s ease-in-out;
-			transform: translate(${props.$translateX || 0}%, ${props.$translateY || 0}%);
-		` : ``}
+	`
+}
+
+const createTransform = (props: ElementWithAnimationType) => {
+	if (!props.$move) {
+		return "translate(0, 0)"
+	}
+	const dx = props.$dx * 70
+	const dy = props.$dy * 70
+	return `translate(${dx}px, ${dy}px)`
+}
+
+function createAnimatedElement<T extends ElementType>(BaseComponent: T) {
+	return styled(BaseComponent)<ElementWithAnimationType>`
+		${props => `transform: ${createTransform(props)};`}
 	`
 }
 
 export const StyledTile = createStyledElementWithColor("div")
+export const StyledPiece = createAnimatedElement("i")

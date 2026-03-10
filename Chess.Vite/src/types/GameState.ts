@@ -3,13 +3,13 @@ export interface GameState {
 	selected: Tile | null
 	availableMoves: number[]
 	teamTurn: Team
-	animatingPiece: AnimatingPiece | null
 }
 
 export interface Tile {
 	id: number
 	piece: Piece | null
 	team: Team | null
+	animateTo?: number
 }
 
 export interface AnimatingPiece {
