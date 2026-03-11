@@ -28,7 +28,38 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 
 		// if the clicked tile is an available move, move the piece
 		if (state.availableMoves.includes(newIndex)) {
-			// check if new index is opponent's king
+			// check if the move is a castling move
+			const isCastlingMove = state.selected.piece === "king" && Math.abs(state.selected.id - newIndex) === 2
+			if (isCastlingMove) {
+				if (newIndex - state.selected.id === 2) {
+					if (state.selected.team === "white") {
+						gameStateClone[63] = {
+							...gameStateClone[63],
+							animateTo: 61
+						}
+					}
+					else {
+						gameStateClone[7] = {
+							...gameStateClone[7],
+							animateTo: 5
+						}
+					}
+				}
+				if (newIndex - state.selected.id === -2) {
+					if (state.selected.team === "white") {
+						gameStateClone[56] = {
+							...gameStateClone[56],
+							animateTo: 59
+						}
+					}
+					else {
+						gameStateClone[0] = {
+							...gameStateClone[0],
+							animateTo: 3
+						}
+					}
+				}
+			}
 			const oldIndex = state.selected.id
 			gameStateClone[oldIndex] = {
 				...gameStateClone[oldIndex],
@@ -72,23 +103,33 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 
 const TileContent = (props: TileProps) => {
 	const { state, dispatch } = useGameToolkit()
-	const { element, index } = props
+	const { element } = props
 
 	const onAnimateEnd = () => {
 		const gameStateClone = [...state.board]
-		gameStateClone[index] = {
-			id: index,
-			piece: null,
-			team: null
+		for (const cell of gameStateClone) {
+			if (cell.animateTo !== undefined) {
+				gameStateClone[cell.id] = {
+					id: cell.id,
+					piece: null,
+					team: null
+				}
+				gameStateClone[cell.animateTo] = {
+					id: cell.animateTo,
+					piece: cell.piece,
+					team: cell.team
+				}
+			}
 		}
 		const toIdx = element.animateTo!
 		const isPromotion = state.selected!.piece === "pawn" && (toIdx < 8 || toIdx >= 56)
-		const newPieceName = isPromotion ? "queen" : state.selected!.piece
-
-		gameStateClone[toIdx] = {
-			id: toIdx,
-			piece: newPieceName,
-			team: state.selected!.team
+		if (isPromotion) {
+			const newPieceName = isPromotion ? "queen" : state.selected!.piece
+			gameStateClone[toIdx] = {
+				id: toIdx,
+				piece: newPieceName,
+				team: state.selected!.team
+			}
 		}
 		dispatch(setGameState({
 			board: gameStateClone,
@@ -99,8 +140,8 @@ const TileContent = (props: TileProps) => {
 	}
 
 	if (state.selected && element.animateTo) {
-		const dx = (element.animateTo % 8) - (state.selected.id % 8)
-		const dy = ~~(element.animateTo / 8) - ~~(state.selected.id / 8)
+		const dx = (element.animateTo % 8) - (element.id % 8)
+		const dy = ~~(element.animateTo / 8) - ~~(element.id / 8)
 		return (
 			<StyledPiece
 				className={`fas fa-chess-${element.piece} piece`}

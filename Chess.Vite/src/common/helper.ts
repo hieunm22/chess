@@ -77,7 +77,7 @@ export function getAvailableMoves(
 		return []
 	}
 
-	const pieceType = selectedTile.piece.split("-")[0] // e.g., "pawn", "knight", etc.
+	const pieceType = selectedTile.piece
 	const moves: number[] = []
 	const occupiedIndexes = gameState
 		.map(tile => tile.piece ? tile : null)
@@ -158,6 +158,25 @@ export function getAvailableMoves(
 				const colDiff = Math.abs((selectedIndex % 8) - (target % 8))
 				if (colDiff <= 1) moves.push(target)
 			}
+			// check if castling is possible
+			const castlingOffsets = [2, -2]
+			for (const offset of castlingOffsets) {
+				if (selectedTile.piece !== "king" || ![4, 60].includes(selectedIndex)) continue
+				const rookIndex = offset === 2 ? selectedIndex + 3 : selectedIndex - 4
+				const rookTile = gameState[rookIndex]
+				// check if no pieces between king and rook and rook is in the correct position for castling
+				if (
+					rookTile.piece === "rook" &&
+					rookTile.team === selectedTile.team &&
+					!gameState[selectedIndex + offset].piece &&
+					!gameState[selectedIndex + offset / 2].piece &&
+					(!gameState[selectedIndex + offset + offset / 2].piece
+            || gameState[selectedIndex + offset + offset / 2].piece === "rook")
+				) {
+					moves.push(selectedIndex + offset) // add castling move
+				}
+			}
+
 			break
 		default:
 			break
