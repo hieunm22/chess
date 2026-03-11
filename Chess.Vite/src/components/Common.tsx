@@ -11,14 +11,7 @@ function getTileBackgroundColor(selected?: boolean, available?: boolean) {
 	return selected !== true ? "#b58863" : "#f0d9b5"
 }
 
-function createStyledElementWithColor<T extends ElementType>(BaseComponent: T) {
-	return styled(BaseComponent)<ElementWithColorType>`
-		${props => props.color ? `color: ${props.color};` : ""};
-		background-color: ${props => getTileBackgroundColor(props.$selected, props.$available)};
-	`
-}
-
-const createTransform = (props: ElementWithAnimationType) => {
+function createTransform(props: ElementWithAnimationType) {
 	if (!props.$move) {
 		return "translate(0, 0)"
 	}
@@ -28,11 +21,25 @@ const createTransform = (props: ElementWithAnimationType) => {
 	return `translate(calc(${tileSize} * ${props.$dx}), calc(${tileSize} * ${props.$dy}))`
 }
 
+function createStyledElementWithColor<T extends ElementType>(BaseComponent: T) {
+	return styled(BaseComponent)<ElementWithColorType>`
+		${props => props.color ? `color: ${props.color};` : ""};
+		background-color: ${props => getTileBackgroundColor(props.$selected, props.$available)};
+	`
+}
+
 function createAnimatedElement<T extends ElementType>(BaseComponent: T) {
 	return styled(BaseComponent)<ElementWithAnimationType>`
 		${props => `transform: ${createTransform(props)};`}
 	`
 }
 
+function createStyledElementWithBGColor<T extends ElementType>(BaseComponent: T) {
+	return styled(BaseComponent)<ElementWithColorType>`
+		${props => props.color ? `background-color: ${props.color};` : ""};
+	`
+}
+
 export const StyledTile = createStyledElementWithColor("div")
 export const StyledPiece = createAnimatedElement("i")
+export const StyledTurn = createStyledElementWithBGColor("span")

@@ -1,5 +1,6 @@
 import { useEffect } from "react"
-import { Box, Typography } from "@mui/material"
+import { StyledTurn } from "components/Common"
+import { TTypography } from "components/TranslationTag"
 import { Tile } from "./components"
 import { initNewGame } from "common/helper"
 import useAutoTitle from "hooks/useAutoTitle"
@@ -18,24 +19,20 @@ export default function HomePage() {
 
 	return (
 		<div className="game-container">
+			<div className="match-info">
+				<TTypography
+					display="inline"
+					variant="h6"
+					color="text.primary"
+					content="home.turn.title"
+				/> 
+				<StyledTurn className="match-turn" color={state.teamTurn} />
+			</div>
 			<div className="board">
-				{state.board.map((element, index) => {
-					return <Tile key={index} element={element} index={index} />
+				{state.board.map(element => {
+					return <Tile key={element.id} element={element} index={element.id} />
 				})}
-				<Box className="board-footer" bgcolor="background.default">
-					{Array.from({ length: 8 }, (_, i) => (
-						<Typography
-							color="text.primary"
-							key={i}
-							className="board-footer-item"
-						>
-							{String.fromCharCode(65 + i).toLocaleLowerCase()}
-						</Typography>
-					))}
-				</Box>
 			</div>
 		</div>
 	)
 }
-
-// div.board>div.board-footer-item*8

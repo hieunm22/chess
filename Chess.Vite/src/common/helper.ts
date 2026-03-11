@@ -1,6 +1,5 @@
 import type { CellProps, Piece, Team } from "types/GameState"
 
-// "pawn" | "knight" | "bishop" | "rook" | "queen" | "king"
 const initGameState: (Piece | null)[] = [
 	"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook",
 	"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn",
@@ -13,14 +12,10 @@ const initGameState: (Piece | null)[] = [
 ]
 
 export function initNewGame() {
-	const emptyTile = (id: number): CellProps => ({
+	const board = Array.from({ length: 64 }, (_, id): CellProps => ({
 		id,
 		piece: initGameState[id],
 		team: initGameState[id] !== null ? (id < 32 ? "black" : "white") : null
-	})
-
-	const board = Array.from({ length: 64 }, (_, index) => ({
-		...emptyTile(index)
 	}))
 
 	return {

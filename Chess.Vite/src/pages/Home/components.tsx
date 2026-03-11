@@ -18,10 +18,10 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 				element.team === "black" ? 1 : -1
 			)
 			dispatch(setGameState({
+				...state,
 				board: gameStateClone,
 				selected: element,
-				availableMoves,
-				teamTurn: state.selected !== null && state.selected.team === "white" ? "black" : "white"
+				availableMoves
 			}))
 			return
 		}
@@ -51,8 +51,10 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 
 	const clsName = classnames("cell", {
 		"cursor-pointer": (element.piece !== null && element.team === state.teamTurn)
-			|| state.availableMoves.includes(newIndex),
+			|| state.availableMoves.includes(newIndex)
 	})
+
+  const canClick = element.team === state.teamTurn || state.availableMoves.includes(newIndex)
 
 	return (
 		<StyledTile
@@ -61,7 +63,7 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 			$friend={element.team === "white"}
 			$selected={state.selected !== null && state.selected.id === newIndex}
 			$available={state.availableMoves.includes(newIndex)}
-			onClick={onSelected}
+			onClick={canClick ? onSelected : undefined}
 		>
 			<TileContent element={element} index={newIndex} />
 		</StyledTile>
@@ -89,10 +91,10 @@ const TileContent = (props: TileProps) => {
 			team: state.selected!.team
 		}
 		dispatch(setGameState({
-			...state,
 			board: gameStateClone,
+			selected: null,
 			availableMoves: [],
-			selected: null
+			teamTurn: state.teamTurn === "white" ? "black" : "white",
 		}))
 	}
 
