@@ -107,6 +107,24 @@ export function getAvailableMoves(
 				// Check if the pawn is in its initial position and can move two squares
 				moves.push(selectedIndex + direction * 16) // Move forward two squares from initial position
 			}
+
+			// check for en passant
+			const enPassantOffsets = [direction * 7, direction * 9]
+			for (const offset of enPassantOffsets) {
+				const adjacentIndex = selectedIndex + offset - direction * 8
+				const captureIndex = selectedIndex + offset
+				if (captureIndex >= 0 && captureIndex < 64) {
+					const adjacentTile = gameState[adjacentIndex]
+					const captureTile = gameState[captureIndex]
+					if (
+						adjacentTile.piece === "pawn" &&
+						adjacentTile.team !== selectedTile.team &&
+						captureTile.piece === null
+					) {
+						moves.push(captureIndex) // Add en passant capture move
+					}
+				}
+			}
 			break
 		case "knight":
 			const offsets = [-17, -15, -10, -6, 6, 10, 15, 17] // L-shaped moves
@@ -171,7 +189,7 @@ export function getAvailableMoves(
 					!gameState[selectedIndex + offset].piece &&
 					!gameState[selectedIndex + offset / 2].piece &&
 					(!gameState[selectedIndex + offset + offset / 2].piece
-            || gameState[selectedIndex + offset + offset / 2].piece === "rook")
+						|| gameState[selectedIndex + offset + offset / 2].piece === "rook")
 				) {
 					moves.push(selectedIndex + offset) // add castling move
 				}
