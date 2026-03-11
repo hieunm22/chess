@@ -24,7 +24,7 @@ function createTransform(props: ElementWithAnimationType) {
 function createStyledElementWithColor<T extends ElementType>(BaseComponent: T) {
 	return styled(BaseComponent)<ElementWithColorType>`
 		${props => props.color ? `color: ${props.color};` : ""};
-		background-color: ${props => getTileBackgroundColor(props.index)};
+		background-color: ${props => getTileBackgroundColor(props.$index)};
 		opacity: ${props => props.$available ? 0.7 : 1};
 	`
 }
