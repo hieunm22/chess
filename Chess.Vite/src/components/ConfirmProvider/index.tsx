@@ -1,7 +1,8 @@
-import React, { KeyboardEvent, useEffect, useState } from "react"
+import { KeyboardEvent, useEffect, useState } from "react"
 import classnames from "classnames"
 import { TButton, TSpan } from "components/TranslationTag"
 import { translate } from "locales/translate"
+import { ComponentWithChild } from "types/Common"
 import { ConfirmOptions, InternalHandler, QueueProps } from "./types"
 
 let handler: InternalHandler | null = null
@@ -18,7 +19,7 @@ export function openPopup(options: ConfirmOptions = {}): Promise<boolean> {
 }
 
 // Provider-based implementation (recommended)
-export const ConfirmProvider = ({ children }: { children: React.ReactNode }) => {
+export const ConfirmProvider = ({ children }: ComponentWithChild) => {
 	const [queue, setQueue] = useState<QueueProps[]>([])
 
 	useEffect(() => {

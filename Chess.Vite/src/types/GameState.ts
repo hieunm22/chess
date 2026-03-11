@@ -1,11 +1,11 @@
 export interface GameState {
-	board: Tile[]
-	selected: Tile | null
+	board: CellProps[]
+	selected: CellProps | null
 	availableMoves: number[]
 	teamTurn: Team
 }
 
-export interface Tile {
+export interface CellProps {
 	id: number
 	piece: Piece | null
 	team: Team | null

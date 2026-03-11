@@ -25,3 +25,5 @@ export interface ElementWithAnimationType {
 	$dx: number
 	$dy: number
 }
+
+export interface ComponentWithChild { children: React.ReactNode }

@@ -3,10 +3,14 @@
 }
 
 .game-container {
-  width: fit-content;
-  max-width: 560px;
-  margin: 0 auto;
-  margin-top: 1rem;
+	width: fit-content;
+	max-width: 560px;
+	margin: 0 auto;
+	display: flex;
+}
+
+.match-info {
+	text-align: left;
 }
 
 .board {
@@ -14,6 +18,22 @@
 	background-color: #b58863;
 	grid-template-columns: repeat(8, var(--tile-size));
 	grid-template-rows: repeat(8, var(--tile-size));
+}
+
+.board-footer {
+	grid-column: 1 / -1;
+	display: grid;
+	grid-template-columns: repeat(8, var(--tile-size));
+}
+
+.board-footer-item {
+	display: inline-flex;
+	width: var(--tile-size);
+	height: 20px;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	color: #333;
 }
 
 .cell {

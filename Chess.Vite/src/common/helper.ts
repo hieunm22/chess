@@ -1,4 +1,4 @@
-import type { Tile, Piece, Team } from "types/GameState"
+import type { CellProps, Piece, Team } from "types/GameState"
 
 // "pawn" | "knight" | "bishop" | "rook" | "queen" | "king"
 const initGameState: (Piece | null)[] = [
@@ -13,7 +13,7 @@ const initGameState: (Piece | null)[] = [
 ]
 
 export function initNewGame() {
-	const emptyTile = (id: number): Tile => ({
+	const emptyTile = (id: number): CellProps => ({
 		id,
 		piece: initGameState[id],
 		team: initGameState[id] !== null ? (id < 32 ? "black" : "white") : null
@@ -32,17 +32,17 @@ export function initNewGame() {
 	}
 }
 
-export function findPiece(pieces: Tile[], position: number): Tile | null {
+export function findPiece(pieces: CellProps[], position: number): CellProps | null {
 	for (const p of pieces) {
 		if (p.id === position) return p
 	}
 	return null
 }
 
-function slide(offset: number, current: number, occupied: Tile[]): number[] {
+function slide(offset: number, current: number, occupied: CellProps[]): number[] {
 	const moves: number[] = []
 	let pos = current
-	const findCurrentPieceResult = findPiece(occupied, current) as Tile
+	const findCurrentPieceResult = findPiece(occupied, current) as CellProps
 
 	while (true) {
 		const next = pos + offset
@@ -73,7 +73,7 @@ function slide(offset: number, current: number, occupied: Tile[]): number[] {
 }
 
 export function getAvailableMoves(
-	gameState: Tile[],
+	gameState: CellProps[],
 	selectedIndex: number,
 	direction: 1 | -1
 ): number[] {
