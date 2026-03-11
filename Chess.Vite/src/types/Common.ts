@@ -15,7 +15,7 @@ export interface DropdownProps {
 
 export interface ElementWithColorType {
 	color: string | null
-	index: number
+	$index: number
 	$selected?: boolean
 	$available?: boolean
 }

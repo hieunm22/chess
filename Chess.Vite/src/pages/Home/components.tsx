@@ -91,7 +91,7 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 		<StyledTile
 			className={clsName}
 			color={element.team}
-			index={newIndex}
+			$index={newIndex}
 			$selected={state.selected !== null && state.selected.id === newIndex}
 			$available={state.availableMoves.includes(newIndex)}
 			onClick={canClick ? onSelected : undefined}

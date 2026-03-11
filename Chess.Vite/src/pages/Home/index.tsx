@@ -26,7 +26,7 @@ export default function HomePage() {
 					color="text.primary"
 					content="home.turn.title"
 				/> 
-				<StyledTurn className="match-turn" color={state.teamTurn} />
+				<StyledTurn className="match-turn" $index={0} color={state.teamTurn} />
 			</div>
 			<div className="board">
 				{state.board.map(element => {
