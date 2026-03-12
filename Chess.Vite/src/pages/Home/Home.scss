@@ -65,6 +65,9 @@
 .piece {
 	font-size: 45px;
 	transition: transform 250ms ease;
+	&.with-border {
+		-webkit-text-stroke: 2px black;
+	}
 }
 
 .animate-start {

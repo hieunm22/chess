@@ -85,7 +85,7 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 			|| state.availableMoves.includes(newIndex)
 	})
 
-  const canClick = element.team === state.teamTurn || state.availableMoves.includes(newIndex)
+	const canClick = element.team === state.teamTurn || state.availableMoves.includes(newIndex)
 
 	return (
 		<StyledTile
@@ -143,14 +143,17 @@ const TileContent = (props: TileProps) => {
 		return <i className="fas fa-dot-circle" />
 	}
 
-  const prefix = element.team === "white" ? "far" : "fad"
+  const pieceClass = classnames("piece", {
+    [`fas fa-chess-${element.piece}`]: element.piece !== null,
+    "with-border": element.team === "white"
+  })
 
 	if (state.selected && element.animateTo) {
 		const dx = (element.animateTo % 8) - (element.id % 8)
 		const dy = ~~(element.animateTo / 8) - ~~(element.id / 8)
 		return (
 			<StyledPiece
-				className={`${prefix} fa-chess-${element.piece} piece`}
+				className={pieceClass}
 				$move
 				$dx={dx}
 				$dy={dy}
@@ -162,7 +165,7 @@ const TileContent = (props: TileProps) => {
 	if (element.piece !== null) {
 		return (
 			<StyledPiece
-				className={`${prefix} fa-chess-${element.piece} piece`}
+				className={pieceClass}
 				$move={false}
 				$dx={0}
 				$dy={0}
