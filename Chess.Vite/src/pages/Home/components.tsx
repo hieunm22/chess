@@ -124,6 +124,35 @@ const TileContent = (props: TileProps) => {
 		const gameStateClone = [...state.board]
 		for (const cell of gameStateClone) {
 			if (cell.animateTo !== undefined) {
+				// handle en passant capture for pawns
+				if (gameStateClone[cell.id].piece === "pawn") {
+					const diff = cell.animateTo - cell.id
+					const isLeftCapture =
+						(diff === -9 || diff === 7) &&
+						gameStateClone[cell.id - 1].piece === "pawn" &&
+						gameStateClone[cell.id - 1].team !== gameStateClone[cell.id].team
+
+					const isRightCapture =
+						(diff === -7 || diff === 9) &&
+						gameStateClone[cell.id + 1].piece === "pawn" &&
+						gameStateClone[cell.id + 1].team !== gameStateClone[cell.id].team
+
+					if (isLeftCapture) {
+						gameStateClone[cell.id - 1] = {
+							id: cell.id - 1,
+							piece: null,
+							team: null
+						}
+					}
+					if (isRightCapture) {
+						gameStateClone[cell.id + 1] = {
+							id: cell.id + 1,
+							piece: null,
+							team: null
+						}
+					}
+				}
+				// old position becomes empty
 				gameStateClone[cell.id] = {
 					id: cell.id,
 					piece: null,
