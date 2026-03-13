@@ -10,21 +10,30 @@
 
 .board-container {
 	width: calc(var(--tile-size) * 8 + var(--board-padding) * 2);
-	height: calc(var(--tile-size) * 8 + var(--board-padding) * 2);
+	height: calc(var(--tile-size) * 8 + var(--board-padding));
 	background-color: #b58863;
 	padding-top: var(--board-padding);
+  display: flex;
+  flex-direction: row;
 }
 
 .board {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-around;
-	width: calc(var(--tile-size) * 8 + var(--board-padding));
+	width: calc(var(--tile-size) * 8);
+	height: calc(var(--tile-size) * 8);
+}
+
+.vertical-index-container {
+  color: red;
+  width: var(--board-padding);
+  height: calc(var(--tile-size) * 8);
 }
 
 .horizontal-index-container {
 	padding: 0 var(--board-padding);
 	display: inline-flex;
+  background-color: #b58863;
 }
 
 .board-index {

@@ -89,7 +89,7 @@ export const Tile = ({ element }: TileProps) => {
 			|| state.availableMoves.includes(element.id)
 	})
 
-	const canClick = element.team === state.teamTurn || state.availableMoves.includes(element.id)
+	const canClick = true // element.team === state.teamTurn || state.availableMoves.includes(element.id)
 	const verticalIndex = ~~(element.id / 8) + 1
 	const verticalIndexClass = classnames({
 		"board-index vertical": true,
@@ -100,8 +100,8 @@ export const Tile = ({ element }: TileProps) => {
 
 	return (
 		<>
-			{element.id % 8 === 0 &&
-				<div className={verticalIndexClass} data-content={verticalIndex} />}
+			{/* {element.id % 8 === 0 &&
+				<div className={verticalIndexClass} data-content={verticalIndex} />} */}
 			<StyledTile
 				className={clsName}
 				color={element.team}

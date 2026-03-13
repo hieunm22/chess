@@ -19,21 +19,32 @@ export default function HomePage() {
 	return (
 		<div className="game-container">
 			<div className="board-container">
+				<div className="vertical-index-container">
+					{Array.from({ length: 8 }, (_, i) => {
+						const verticalIndexClass = classnames({
+							"board-index vertical": true,
+							"highlight": state.selected && ~~(state.selected.id / 8) === i
+						})
+						return (
+							<div key={i} className={verticalIndexClass} data-content={i + 1} />
+						)
+					})}
+				</div>
 				<div className="board">
 					{state.board.map(element => {
 						return <Tile key={element.id} element={element} />
 					})}
 				</div>
-				<div className="horizontal-index-container">
-					{Array.from({ length: 8 }, (_, i) => String.fromCharCode(97 + i)).map((char, index) => {
-						const horizontalIndexClass = classnames({
-							"board-index horizontal": true,
-							"highlight": state.selected && state.selected.id % 8 === index
-						})
-						return (
-							<div key={index} className={horizontalIndexClass} data-content={char} />
-						)})}
-				</div>
+			</div>
+			<div className="horizontal-index-container">
+				{Array.from({ length: 8 }, (_, i) => String.fromCharCode(97 + i)).map((char, index) => {
+					const horizontalIndexClass = classnames({
+						"board-index horizontal": true,
+						"highlight": state.selected && state.selected.id % 8 === index
+					})
+					return (
+						<div key={index} className={horizontalIndexClass} data-content={char} />
+					)})}
 			</div>
 		</div>
 	)
