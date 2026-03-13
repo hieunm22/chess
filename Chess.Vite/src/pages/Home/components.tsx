@@ -126,16 +126,12 @@ const TileContent = (props: TileProps) => {
 						gameStateClone[cell.id + 1].piece === "pawn" &&
 						gameStateClone[cell.id + 1].team !== gameStateClone[cell.id].team
 
-					if (isLeftCapture) {
-						gameStateClone[cell.id - 1] = {
-							id: cell.id - 1,
-							piece: null,
-							team: null
-						}
-					}
-					if (isRightCapture) {
-						gameStateClone[cell.id + 1] = {
-							id: cell.id + 1,
+					let id = -1
+
+					if (isLeftCapture || isRightCapture) {
+						id = isLeftCapture ? cell.id - 1 : cell.id + 1
+						gameStateClone[id] = {
+							id,
 							piece: null,
 							team: null
 						}
