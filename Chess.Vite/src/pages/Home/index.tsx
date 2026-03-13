@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import classnames from "classnames"
 import { Tile } from "./components"
 import { initNewGame } from "common/helper"
 import useAutoTitle from "hooks/useAutoTitle"
@@ -24,9 +25,14 @@ export default function HomePage() {
 					})}
 				</div>
 				<div className="horizontal-index-container">
-					{Array.from({ length: 8 }, (_, i) => String.fromCharCode(97 + i)).map((char, index) => (
-						<div key={index} className="board-index horizontal" data-content={char} />
-					))}
+					{Array.from({ length: 8 }, (_, i) => String.fromCharCode(97 + i)).map((char, index) => {
+						const horizontalIndexClass = classnames({
+							"board-index horizontal": true,
+							"highlight": state.selected && state.selected.id % 8 === index
+						})
+						return (
+							<div key={index} className={horizontalIndexClass} data-content={char} />
+						)})}
 				</div>
 			</div>
 		</div>

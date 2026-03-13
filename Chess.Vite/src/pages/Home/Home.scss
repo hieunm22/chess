@@ -31,18 +31,21 @@
 	&.horizontal {
 		width: var(--tile-size);
 		height: var(--board-padding);
-    align-content: center;
+		align-content: center;
 	}
 	&.vertical {
 		width: var(--board-padding);
 		height: var(--tile-size);
 		align-content: center;
 	}
+	&.highlight {
+		background-color: #e9cfa4;
+	}
 	&::after {
 		content: attr(data-content);
 		font-size: 14px;
 		font-weight: bold;
-		color: #fff;
+		color: #000;
 	}
 }
 
