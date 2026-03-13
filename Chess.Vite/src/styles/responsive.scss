@@ -1,10 +1,11 @@
 @media screen and (max-width: 400px) {
 	:root {
-		--tile-size: 44px;
+		--tile-size: 40px;
+    --board-padding: 20px;
 	}
 
 	.piece {
-		font-size: 32px;
+		font-size: 30px;
 		margin-top: 5px;
 	}
 }

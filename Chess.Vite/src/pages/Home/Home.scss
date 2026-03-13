@@ -1,5 +1,6 @@
 :root {
 	--tile-size: 60px;
+	--board-padding: 24px;
 }
 
 .game-container {
@@ -7,33 +8,48 @@
 	margin: 0 auto;
 }
 
-.match-info {
-	text-align: left;
-	margin-bottom: 10px;
+.board-container {
+	width: calc(var(--tile-size) * 8 + var(--board-padding) * 2);
+	height: calc(var(--tile-size) * 8 + var(--board-padding) * 2);
 	background-color: #b58863;
-	padding: 3px 10px;
-}
-
-.match-turn {
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	vertical-align: middle;
-	margin-left: 5px;
+	padding-top: var(--board-padding);
 }
 
 .board {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-around;
-	width: calc(var(--tile-size) * 8);
+	width: calc(var(--tile-size) * 8 + var(--board-padding));
+}
+
+.horizontal-index-container {
+	padding: 0 var(--board-padding);
+	display: inline-flex;
+}
+
+.board-index {
+	&.horizontal {
+		width: var(--tile-size);
+		height: var(--board-padding);
+    align-content: center;
+	}
+	&.vertical {
+		width: var(--board-padding);
+		height: var(--tile-size);
+		align-content: center;
+	}
+	&::after {
+		content: attr(data-content);
+		font-size: 14px;
+		font-weight: bold;
+		color: #fff;
+	}
 }
 
 .board-footer {
 	grid-column: 1 / -1;
 	display: grid;
-	grid-template-columns: repeat(8, var(--tile-size));
+	grid-template-columns: repeat(9, var(--tile-size));
 }
 
 .board-footer-item {
@@ -44,11 +60,6 @@
 	justify-content: center;
 	font-size: 14px;
 	color: #333;
-}
-
-.undo-countdown {
-	width: calc(var(--tile-size) * 8);
-	justify-content: flex-end;
 }
 
 .cell {
@@ -68,10 +79,6 @@
 	&.with-border {
 		-webkit-text-stroke: 2px black;
 	}
-}
-
-.animate-start {
-	color: red;
 }
 
 .available {

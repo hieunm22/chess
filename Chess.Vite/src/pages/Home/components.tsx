@@ -3,9 +3,13 @@ import { Empty, StyledPiece, StyledTile } from "components/Common"
 import { getAvailableMoves } from "common/helper"
 import { setGameState } from "toolkit/slice/game"
 import useGameToolkit from "hooks/useGameToolkit"
-import type { TileProps } from "./types"
+import { CellProps } from "types/GameState"
 
-export const Tile = ({ element, index: newIndex }: TileProps) => {
+type TileProps = {
+	element: CellProps
+}
+
+export const Tile = ({ element }: TileProps) => {
 	const { state, dispatch } = useGameToolkit()
 
 	const onSelected = async () => {
@@ -14,7 +18,7 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 		if (state.selected === null || state.selected.piece === null) {
 			const availableMoves = getAvailableMoves(
 				gameStateClone,
-				newIndex,
+				element.id,
 				element.team === "black" ? 1 : -1
 			)
 			dispatch(setGameState({
@@ -27,11 +31,11 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 		}
 
 		// if the clicked tile is an available move, move the piece
-		if (state.availableMoves.includes(newIndex)) {
+		if (state.availableMoves.includes(element.id)) {
 			// check if the move is a castling move
-			const isCastlingMove = state.selected.piece === "king" && Math.abs(state.selected.id - newIndex) === 2
+			const isCastlingMove = state.selected.piece === "king" && Math.abs(state.selected.id - element.id) === 2
 			if (isCastlingMove) {
-				if (newIndex - state.selected.id === 2) {
+				if (element.id - state.selected.id === 2) {
 					if (state.selected.team === "white") {
 						gameStateClone[63] = {
 							...gameStateClone[63],
@@ -45,7 +49,7 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 						}
 					}
 				}
-				if (newIndex - state.selected.id === -2) {
+				if (element.id - state.selected.id === -2) {
 					if (state.selected.team === "white") {
 						gameStateClone[56] = {
 							...gameStateClone[56],
@@ -63,7 +67,7 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 			const oldIndex = state.selected.id
 			gameStateClone[oldIndex] = {
 				...gameStateClone[oldIndex],
-				animateTo: newIndex
+				animateTo: element.id
 			}
 			dispatch(setGameState({
 				...state,
@@ -82,22 +86,25 @@ export const Tile = ({ element, index: newIndex }: TileProps) => {
 
 	const clsName = classnames("cell", {
 		"cursor-pointer": (element.piece !== null && element.team === state.teamTurn)
-			|| state.availableMoves.includes(newIndex)
+			|| state.availableMoves.includes(element.id)
 	})
 
-	const canClick = element.team === state.teamTurn || state.availableMoves.includes(newIndex)
+	const canClick = element.team === state.teamTurn || state.availableMoves.includes(element.id)
 
 	return (
-		<StyledTile
-			className={clsName}
-			color={element.team}
-			$index={newIndex}
-			$selected={state.selected !== null && state.selected.id === newIndex}
-			$available={state.availableMoves.includes(newIndex)}
-			onClick={canClick ? onSelected : undefined}
-		>
-			<TileContent element={element} index={newIndex} />
-		</StyledTile>
+		<>
+			{element.id % 8 === 0 && <div className="board-index vertical" data-content={~~(element.id / 8) + 1} />}
+			<StyledTile
+				className={clsName}
+				color={element.team}
+				$index={element.id}
+				$selected={state.selected !== null && state.selected.id === element.id}
+				$available={state.availableMoves.includes(element.id)}
+				onClick={canClick ? onSelected : undefined}
+			>
+				<TileContent element={element} />
+			</StyledTile>
+		</>
 	)
 }
 
@@ -139,14 +146,10 @@ const TileContent = (props: TileProps) => {
 		}))
 	}
 
-	if (state.availableMoves.includes(element.id)) {
-		return <i className="fas fa-dot-circle" />
-	}
-
-  const pieceClass = classnames("piece", {
-    [`fas fa-chess-${element.piece}`]: element.piece !== null,
-    "with-border": element.team === "white"
-  })
+	const pieceClass = classnames("piece", {
+		[`fas fa-chess-${element.piece}`]: element.piece !== null,
+		"with-border": element.team === "white"
+	})
 
 	if (state.selected && element.animateTo) {
 		const dx = (element.animateTo % 8) - (element.id % 8)
@@ -171,6 +174,10 @@ const TileContent = (props: TileProps) => {
 				$dy={0}
 			/>
 		)
+	}
+
+	if (state.availableMoves.includes(element.id)) {
+		return <i className="fas fa-dot-circle" />
 	}
 
 	return <Empty />
