@@ -1,10 +1,11 @@
 @media screen and (max-width: 400px) {
 	:root {
-		--tile-size: 46px;
+		--tile-size: 40px;
+    --board-padding: 20px;
 	}
 
-	.grid-cell {
-		font-size: 36px;
+	.piece {
+		font-size: 30px;
 		margin-top: 5px;
-	}	
+	}
 }

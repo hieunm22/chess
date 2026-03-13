@@ -1,6 +1,5 @@
-import type { Tile, Piece, Team } from "types/GameState"
+import type { CellProps, Piece, Team } from "types/GameState"
 
-// "pawn" | "knight" | "bishop" | "rook" | "queen" | "king"
 const initGameState: (Piece | null)[] = [
 	"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook",
 	"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn",
@@ -13,35 +12,32 @@ const initGameState: (Piece | null)[] = [
 ]
 
 export function initNewGame() {
-	const emptyTile = (id: number): Tile => ({
+	const board = Array.from({ length: 64 }, (_, id): CellProps => ({
 		id,
 		piece: initGameState[id],
 		team: initGameState[id] !== null ? (id < 32 ? "black" : "white") : null
-	})
-
-	const board = Array.from({ length: 64 }, (_, index) => ({
-		...emptyTile(index)
 	}))
 
 	return {
 		board,
 		selected: null,
 		availableMoves: [],
-		teamTurn: "white" as Team
+		teamTurn: "white" as Team,
+		animatingPiece: null
 	}
 }
 
-export function findPiece(pieces: Tile[], position: number): Tile | null {
+export function findPiece(pieces: CellProps[], position: number): CellProps | null {
 	for (const p of pieces) {
 		if (p.id === position) return p
 	}
 	return null
 }
 
-function slide(offset: number, current: number, occupied: Tile[]): number[] {
+function slide(offset: number, current: number, occupied: CellProps[]): number[] {
 	const moves: number[] = []
 	let pos = current
-	const findCurrentPieceResult = findPiece(occupied, current) as Tile
+	const findCurrentPieceResult = findPiece(occupied, current) as CellProps
 
 	while (true) {
 		const next = pos + offset
@@ -72,7 +68,7 @@ function slide(offset: number, current: number, occupied: Tile[]): number[] {
 }
 
 export function getAvailableMoves(
-	gameState: Tile[],
+	gameState: CellProps[],
 	selectedIndex: number,
 	direction: 1 | -1
 ): number[] {
@@ -81,7 +77,7 @@ export function getAvailableMoves(
 		return []
 	}
 
-	const pieceType = selectedTile.piece.split("-")[0] // e.g., "pawn", "knight", etc.
+	const pieceType = selectedTile.piece
 	const moves: number[] = []
 	const occupiedIndexes = gameState
 		.map(tile => tile.piece ? tile : null)
@@ -110,6 +106,24 @@ export function getAvailableMoves(
 			) {
 				// Check if the pawn is in its initial position and can move two squares
 				moves.push(selectedIndex + direction * 16) // Move forward two squares from initial position
+			}
+
+			// check for en passant
+			const enPassantOffsets = [direction * 7, direction * 9]
+			for (const offset of enPassantOffsets) {
+				const adjacentIndex = selectedIndex + offset - direction * 8
+				const captureIndex = selectedIndex + offset
+				if (captureIndex >= 0 && captureIndex < 64) {
+					const adjacentTile = gameState[adjacentIndex]
+					const captureTile = gameState[captureIndex]
+					if (
+						adjacentTile.piece === "pawn" &&
+						adjacentTile.team !== selectedTile.team &&
+						captureTile.piece === null
+					) {
+						moves.push(captureIndex) // Add en passant capture move
+					}
+				}
 			}
 			break
 		case "knight":
@@ -162,6 +176,25 @@ export function getAvailableMoves(
 				const colDiff = Math.abs((selectedIndex % 8) - (target % 8))
 				if (colDiff <= 1) moves.push(target)
 			}
+			// check if castling is possible
+			const castlingOffsets = [2, -2]
+			for (const offset of castlingOffsets) {
+				if (selectedTile.piece !== "king" || ![4, 60].includes(selectedIndex)) continue
+				const rookIndex = offset === 2 ? selectedIndex + 3 : selectedIndex - 4
+				const rookTile = gameState[rookIndex]
+				// check if no pieces between king and rook and rook is in the correct position for castling
+				if (
+					rookTile.piece === "rook" &&
+					rookTile.team === selectedTile.team &&
+					!gameState[selectedIndex + offset].piece &&
+					!gameState[selectedIndex + offset / 2].piece &&
+					(!gameState[selectedIndex + offset + offset / 2].piece
+						|| gameState[selectedIndex + offset + offset / 2].piece === "rook")
+				) {
+					moves.push(selectedIndex + offset) // add castling move
+				}
+			}
+
 			break
 		default:
 			break

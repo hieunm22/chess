@@ -4,12 +4,10 @@ import "./Layout.scss"
 
 function Layout() {
 	return (
-		<div className="layout-wrapper">
+		<>
 			<MenuBar />
-			<main className="layout-content">
-				<Outlet />
-			</main>
-		</div>
+			<Outlet />
+		</>
 	)
 }
 

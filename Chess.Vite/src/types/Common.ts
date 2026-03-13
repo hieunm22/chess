@@ -15,7 +15,15 @@ export interface DropdownProps {
 
 export interface ElementWithColorType {
 	color: string | null
-	$friend?: boolean
+	$index: number
 	$selected?: boolean
 	$available?: boolean
 }
+
+export interface ElementWithAnimationType {
+	$move: boolean
+	$dx: number
+	$dy: number
+}
+
+export interface ComponentWithChild { children: React.ReactNode }

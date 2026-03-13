@@ -3,9 +3,15 @@
 		"field-required": "Trường này bắt buộc nhập"
 	},
 	"page": {
-		"home": "Trang chủ",
-		"history": "Lịch sử",
-		"about": "Thông tin"
+		"home": {
+			"title": "Trang chủ"
+		},
+		"history": {
+			"title": "Lịch sử"
+		},
+		"about": {
+			"title": "Thông tin"
+		}
 	},
 	"menu": {
 		"setting": {
@@ -20,5 +26,10 @@
 		"language": "Ngôn ngữ",
 		"dark-mode": "Chế độ tối",
 		"close": "Đóng"
+	},
+	"home": {
+		"turn": {
+			"title": "Lượt đánh"
+		}
 	}
 }

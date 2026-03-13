@@ -11,7 +11,7 @@ import AboutPage from "pages/About"
 import HomePage from "pages/Home"
 import PlayPage from "pages/History"
 import useToolkit from "hooks/useToolkit"
-import "styles/App.scss"
+import "App.scss"
 import "styles/common.scss"
 import "styles/responsive.scss"
 

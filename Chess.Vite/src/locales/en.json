@@ -3,9 +3,15 @@
 		"field-required": "This field is required"
 	},
 	"page": {
-		"home": "Home",
-		"history": "History",
-		"about": "About"
+		"home": {
+			"title": "Home"
+		},
+		"history": {
+			"title": "History"
+		},
+		"about": {
+			"title": "About"
+		}
 	},
 	"menu": {
 		"setting": {
@@ -20,5 +26,10 @@
 		"language": "Language",
 		"dark-mode": "Dark mode",
 		"close": "Close"
+	},
+	"home": {
+		"turn": {
+			"title": "Turn"
+		}
 	}
 }

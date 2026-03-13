@@ -1,7 +1,13 @@
+import { TTypography } from "components/TranslationTag"
 import useAutoTitle from "hooks/useAutoTitle"
-import { translate } from "locales/translate"
 
-export default function PlayPage() {
-	useAutoTitle("page.history")
-	return <h1>{translate("page.history")}</h1>
+export default function HistoryPage() {
+	useAutoTitle("page.history.title")
+	return (
+		<TTypography
+			variant="h1"
+			align="center"
+			content="page.history.title"
+		/>
+	)
 }
