@@ -104,8 +104,11 @@ export function getAvailableMoves(
 				(direction === -1 && selectedIndex >= 48) ||
 				(direction === 1 && selectedIndex < 16)
 			) {
+				const move2CellsId = selectedIndex + direction * 16
 				// Check if the pawn is in its initial position and can move two squares
-				moves.push(selectedIndex + direction * 16) // Move forward two squares from initial position
+				if (gameState[move2CellsId].piece === null) {
+					moves.push(move2CellsId) // Move forward two squares from initial position
+				}
 			}
 
 			// check for en passant
