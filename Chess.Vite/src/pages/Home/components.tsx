@@ -89,30 +89,19 @@ export const Tile = ({ element }: TileProps) => {
 			|| state.availableMoves.includes(element.id)
 	})
 
-	const canClick = true // element.team === state.teamTurn || state.availableMoves.includes(element.id)
-	const verticalIndex = ~~(element.id / 8) + 1
-	const verticalIndexClass = classnames({
-		"board-index vertical": true,
-		"highlight": element.id % 8 === 0
-			&& state.selected
-			&& ~~(state.selected?.id / 8) + 1 === verticalIndex
-	})
+	const canClick = element.team === state.teamTurn || state.availableMoves.includes(element.id)
 
 	return (
-		<>
-			{/* {element.id % 8 === 0 &&
-				<div className={verticalIndexClass} data-content={verticalIndex} />} */}
-			<StyledTile
-				className={clsName}
-				color={element.team}
-				$index={element.id}
-				$selected={state.selected !== null && state.selected.id === element.id}
-				$available={state.availableMoves.includes(element.id)}
-				onClick={canClick ? onSelected : undefined}
-			>
-				<TileContent element={element} />
-			</StyledTile>
-		</>
+		<StyledTile
+			className={clsName}
+			color={element.team}
+			$index={element.id}
+			$selected={state.selected !== null && state.selected.id === element.id}
+			$available={state.availableMoves.includes(element.id)}
+			onClick={canClick ? onSelected : undefined}
+		>
+			<TileContent element={element} />
+		</StyledTile>
 	)
 }
 
