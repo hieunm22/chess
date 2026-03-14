@@ -30,6 +30,22 @@ export const Tile = ({ element }: TileProps) => {
 			return
 		}
 
+		if (state.selected && state.selected.piece !== null && element.piece !== null && element.team === state.selected.team) {
+			// if the clicked tile has a piece of the same team, change selected piece
+			const availableMoves = getAvailableMoves(
+				gameStateClone,
+				element.id,
+				element.team === "black" ? 1 : -1
+			)
+			dispatch(setGameState({
+				...state,
+				board: gameStateClone,
+				selected: element,
+				availableMoves
+			}))
+			return
+		}
+
 		// if the clicked tile is an available move, move the piece
 		if (state.availableMoves.includes(element.id)) {
 			// check if the move is a castling move
@@ -196,10 +212,6 @@ const TileContent = (props: TileProps) => {
 				$dy={0}
 			/>
 		)
-	}
-
-	if (state.availableMoves.includes(element.id)) {
-		return <i className="fas fa-dot-circle" />
 	}
 
 	return <Empty />

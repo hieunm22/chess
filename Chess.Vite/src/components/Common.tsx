@@ -3,7 +3,10 @@ import styled from "styled-components"
 import type { ElementWithAnimationType, ElementWithColorType } from "types/Common"
 
 export const Empty = () => <></>
-	function getTileBackgroundColor(index: number) {
+	function getTileBackgroundColor(index: number, available?: boolean) {
+		if (available) {
+			return "#69a36d"
+		}
 		if (index % 2 === 0) {
 			return (~~(index / 8) % 2 === 0) ? "#dfe7ec" : "#577896"
 		} else {
@@ -24,7 +27,7 @@ function createTransform(props: ElementWithAnimationType) {
 function createStyledElementWithColor<T extends ElementType>(BaseComponent: T) {
 	return styled(BaseComponent)<ElementWithColorType>`
 		${props => props.color ? `color: ${props.color};` : ""};
-		background-color: ${props => getTileBackgroundColor(props.$index)};
+		background-color: ${props => getTileBackgroundColor(props.$index, props.$available)};
 		opacity: ${props => props.$available ? 0.7 : 1};
 	`
 }
