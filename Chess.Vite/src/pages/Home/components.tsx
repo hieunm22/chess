@@ -30,7 +30,11 @@ export const Tile = ({ element }: TileProps) => {
 			return
 		}
 
-		if (state.selected && state.selected.piece !== null && element.piece !== null && element.team === state.selected.team) {
+		if (state.selected
+			&& state.selected.piece !== null
+			&& element.piece !== null
+			&& element.team === state.selected.team
+		) {
 			// if the clicked tile has a piece of the same team, change selected piece
 			const availableMoves = getAvailableMoves(
 				gameStateClone,
@@ -49,7 +53,8 @@ export const Tile = ({ element }: TileProps) => {
 		// if the clicked tile is an available move, move the piece
 		if (state.availableMoves.includes(element.id)) {
 			// check if the move is a castling move
-			const isCastlingMove = state.selected.piece === "king" && Math.abs(state.selected.id - element.id) === 2
+			const isCastlingMove = state.selected.piece === "king"
+				&& Math.abs(state.selected.id - element.id) === 2
 			if (isCastlingMove) {
 				if (element.id - state.selected.id === 2) {
 					if (state.selected.team === "white") {
@@ -180,9 +185,10 @@ const TileContent = (props: TileProps) => {
 			board: gameStateClone,
 			selected: null,
 			availableMoves: [],
-			teamTurn: state.teamTurn === "white" ? "black" : "white",
+			teamTurn: state.teamTurn === "white" ? "black" : "white"
 		}))
-	}
+		localStorage.setItem("gameState", JSON.stringify(gameStateClone))
+}
 
 	const pieceClass = classnames("piece", {
 		[`fas fa-chess-${element.piece}`]: element.piece !== null,
