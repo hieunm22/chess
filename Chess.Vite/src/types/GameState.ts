@@ -2,7 +2,7 @@ export interface GameState {
 	board: (CellProps | null)[]
 	selected: CellProps | null
 	availableMoves: number[]
-	teamTurn: Team
+	teamTurn: Team | null
 }
 
 export interface CellProps {

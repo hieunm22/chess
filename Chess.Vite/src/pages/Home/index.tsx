@@ -13,31 +13,50 @@ export default function HomePage() {
 	const { state, dispatch } = useGameToolkit()
 
 	useEffect(() => {
-		const board = localStorage.getItem("gameState")
-		const boardObj = JSON.parse(board || "")
-		// check if boardObj is type of CellProps[] and has length of 64
-		const isValidBoard = Array.isArray(boardObj)
-			&& boardObj.length === 64
-			&& boardObj.every(item => item === null
-				|| typeof item.id === "number"
-				|| typeof item.piece === "string"
-				|| typeof item.team === "string"
-			)
-		if (!isValidBoard) {
-			const gameState = initNewGame()
-			localStorage.setItem("gameState", JSON.stringify(gameState.board))
-			dispatch(setGameState(gameState))
+		try {
+			const board = localStorage.getItem("gameState")
+			const turn = localStorage.getItem("turn")
+			const boardObj = JSON.parse(board || "")
+			const isValidBoard = Array.isArray(boardObj)
+				&& boardObj.length === 64
+				&& boardObj.every(item => item === null
+					|| typeof item.id === "number"
+					|| typeof item.piece === "string"
+					|| typeof item.team === "string"
+				)
+			if (!isValidBoard) {
+				newGame()
+				return
+			}
+			const teamTurn = (turn === "white" || turn === "black") ? turn as Team : "white" as Team
+			const gameState = {
+				board: boardObj,
+				selected: null,
+				availableMoves: [],
+				teamTurn,
+				animatingPiece: null
+			}
+			dispatch(setGameState(gameState))			
+		} catch (error) {
+			newGame()
 			return
 		}
-		const gameState = {
-			board: boardObj,
-			selected: null,
-			availableMoves: [],
-			teamTurn: "white" as Team,
-			animatingPiece: null
-		}
-		dispatch(setGameState(gameState))
 	}, [])
+
+	useEffect(() => {
+		if (state.teamTurn) {
+			localStorage.setItem("turn", state.teamTurn)
+		}
+	}, [state.teamTurn])
+
+	useEffect(() => {
+		localStorage.setItem("gameState", JSON.stringify(state.board))
+	}, [state.board])
+
+	const newGame = () => {
+		const gameState = initNewGame()
+		dispatch(setGameState(gameState))
+	}
 
 	return (
 		<div className="game-container">

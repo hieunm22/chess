@@ -190,7 +190,6 @@ const TileContent = (props: TileProps) => {
 			availableMoves: [],
 			teamTurn: state.teamTurn === "white" ? "black" : "white"
 		}))
-		localStorage.setItem("gameState", JSON.stringify(gameStateClone))
 	}
 
 	let pieceClass = "piece"
