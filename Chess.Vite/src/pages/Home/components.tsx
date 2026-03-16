@@ -135,22 +135,22 @@ const TileContent = (props: TileProps) => {
 		for (const cell of gameStateClone) {
 			if (cell.animateTo !== undefined) {
 				// handle en passant capture for pawns
-				if (gameStateClone[cell.id].piece === "pawn") {
-					const diff = cell.animateTo - cell.id
-					const isLeftCapture =
-						(diff === -9 || diff === 7) &&
-						gameStateClone[cell.id - 1].piece === "pawn" &&
-						gameStateClone[cell.id - 1].team !== gameStateClone[cell.id].team
-
-					const isRightCapture =
-						(diff === -7 || diff === 9) &&
-						gameStateClone[cell.id + 1].piece === "pawn" &&
-						gameStateClone[cell.id + 1].team !== gameStateClone[cell.id].team
+				const diff = cell.animateTo - cell.id
+				if (gameStateClone[cell.id].piece === "pawn"
+					&& gameStateClone[cell.id + diff].piece === null // destination cell is empty
+				) {
+					const isLeftCapture = (diff === -9 || diff === 7)
+						&& gameStateClone[cell.id - 1].piece === "pawn"
+						&& gameStateClone[cell.id - 1].team !== gameStateClone[cell.id].team						
+					const isRightCapture = (diff === -7 || diff === 9)
+						&& gameStateClone[cell.id + 1].piece === "pawn"
+						&& gameStateClone[cell.id + 1].team !== gameStateClone[cell.id].team
 
 					let id = -1
 
 					if (isLeftCapture || isRightCapture) {
-						id = isLeftCapture ? cell.id - 1 : cell.id + 1
+						if (isLeftCapture) id = cell.id - 1
+						if (isRightCapture) id = cell.id + 1
 						gameStateClone[id] = {
 							id,
 							piece: null,
