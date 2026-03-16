@@ -5,6 +5,7 @@ import { initNewGame } from "common/helper"
 import useAutoTitle from "hooks/useAutoTitle"
 import useGameToolkit from "hooks/useGameToolkit"
 import { setGameState } from "toolkit/slice/game"
+import { Team } from "types/GameState"
 import "./Home.scss"
 
 export default function HomePage() {
@@ -12,7 +13,29 @@ export default function HomePage() {
 	const { state, dispatch } = useGameToolkit()
 
 	useEffect(() => {
-		const gameState = initNewGame()
+		const board = localStorage.getItem("gameState")
+		const boardObj = JSON.parse(board || "")
+		// check if boardObj is type of CellProps[] and has length of 64
+		const isValidBoard = Array.isArray(boardObj)
+			&& boardObj.length === 64
+			&& boardObj.every(item => item === null
+				|| typeof item.id === "number"
+				|| typeof item.piece === "string"
+				|| typeof item.team === "string"
+			)
+		if (!isValidBoard) {
+			const gameState = initNewGame()
+			localStorage.setItem("gameState", JSON.stringify(gameState.board))
+			dispatch(setGameState(gameState))
+			return
+		}
+		const gameState = {
+			board: boardObj,
+			selected: null,
+			availableMoves: [],
+			teamTurn: "white" as Team,
+			animatingPiece: null
+		}
 		dispatch(setGameState(gameState))
 	}, [])
 
