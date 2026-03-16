@@ -82,8 +82,7 @@ export function getAvailableMoves(
 
 	const pieceType = selectedTile.piece
 	const moves: number[] = []
-	const occupiedIndexes = gameState
-		.filter(tile => tile !== null)
+	const occupiedIndexes = gameState.filter(tile => tile !== null)
 	switch (pieceType) {
 		case "pawn":
 			const forwardTile = gameState[selectedIndex + direction * 8]

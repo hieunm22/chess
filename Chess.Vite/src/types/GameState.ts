@@ -10,7 +10,7 @@ export interface CellProps {
 	piece: Piece
 	team: Team
 	animateTo?: number
-  canBeEnPassant?: boolean
+	canBeEnPassant?: boolean
 }
 
 export interface AnimatingPiece {

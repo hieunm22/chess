@@ -15,30 +15,25 @@ import type {
 	TSpanProps
 } from "./types"
 
-const TButton = forwardRef<HTMLButtonElement, Partial<TButtonProps>>(
-	(props, ref) => {
-		const translatedProps = {
-			...props,
-			value:
-				typeof props.value === "string" ? t(props.value) : props.value,
-			title:
-				typeof props.title === "string" ? t(props.title) : props.title
-		}
-
-		return (
-			<button ref={ref} {...translatedProps}>
-				{props.children ?? translatedProps.value}
-			</button>
-		)
+const TButton = forwardRef<HTMLButtonElement, Partial<TButtonProps>>((props, ref) => {
+	const translatedProps = {
+		...props,
+		value: typeof props.value === "string" ? t(props.value) : props.value,
+		title: typeof props.title === "string" ? t(props.title) : props.title
 	}
-)
+
+	return (
+		<button ref={ref} {...translatedProps}>
+			{props.children ?? translatedProps.value}
+		</button>
+	)
+})
 
 const TDiv = (props: TDivProps) => {
 	const translatedProps = {
 		...props,
 		title: typeof props.title === "string" ? t(props.title) : props.title,
-		text:
-			typeof props.content === "string" ? t(props.content) : props.content
+		text: typeof props.content === "string" ? t(props.content) : props.content
 	}
 
 	return <div {...translatedProps} />
@@ -57,9 +52,7 @@ const TInput = forwardRef<HTMLInputElement, TInputProps>((props, ref) => {
 	const translatedProps = {
 		...props,
 		placeholder:
-			typeof props.placeholder === "string"
-				? t(props.placeholder)
-				: props.placeholder,
+			typeof props.placeholder === "string" ? t(props.placeholder) : props.placeholder,
 		title: typeof props.title === "string" ? t(props.title) : props.title,
 		value: typeof props.value === "string" ? t(props.value) : props.value
 	}
@@ -81,8 +74,7 @@ const TSpan = forwardRef<HTMLElement, TSpanProps>((props, ref) => {
 	const translatedProps = {
 		...props,
 		title: typeof props.title === "string" ? t(props.title) : props.title,
-		text:
-			typeof props.content === "string" ? t(props.content) : props.content
+		text: typeof props.content === "string" ? t(props.content) : props.content
 	}
 
 	return (
@@ -95,15 +87,10 @@ const TSpan = forwardRef<HTMLElement, TSpanProps>((props, ref) => {
 const TTextField = (props: TextFieldProps) => {
 	const translatedProps = {
 		...props,
-		helperText:
-			typeof props.helperText === "string"
-				? t(props.helperText)
-				: props.helperText,
+		helperText: typeof props.helperText === "string" ? t(props.helperText) : props.helperText,
 		label: typeof props.label === "string" ? t(props.label) : props.label,
 		placeholder:
-			typeof props.placeholder === "string"
-				? t(props.placeholder)
-				: props.placeholder
+			typeof props.placeholder === "string" ? t(props.placeholder) : props.placeholder
 	}
 
 	return <TextField {...translatedProps} />
@@ -112,13 +99,10 @@ const TTextField = (props: TextFieldProps) => {
 const TTypography = (props: TypographyProps) => {
 	const translatedProps = {
 		...props,
-		content:
-			typeof props.content === "string" ? t(props.content) : props.content
+		content: typeof props.content === "string" ? t(props.content) : props.content
 	}
 
-	return (
-		<Typography {...translatedProps}>{translatedProps.content}</Typography>
-	)
+	return <Typography {...translatedProps}>{translatedProps.content}</Typography>
 }
 
 TButton.displayName = "TButton"

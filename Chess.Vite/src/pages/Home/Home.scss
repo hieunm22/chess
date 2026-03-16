@@ -13,8 +13,8 @@
 	height: calc(var(--tile-size) * 8 + var(--board-padding));
 	background-color: #b58863;
 	padding-top: var(--board-padding);
-  display: flex;
-  flex-direction: row;
+	display: flex;
+	flex-direction: row;
 }
 
 .board {
@@ -25,15 +25,15 @@
 }
 
 .vertical-index-container {
-  color: red;
-  width: var(--board-padding);
-  height: calc(var(--tile-size) * 8);
+	color: red;
+	width: var(--board-padding);
+	height: calc(var(--tile-size) * 8);
 }
 
 .horizontal-index-container {
 	padding: 0 var(--board-padding);
 	display: inline-flex;
-  background-color: #b58863;
+	background-color: #b58863;
 }
 
 .board-index {

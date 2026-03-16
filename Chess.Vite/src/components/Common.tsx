@@ -3,16 +3,17 @@ import styled from "styled-components"
 import type { ElementWithAnimationType, ElementWithColorType } from "types/Common"
 
 export const Empty = () => <></>
-	function getTileBackgroundColor(index: number, available?: boolean) {
-		if (available) {
-			return "#69a36d"
-		}
-		if (index % 2 === 0) {
-			return (~~(index / 8) % 2 === 0) ? "#dfe7ec" : "#577896"
-		} else {
-			return (~~(index / 8) % 2 === 0) ? "#577896" : "#dfe7ec"
-		}
+
+function getTileBackgroundColor(index: number, available?: boolean) {
+	if (available) {
+		return "#69a36d"
 	}
+	if (index % 2 === 0) {
+		return ~~(index / 8) % 2 === 0 ? "#dfe7ec" : "#577896"
+	} else {
+		return ~~(index / 8) % 2 === 0 ? "#577896" : "#dfe7ec"
+	}
+}
 
 function createTransform(props: ElementWithAnimationType) {
 	if (!props.$move) {

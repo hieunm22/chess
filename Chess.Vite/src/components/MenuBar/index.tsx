@@ -22,8 +22,7 @@ import "./MenuBar.scss"
 function MenuBar() {
 	const [language, setLanguage] = useState("en")
 	const [openSettings, setOpenSettings] = useState(false)
-	const setDarkModeAction = (darkMode: boolean) =>
-		dispatch(setDarkMode(darkMode))
+	const setDarkModeAction = (darkMode: boolean) => dispatch(setDarkMode(darkMode))
 	const { state, dispatch } = useToolkit()
 
 	useEffect(() => {
@@ -55,10 +54,7 @@ function MenuBar() {
 		localStorage.setItem(LS_DARKMODE, isDarkMode ? "light" : "dark")
 	}
 
-	const handleCloseSettings = (
-		_: any,
-		reason: "backdropClick" | "escapeKeyDown"
-	) => {
+	const handleCloseSettings = (_: any, reason: "backdropClick" | "escapeKeyDown") => {
 		if (reason === "escapeKeyDown") {
 			setOpenSettings(false)
 		}
@@ -121,18 +117,12 @@ function MenuBar() {
 				maxWidth="xs"
 			>
 				<DialogTitle padding="5px 20px !important">
-					<TTypography
-						content="settings.header"
-						sx={textCenterStyle}
-					/>
+					<TTypography content="settings.header" sx={textCenterStyle} />
 				</DialogTitle>
 				<Divider sx={{ my: "5px" }} />
 				<DialogContent className="dialog-content">
 					<Grid container className="setting-row">
-						<TTypography
-							sx={{ minWidth: "100px" }}
-							content="settings.language"
-						/>
+						<TTypography sx={{ minWidth: "100px" }} content="settings.language" />
 						<ComboBoxWithLabel
 							id="language"
 							options={COUNTRIES_DROPDOWN}

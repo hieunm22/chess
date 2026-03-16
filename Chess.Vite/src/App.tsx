@@ -6,6 +6,7 @@ import {
 	ThemeProvider,
 	type PaletteMode
 } from "@mui/material"
+import { LS_DARKMODE } from "common/constant"
 import Layout from "components/Layout"
 import AboutPage from "pages/About"
 import HomePage from "pages/Home"
@@ -16,7 +17,7 @@ import "styles/common.scss"
 import "styles/responsive.scss"
 
 function App() {
-	const darkMode = localStorage.getItem("dark-mode") || "light"
+	const darkMode = localStorage.getItem(LS_DARKMODE) || "light"
 	const { state } = useToolkit()
 
 	const createThemeCallback = () =>

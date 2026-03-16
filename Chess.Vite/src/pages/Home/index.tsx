@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import classnames from "classnames"
-import { Tile } from "./components"
+import { LS_BOARD, LS_TURN } from "common/constant"
+import Tile from "components/Tile"
 import { initNewGame } from "common/helper"
 import useAutoTitle from "hooks/useAutoTitle"
 import useGameToolkit from "hooks/useGameToolkit"
@@ -14,21 +15,24 @@ export default function HomePage() {
 
 	useEffect(() => {
 		try {
-			const board = localStorage.getItem("gameState")
-			const turn = localStorage.getItem("turn")
+			const board = localStorage.getItem(LS_BOARD)
+			const turn = localStorage.getItem(LS_TURN)
 			const boardObj = JSON.parse(board || "")
-			const isValidBoard = Array.isArray(boardObj)
-				&& boardObj.length === 64
-				&& boardObj.every(item => item === null
-					|| typeof item.id === "number"
-					|| typeof item.piece === "string"
-					|| typeof item.team === "string"
+			const isValidBoard =
+				Array.isArray(boardObj) &&
+				boardObj.length === 64 &&
+				boardObj.every(
+					item =>
+						item === null ||
+						typeof item.id === "number" ||
+						typeof item.piece === "string" ||
+						typeof item.team === "string"
 				)
 			if (!isValidBoard) {
 				newGame()
 				return
 			}
-			const teamTurn = (turn === "white" || turn === "black") ? turn as Team : "white" as Team
+			const teamTurn = turn === "white" || turn === "black" ? (turn as Team) : ("white" as Team)
 			const gameState = {
 				board: boardObj,
 				selected: null,
@@ -36,7 +40,7 @@ export default function HomePage() {
 				teamTurn,
 				animatingPiece: null
 			}
-			dispatch(setGameState(gameState))			
+			dispatch(setGameState(gameState))
 		} catch (error) {
 			newGame()
 			return
@@ -45,12 +49,12 @@ export default function HomePage() {
 
 	useEffect(() => {
 		if (state.teamTurn) {
-			localStorage.setItem("turn", state.teamTurn)
+			localStorage.setItem(LS_TURN, state.teamTurn)
 		}
 	}, [state.teamTurn])
 
 	useEffect(() => {
-		localStorage.setItem("gameState", JSON.stringify(state.board))
+		localStorage.setItem(LS_BOARD, JSON.stringify(state.board))
 	}, [state.board])
 
 	const newGame = () => {
@@ -67,9 +71,7 @@ export default function HomePage() {
 							"board-index vertical": true,
 							"highlight": state.selected && ~~(state.selected.id / 8) === i
 						})
-						return (
-							<div key={i} className={verticalIndexClass} data-content={i + 1} />
-						)
+						return <div key={i} className={verticalIndexClass} data-content={i + 1} />
 					})}
 				</div>
 				<div className="board">
@@ -79,14 +81,17 @@ export default function HomePage() {
 				</div>
 			</div>
 			<div className="horizontal-index-container">
-				{Array.from({ length: 8 }, (_, i) => String.fromCharCode(97 + i)).map((char, index) => {
-					const horizontalIndexClass = classnames({
-						"board-index horizontal": true,
-						"highlight": state.selected && state.selected.id % 8 === index
-					})
-					return (
-						<div key={index} className={horizontalIndexClass} data-content={char} />
-					)})}
+				{Array.from({ length: 8 }, (_, i) => String.fromCharCode(97 + i)).map(
+					(char, index) => {
+						const horizontalIndexClass = classnames({
+							"board-index horizontal": true,
+							"highlight": state.selected && state.selected.id % 8 === index
+						})
+						return (
+							<div key={index} className={horizontalIndexClass} data-content={char} />
+						)
+					}
+				)}
 			</div>
 		</div>
 	)
