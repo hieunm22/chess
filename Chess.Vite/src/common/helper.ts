@@ -106,9 +106,10 @@ export function getAvailableMoves(
 				(direction === -1 && selectedIndex >= 48) ||
 				(direction === 1 && selectedIndex < 16)
 			) {
+				const move1CellsId = selectedIndex + direction * 8
 				const move2CellsId = selectedIndex + direction * 16
 				// Check if the pawn is in its initial position and can move two squares
-				if (gameState[move2CellsId] === null) {
+				if (gameState[move2CellsId] === null && gameState[move1CellsId] === null) {
 					moves.push(move2CellsId) // Move forward two squares from initial position
 				}
 			}
@@ -118,17 +119,12 @@ export function getAvailableMoves(
 			for (const offset of enPassantOffsets) {
 				const adjacentIndex = selectedIndex + offset - direction * 8
 				const captureIndex = selectedIndex + offset
-				if (captureIndex >= 0 && captureIndex < 64) {
-					const adjacentTile = gameState[adjacentIndex]
-					const captureTile = gameState[captureIndex]
-					if (
-						adjacentTile &&
-						adjacentTile.piece === "pawn" &&
-						adjacentTile.team !== selectedTile.team &&
-						captureTile === null
-					) {
-						moves.push(captureIndex) // Add en passant capture move
-					}
+				if (captureIndex < 0 || captureIndex >= 64) {
+					continue
+				}
+				const adjacentTile = gameState[adjacentIndex]
+				if (adjacentTile?.canBeEnPassant === true) {
+					moves.push(captureIndex) // Add en passant capture move
 				}
 			}
 			break

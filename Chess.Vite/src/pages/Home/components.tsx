@@ -165,13 +165,16 @@ const TileContent = (props: TileProps) => {
 						gameStateClone[id] = null
 					}
 				}
-				// old position becomes empty
-				gameStateClone[cell.id] = null
+				const isPawnDoubleStep = [16, -16].includes(cell.animateTo - cell.id)
+					&& gameStateClone[cell.id]?.piece === "pawn"
 				gameStateClone[cell.animateTo] = {
 					id: cell.animateTo,
 					piece: cell.piece,
-					team: cell.team
+					team: cell.team,
+					...(isPawnDoubleStep ? { canBeEnPassant: true } : {})
 				}
+				// old position becomes empty
+				gameStateClone[cell.id] = null
 			}
 		}
 		const toIdx = element!.animateTo!
@@ -184,6 +187,18 @@ const TileContent = (props: TileProps) => {
 				team: state.selected!.team
 			}
 		}
+		// remove canBeEnPassant flag of opponent's pawns after one turn
+		for (let i = 0; i < gameStateClone.length; i++) {
+			const cell = gameStateClone[i]
+			if (!cell) continue
+			if (cell.canBeEnPassant && cell.team !== state.teamTurn) {
+				const { canBeEnPassant, ...nextCell } = cell
+				if (canBeEnPassant) {
+					gameStateClone[i] = nextCell
+				}
+			}
+		}
+
 		dispatch(setGameState({
 			board: gameStateClone,
 			selected: null,
