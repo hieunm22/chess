@@ -31,8 +31,8 @@ export default function HomePage() {
 					})}
 				</div>
 				<div className="board">
-					{state.board.map(element => {
-						return <Tile key={element.id} element={element} />
+					{state.board.map((element, index) => {
+						return <Tile key={index} index={index} element={element} />
 					})}
 				</div>
 			</div>

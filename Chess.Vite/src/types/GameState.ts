@@ -1,5 +1,5 @@
 export interface GameState {
-	board: CellProps[]
+	board: (CellProps | null)[]
 	selected: CellProps | null
 	availableMoves: number[]
 	teamTurn: Team
@@ -7,8 +7,8 @@ export interface GameState {
 
 export interface CellProps {
 	id: number
-	piece: Piece | null
-	team: Team | null
+	piece: Piece
+	team: Team
 	animateTo?: number
 }
 

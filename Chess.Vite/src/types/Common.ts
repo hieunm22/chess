@@ -1,4 +1,4 @@
-import type { GameState } from "./GameState"
+import type { CellProps, GameState } from "./GameState"
 import type { ReduxState } from "./ReduxState"
 
 export interface ReduxStore {
@@ -14,7 +14,7 @@ export interface DropdownProps {
 }
 
 export interface ElementWithColorType {
-	color: string | null
+	element: CellProps | null
 	$index: number
 	$selected?: boolean
 	$available?: boolean
