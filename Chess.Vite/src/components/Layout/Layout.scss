@@ -33,3 +33,11 @@
 .setting-row {
 	margin-bottom: 10px;
 }
+
+.icon-toogle-drawer {
+  font-size: 14px;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.6;
+  }
+}

@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
+import classnames from "classnames"
 import {
 	AppBar,
 	Box,
@@ -29,19 +30,22 @@ import { setDarkMode } from "toolkit/slice/home"
 import { translate } from "locales/translate"
 import "./Layout.scss"
 
-const drawerWidth = 240
+const fullWidth = 240
+const miniWidth = 60
 
 export default function Layout() {
+	const [drawerOpen, setDrawerOpen] = useState(true)
+	const [language, setLanguage] = useState("en")
 	const [mobileOpen, setMobileOpen] = useState(false)
-	const navigate = useNavigate()
-	const [language, setLanguage] = useState("is")
 	const [openSettings, setOpenSettings] = useState(false)
-	const setDarkModeAction = (darkMode: boolean) => dispatch(setDarkMode(darkMode))
+	const navigate = useNavigate()
 	const { state, dispatch } = useToolkit()
-	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
+	const theme = useTheme()
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+	
+	const setDarkModeAction = (darkMode: boolean) => dispatch(setDarkMode(darkMode))
 	const handleMobileToggle = () => setMobileOpen(!mobileOpen)
+	const handleDrawerToggle = () => setDrawerOpen(!drawerOpen)
 
 	useEffect(() => {
 		if (openSettings) {
@@ -80,10 +84,6 @@ export default function Layout() {
 		alignItems: "center"
 	}
 
-	const handleDrawerToggle = () => {
-		setMobileOpen(!mobileOpen)
-	}
-
 	const handleShowSettings = () => {
 		setOpenSettings(true)
 		setMobileOpen(false)
@@ -96,6 +96,12 @@ export default function Layout() {
 		{ text: "menu.setting.button", icon: "fa-gear", click: handleShowSettings }
 	]
 
+	const toogleDrawerClass = classnames("fas", {
+		"fa-chevrons-right": !drawerOpen,
+		"fa-chevrons-left": drawerOpen,
+		"icon-toogle-drawer": true
+	})
+
 	const drawerContent = (
 		<>
 			<Toolbar>
@@ -106,8 +112,8 @@ export default function Layout() {
 				{menuItems.map(item => (
 					<ListItem key={item.text} disablePadding>
 						<ListItemButton onClick={item.click}>
-							<i className={`fas ${item.icon} mr-10`} />
-							<TTypography content={item.text} sx={{ fontSize: 14 }} />
+							<i className={`fas ${item.icon} mr-10 fsx-20`} title={translate(item.text)} />
+							{drawerOpen && <TTypography content={item.text} sx={{ fontSize: 14 }} />}
 						</ListItemButton>
 					</ListItem>
 				))}
@@ -119,8 +125,9 @@ export default function Layout() {
 				<ListItem disablePadding>
 					<ListItemButton>
 						<i className="fas fa-right-from-bracket" />
-						<TTypography content="menu.logout" sx={{ fontSize: 14, ml: 1 }} />
+						{drawerOpen && <TTypography content="menu.logout" sx={{ fontSize: 14, ml: 1 }} />}
 					</ListItemButton>
+					<i className={toogleDrawerClass} onClick={handleDrawerToggle} />
 				</ListItem>
 			</List>
 		</>
@@ -132,9 +139,7 @@ export default function Layout() {
 
 			{isMobile && <AppBar
 				position="fixed"
-				sx={{
-					width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
-				}}
+				sx={{ width: "100%" }}
 			>
 				<Toolbar>
 					<IconButton color="inherit" edge="start" onClick={handleMobileToggle} sx={{ mr: 2 }}>
@@ -144,15 +149,15 @@ export default function Layout() {
 			</AppBar>}
 
 			{/* Navigation */}
-			<Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
+			<Box component="nav" sx={{ width: { sm: drawerOpen ? fullWidth : miniWidth }, flexShrink: { sm: 0 } }}>
 				<Drawer
 					variant="temporary"
 					open={mobileOpen}
-					onClose={handleDrawerToggle}
+					onClose={handleMobileToggle}
 					ModalProps={{ keepMounted: true }}
 					sx={{
 						display: { xs: "block", sm: "none" },
-						"& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+						"& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerOpen ? fullWidth : miniWidth },
 					}}
 				>
 					{drawerContent}
@@ -161,15 +166,19 @@ export default function Layout() {
 				{/* Desktop drawer - permanent */}
 				<Drawer
 					variant="permanent"
+					open={drawerOpen}
 					sx={{
 						display: { xs: "none", sm: "block" },
 						"& .MuiDrawer-paper": {
+							width: drawerOpen ? fullWidth : miniWidth,
+							overflowX: "hidden",
+							transition: theme.transitions.create("width", {
+								easing: theme.transitions.easing.sharp,
+								duration: theme.transitions.duration.enteringScreen,
+							}),
 							boxSizing: "border-box",
-							width: drawerWidth,
-							borderRight: (theme) => `1px solid ${theme.palette.divider}`,
 						},
 					}}
-					open
 				>
 					{drawerContent}
 				</Drawer>
@@ -182,9 +191,9 @@ export default function Layout() {
 					flexGrow: 1,
 					width: {
 						xs: `100%`,
-						sm: `calc(100% - ${drawerWidth}px)`,
-						md: `calc(100% - ${drawerWidth}px)`,
-						lg: `calc(100% - ${drawerWidth}px)`,
+						sm: `calc(100% - ${fullWidth}px)`,
+						md: `calc(100% - ${fullWidth}px)`,
+						lg: `calc(100% - ${fullWidth}px)`,
 					},
 					p: 1,
 				}}
