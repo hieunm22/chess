@@ -18,8 +18,7 @@
 			"button": "Cài đặt"
 		},
 		"home": "Trang chủ",
-		"history": "Lịch sử",
-		"about": "Thông tin"
+		"logout": "Đăng xuất"
 	},
 	"settings": {
 		"header": "Cài đặt",

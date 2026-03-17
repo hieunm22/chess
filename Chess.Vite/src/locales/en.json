@@ -18,8 +18,7 @@
 			"button": "Settings"
 		},
 		"home": "Home",
-		"history": "History",
-		"about": "About"
+		"logout": "Logout"
 	},
 	"settings": {
 		"header": "Settings",
