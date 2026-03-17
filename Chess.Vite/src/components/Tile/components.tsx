@@ -74,7 +74,8 @@ export const TileContent = (props: TileProps) => {
 			board: gameStateClone,
 			selected: null,
 			availableMoves: [],
-			teamTurn: state.teamTurn === "white" ? "black" : "white"
+			teamTurn: state.teamTurn === "white" ? "black" : "white",
+      capturedPieces: state.capturedPieces
 		}))
 	}
 

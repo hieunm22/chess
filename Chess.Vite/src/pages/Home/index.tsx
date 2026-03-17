@@ -39,7 +39,10 @@ export default function HomePage() {
 				selected: null,
 				availableMoves: [],
 				teamTurn,
-				animatingPiece: null
+        capturedPieces: {
+					white: [],
+					black: []
+				}
 			}
 			dispatch(setGameState(gameState))
 		} catch (error) {
