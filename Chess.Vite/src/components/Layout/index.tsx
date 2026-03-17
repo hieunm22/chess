@@ -22,7 +22,7 @@ import {
 	useTheme
 } from "@mui/material"
 import i18n from "locales/i18n"
-import { COUNTRIES_DROPDOWN, LS_DARKMODE, LS_LANGUAGE } from "common/constant"
+import { COUNTRIES_DROPDOWN, LS_CAPTURED_PIECES, LS_DARKMODE, LS_LANGUAGE } from "common/constant"
 import { TTypography } from "components/TranslationTag"
 import { ComboBoxWithLabel } from "components/ComboBoxWithLabel"
 import useToolkit from "hooks/useToolkit"
@@ -91,12 +91,18 @@ export default function Layout() {
 		setMobileOpen(false)
 	}
 
+	const restartGame = () => {
+		const init = initNewGame()
+		dispatch(setGameState(init))
+		localStorage.setItem(LS_CAPTURED_PIECES, JSON.stringify({ white: [], black: [] }))
+	}
+
 	const menuItems = [
 		{ text: "menu.home", icon: "fa-home", click: () => navigate("/") },
 		{ text: "menu.users", icon: "fa-users", click: () => navigate("/users") },
 		{ text: "menu.analytics", icon: "fa-chart-mixed", click: () => navigate("/analytics") },
 		{ text: "menu.setting.button", icon: "fa-gear", click: handleShowSettings },
-		{ text: "menu.restart", icon: "fa-rotate", click: () => { const init = initNewGame(); dispatch(setGameState(init)) } }
+		{ text: "menu.restart", icon: "fa-rotate", click: restartGame }
 	]
 
 	const toogleDrawerClass = classnames("fas", {
