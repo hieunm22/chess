@@ -3,6 +3,7 @@ import type { DropdownProps } from "types/Common"
 export const LS_DARKMODE = "dark-mode"
 export const LS_LANGUAGE = "language"
 export const LS_BOARD = "board"
+export const LS_CAPTURED_PIECES = "captured-pieces"
 export const LS_TURN = "turn"
 
 export const COUNTRIES_DROPDOWN: DropdownProps[] = [
@@ -20,7 +21,7 @@ export const COUNTRIES_DROPDOWN: DropdownProps[] = [
 	// 	key: "jp",
 	// 	icon: "https://cdn.jsdelivr.net/npm/twemoji@latest/2/svg/1f1ef-1f1f5.svg",
 	// 	value: "日本語 (Japanese)",
-	//   disabled: true
+	// 	 disabled: true
 	// },
 	// {
 	// 	key: "kr",

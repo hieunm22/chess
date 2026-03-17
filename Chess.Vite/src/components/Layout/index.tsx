@@ -29,6 +29,8 @@ import useToolkit from "hooks/useToolkit"
 import { setDarkMode } from "toolkit/slice/home"
 import { translate } from "locales/translate"
 import "./Layout.scss"
+import { initNewGame } from "common/helper"
+import { setGameState } from "toolkit/slice/game"
 
 const fullWidth = 240
 const miniWidth = 60
@@ -93,7 +95,8 @@ export default function Layout() {
 		{ text: "menu.home", icon: "fa-home", click: () => navigate("/") },
 		{ text: "menu.users", icon: "fa-users", click: () => navigate("/users") },
 		{ text: "menu.analytics", icon: "fa-chart-mixed", click: () => navigate("/analytics") },
-		{ text: "menu.setting.button", icon: "fa-gear", click: handleShowSettings }
+		{ text: "menu.setting.button", icon: "fa-gear", click: handleShowSettings },
+		{ text: "menu.restart", icon: "fa-rotate", click: () => { const init = initNewGame(); dispatch(setGameState(init)) } }
 	]
 
 	const toogleDrawerClass = classnames("fas", {
@@ -105,7 +108,13 @@ export default function Layout() {
 	const drawerContent = (
 		<>
 			<Toolbar>
-				<TTypography variant="h6" noWrap component="div" sx={{ fontWeight: "bold" }} content="menu.app-name" />
+				<TTypography
+					variant="h6"
+					noWrap
+					component="div"
+					sx={{ fontWeight: "bold" }}
+					content="menu.app-name"
+				/>
 			</Toolbar>
 
 			<List>

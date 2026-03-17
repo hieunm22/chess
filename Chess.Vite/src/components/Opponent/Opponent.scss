@@ -1,6 +1,8 @@
 .opponent-container {
 	display: flex;
-  padding: 5px;
+	padding: 5px;
+	background-color: #7bc288;
+	text-align: left;
 }
 
 .opponent-avatar {
@@ -12,4 +14,8 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+}
+
+.captured-pieces {
+	height: 24px;
 }

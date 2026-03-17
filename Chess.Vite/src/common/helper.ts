@@ -26,10 +26,10 @@ export function initNewGame() {
 		selected: null,
 		availableMoves: [],
 		teamTurn: "white" as Team,
-    capturedPieces: {
-      white: [],
-      black: []
-    }
+		capturedPieces: {
+			white: [],
+			black: []
+		}
 	}
 }
 

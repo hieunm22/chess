@@ -9,6 +9,7 @@ export const TileContent = (props: TileProps) => {
 
 	const onAnimateEnd = () => {
 		const gameStateClone = [...state.board]
+		const capturedPiecesClone = { ...state.capturedPieces }
 		for (const cell of gameStateClone) {
 			if (!cell) continue
 			if (cell.animateTo !== undefined) {
@@ -38,6 +39,14 @@ export const TileContent = (props: TileProps) => {
 				const isPawnDoubleStep =
 					[16, -16].includes(cell.animateTo - cell.id) &&
 					gameStateClone[cell.id]?.piece === "pawn"
+				const destinationCell = gameStateClone[cell.animateTo]
+				if (destinationCell && destinationCell.team !== cell.team) {
+					// capture the piece and update captured pieces list
+					capturedPiecesClone[destinationCell.team] = [
+						...capturedPiecesClone[destinationCell.team],
+						destinationCell.piece
+					]
+				}
 				gameStateClone[cell.animateTo] = {
 					id: cell.animateTo,
 					piece: cell.piece,
@@ -75,7 +84,7 @@ export const TileContent = (props: TileProps) => {
 			selected: null,
 			availableMoves: [],
 			teamTurn: state.teamTurn === "white" ? "black" : "white",
-      capturedPieces: state.capturedPieces
+			capturedPieces: capturedPiecesClone
 		}))
 	}
 
@@ -108,6 +117,7 @@ export const TileContent = (props: TileProps) => {
 				$move={false}
 				$dx={0}
 				$dy={0}
+				onTransitionEnd={onAnimateEnd}
 			/>
 		)
 	}
