@@ -1,0 +1,15 @@
+.opponent-container {
+	display: flex;
+  padding: 5px;
+}
+
+.opponent-avatar {
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.opponent-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}

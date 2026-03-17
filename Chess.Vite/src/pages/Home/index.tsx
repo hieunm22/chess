@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import classnames from "classnames"
 import { LS_BOARD, LS_TURN } from "common/constant"
+import Opponent from "components/Opponent"
 import Tile from "components/Tile"
 import { initNewGame } from "common/helper"
 import useAutoTitle from "hooks/useAutoTitle"
@@ -64,6 +65,7 @@ export default function HomePage() {
 
 	return (
 		<div className="game-container">
+			<Opponent />
 			<div className="board-container">
 				<div className="vertical-index-container">
 					{Array.from({ length: 8 }, (_, i) => {
@@ -93,6 +95,7 @@ export default function HomePage() {
 					}
 				)}
 			</div>
+			<Opponent />
 		</div>
 	)
 }
