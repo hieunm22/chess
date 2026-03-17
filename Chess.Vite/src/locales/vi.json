@@ -1,7 +1,4 @@
 {
-	"constant": {
-		"field-required": "Trường này bắt buộc nhập"
-	},
 	"page": {
 		"home": {
 			"title": "Trang chủ"
@@ -17,7 +14,10 @@
 		"setting": {
 			"button": "Cài đặt"
 		},
+		"app-name": "Cờ vua",
 		"home": "Trang chủ",
+		"users": "Người dùng",
+		"analytics": "Phân tích",
 		"logout": "Đăng xuất"
 	},
 	"settings": {

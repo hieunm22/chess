@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
 import {
+	AppBar,
 	Box,
 	Button,
 	CssBaseline,
@@ -10,11 +11,14 @@ import {
 	Divider,
 	Drawer,
 	Grid,
+	IconButton,
 	List,
 	ListItem,
 	ListItemButton,
 	Switch,
-	Toolbar
+	Toolbar,
+	useMediaQuery,
+	useTheme
 } from "@mui/material"
 import i18n from "locales/i18n"
 import { COUNTRIES_DROPDOWN, LS_DARKMODE, LS_LANGUAGE } from "common/constant"
@@ -30,15 +34,18 @@ const drawerWidth = 240
 export default function Layout() {
 	const [mobileOpen, setMobileOpen] = useState(false)
 	const navigate = useNavigate()
-	
 	const [language, setLanguage] = useState("is")
 	const [openSettings, setOpenSettings] = useState(false)
 	const setDarkModeAction = (darkMode: boolean) => dispatch(setDarkMode(darkMode))
 	const { state, dispatch } = useToolkit()
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+	const handleMobileToggle = () => setMobileOpen(!mobileOpen)
 
 	useEffect(() => {
 		if (openSettings) {
-			const lang = localStorage.getItem(LS_LANGUAGE) || "vi"
+			const lang = localStorage.getItem(LS_LANGUAGE) || "en"
 			setLanguage(lang)
 		}
 	}, [openSettings])
@@ -77,17 +84,22 @@ export default function Layout() {
 		setMobileOpen(!mobileOpen)
 	}
 
+	const handleShowSettings = () => {
+		setOpenSettings(true)
+		setMobileOpen(false)
+	}
+
 	const menuItems = [
-		{ text: "Dashboard", icon: "fa-block-brick", click: () => navigate("/") },
-		{ text: "Users", icon: "fa-users", click: () => navigate("/users") },
-		{ text: "Analytics", icon: "fa-chart-mixed", click: () => navigate("/analytics") },
-		{ text: "menu.setting.button", icon: "fa-gear", click: () => setOpenSettings(true) },
+		{ text: "menu.home", icon: "fa-home", click: () => navigate("/") },
+		{ text: "menu.users", icon: "fa-users", click: () => navigate("/users") },
+		{ text: "menu.analytics", icon: "fa-chart-mixed", click: () => navigate("/analytics") },
+		{ text: "menu.setting.button", icon: "fa-gear", click: handleShowSettings }
 	]
 
 	const drawerContent = (
 		<>
 			<Toolbar>
-				<TTypography variant="h6" noWrap component="div" sx={{ fontWeight: "bold" }} content="Chess" />
+				<TTypography variant="h6" noWrap component="div" sx={{ fontWeight: "bold" }} content="menu.app-name" />
 			</Toolbar>
 
 			<List>
@@ -106,7 +118,7 @@ export default function Layout() {
 			<List>
 				<ListItem disablePadding>
 					<ListItemButton>
-            <i className="fas fa-right-from-bracket" />
+						<i className="fas fa-right-from-bracket" />
 						<TTypography content="menu.logout" sx={{ fontSize: 14, ml: 1 }} />
 					</ListItemButton>
 				</ListItem>
@@ -118,9 +130,21 @@ export default function Layout() {
 		<Box sx={{ display: "flex" }}>
 			<CssBaseline />
 
+			{isMobile && <AppBar
+				position="fixed"
+				sx={{
+					width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+				}}
+			>
+				<Toolbar>
+					<IconButton color="inherit" edge="start" onClick={handleMobileToggle} sx={{ mr: 2 }}>
+						<i className="fas fa-bars" />
+					</IconButton>
+				</Toolbar>
+			</AppBar>}
+
 			{/* Navigation */}
 			<Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
-				{/* Mobile drawer - temporary */}
 				<Drawer
 					variant="temporary"
 					open={mobileOpen}
@@ -157,13 +181,15 @@ export default function Layout() {
 				sx={{
 					flexGrow: 1,
 					width: {
-            sm: `calc(100% - ${drawerWidth}px)`,
-            md: `calc(100% - ${drawerWidth}px)`,
-            lg: `calc(100% - ${drawerWidth}px)`,
-          },
+						xs: `100%`,
+						sm: `calc(100% - ${drawerWidth}px)`,
+						md: `calc(100% - ${drawerWidth}px)`,
+						lg: `calc(100% - ${drawerWidth}px)`,
+					},
 					p: 1,
 				}}
 			>
+				{mobileOpen && <Toolbar />}
 				<Outlet />
 
 				<Dialog

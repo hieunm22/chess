@@ -5,7 +5,11 @@ const initialState: GameState = {
 	board: [],
 	selected: null,
 	availableMoves: [],
-	teamTurn: null
+	teamTurn: null,
+  capturedPieces: {
+    white: [],
+    black: []
+  }
 }
 
 const gameSlice = createSlice({

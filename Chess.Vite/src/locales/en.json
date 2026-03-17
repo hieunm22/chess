@@ -1,7 +1,4 @@
 {
-	"constant": {
-		"field-required": "This field is required"
-	},
 	"page": {
 		"home": {
 			"title": "Home"
@@ -17,7 +14,10 @@
 		"setting": {
 			"button": "Settings"
 		},
+		"app-name": "Chess game",
 		"home": "Home",
+		"users": "Users",
+		"analytics": "Analytic",
 		"logout": "Logout"
 	},
 	"settings": {

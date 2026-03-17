@@ -3,6 +3,10 @@ export interface GameState {
 	selected: CellProps | null
 	availableMoves: number[]
 	teamTurn: Team | null
+	capturedPieces: {
+		white: Piece[]
+		black: Piece[]
+	}
 }
 
 export interface CellProps {
