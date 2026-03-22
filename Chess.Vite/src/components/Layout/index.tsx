@@ -44,7 +44,7 @@ export default function Layout() {
 	const { state, dispatch } = useToolkit()
 	const theme = useTheme()
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-	
+
 	const setDarkModeAction = (darkMode: boolean) => dispatch(setDarkMode(darkMode))
 	const handleMobileToggle = () => setMobileOpen(!mobileOpen)
 	const handleDrawerToggle = () => setDrawerOpen(!drawerOpen)

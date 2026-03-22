@@ -1,5 +1,6 @@
 import { Empty, StyledPiece } from "components/Common"
 import { translate } from "locales/translate"
+import { initNewGame } from "common/helper"
 import useGameToolkit from "hooks/useGameToolkit"
 import { setGameState } from "toolkit/slice/game"
 import { TileProps } from "./types"
@@ -47,7 +48,14 @@ export const TileContent = (props: TileProps) => {
 						...capturedPiecesClone[destinationCell.team],
 						destinationCell.piece
 					]
-          confirm(translate("game.king.captured"))
+					if (destinationCell.piece === "king") {
+						const restart = confirm(translate("game.king.captured"))
+						if (restart) {
+							const gameState = initNewGame()
+							dispatch(setGameState(gameState))
+							return
+						}
+					}
 				}
 				gameStateClone[cell.animateTo] = {
 					id: cell.animateTo,
