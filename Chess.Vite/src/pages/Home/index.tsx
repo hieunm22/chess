@@ -79,7 +79,7 @@ export default function HomePage() {
 		dispatch(setGameState(gameState))
 	}
 
-		return (
+	return (
 		<div className="game-container">
 			<Opponent team="black" name="Opponent Black" />
 			<div className="board-container">

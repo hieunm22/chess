@@ -1,4 +1,5 @@
 import { Empty, StyledPiece } from "components/Common"
+import { translate } from "locales/translate"
 import useGameToolkit from "hooks/useGameToolkit"
 import { setGameState } from "toolkit/slice/game"
 import { TileProps } from "./types"
@@ -7,7 +8,7 @@ export const TileContent = (props: TileProps) => {
 	const { state, dispatch } = useGameToolkit()
 	const { element, index } = props
 
-	const onAnimateEnd = () => {
+	const onAnimateEnd = async () => {
 		const gameStateClone = [...state.board]
 		const capturedPiecesClone = { ...state.capturedPieces }
 		for (const cell of gameStateClone) {
@@ -46,6 +47,7 @@ export const TileContent = (props: TileProps) => {
 						...capturedPiecesClone[destinationCell.team],
 						destinationCell.piece
 					]
+          confirm(translate("game.king.captured"))
 				}
 				gameStateClone[cell.animateTo] = {
 					id: cell.animateTo,
@@ -58,7 +60,7 @@ export const TileContent = (props: TileProps) => {
 			}
 		}
 		const toIdx = element!.animateTo!
-		const isPromotion = state.selected!.piece === "pawn" && (toIdx < 8 || toIdx >= 56)
+		const isPromotion = state.selected?.piece === "pawn" && (toIdx < 8 || toIdx >= 56)
 		if (isPromotion) {
 			const newPieceName = isPromotion ? "queen" : state.selected!.piece
 			gameStateClone[toIdx] = {

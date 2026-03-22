@@ -26,9 +26,20 @@
 		"dark-mode": "Chế độ tối",
 		"close": "Đóng"
 	},
+	"popup": {
+		"confirm": {
+			"ok": "Ok",
+			"cancel": "Huỷ"
+		}
+	},
 	"home": {
 		"turn": {
 			"title": "Lượt đánh"
+		}
+	},
+	"game": {
+		"king": {
+			"captured": "Vua đã bị bắt. Game kết thúc"
 		}
 	}
 }

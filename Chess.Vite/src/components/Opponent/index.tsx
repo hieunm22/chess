@@ -1,3 +1,4 @@
+import classnames from "classnames"
 import useGameToolkit from "hooks/useGameToolkit"
 import { Team } from "types/GameState"
 import "./Opponent.scss"
@@ -9,16 +10,22 @@ type OpponentProps = {
 
 const Opponent = ({ team, name }: OpponentProps) => {
 	const { state } = useGameToolkit()
-	const styleName = { color: team }
+  const oponentTeam = team === "white" ? "black" : "white"
+  const capturePiecesCls = classnames("captured-pieces", {
+    "black": team === "white",
+    "white": team === "black",
+  })
+  const opponentCls = classnames("opponent-container", team)
+
 	return (
-		<div className="opponent-container" style={styleName}>
+		<div className={opponentCls}>
 			<div className="opponent-avatar">
 				<i className="fas fa-user fa-3x" />
 			</div>
 			<div className="opponent-info">
 				<div>{name}</div>
-				<div className="captured-pieces">
-					{state.capturedPieces[team].map((piece, index) => (
+				<div className={capturePiecesCls}>
+					{state.capturedPieces[oponentTeam].map((piece, index) => (
 						<i key={index} className={`fas fa-chess-${piece} captured-piece`} />
 					))}
 				</div>

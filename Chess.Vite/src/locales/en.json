@@ -26,9 +26,20 @@
 		"dark-mode": "Dark mode",
 		"close": "Close"
 	},
+	"popup": {
+		"confirm": {
+			"ok": "Ok",
+			"cancel": "Cancel"
+		}
+	},
 	"home": {
 		"turn": {
 			"title": "Turn"
+		}
+	},
+	"game": {
+		"king": {
+			"captured": "King has been captured. Game over"
 		}
 	}
 }

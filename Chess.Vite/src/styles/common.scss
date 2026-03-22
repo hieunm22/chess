@@ -2,6 +2,11 @@
 	cursor: pointer;
 }
 
+.flex {
+  display: flex;
+  justify-content: space-around;
+}
+
 @for $i from 1 through 20 {
 	$length: 1px * $i;
 	.top-#{$i} {

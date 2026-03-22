@@ -11,8 +11,8 @@ import Layout from "components/Layout"
 import HomePage from "pages/Home"
 import useToolkit from "hooks/useToolkit"
 import "App.scss"
-import "styles/common.scss"
 import "styles/responsive.scss"
+import "styles/common.scss"
 
 function App() {
 	const darkMode = localStorage.getItem(LS_DARKMODE) || "light"
