@@ -1,7 +1,4 @@
 {
-	"constant": {
-		"field-required": "This field is required"
-	},
 	"page": {
 		"home": {
 			"title": "Home"
@@ -17,9 +14,11 @@
 		"setting": {
 			"button": "Settings"
 		},
+		"app-name": "Chess game",
 		"home": "Home",
-		"history": "History",
-		"about": "About"
+		"users": "Users",
+		"analytics": "Analytic",
+		"logout": "Logout"
 	},
 	"settings": {
 		"header": "Settings",
@@ -27,9 +26,20 @@
 		"dark-mode": "Dark mode",
 		"close": "Close"
 	},
+	"popup": {
+		"confirm": {
+			"ok": "Ok",
+			"cancel": "Cancel"
+		}
+	},
 	"home": {
 		"turn": {
 			"title": "Turn"
+		}
+	},
+	"game": {
+		"king": {
+			"captured": "King has been captured. Game over"
 		}
 	}
 }

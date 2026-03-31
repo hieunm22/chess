@@ -1,7 +1,4 @@
 {
-	"constant": {
-		"field-required": "Trường này bắt buộc nhập"
-	},
 	"page": {
 		"home": {
 			"title": "Trang chủ"
@@ -17,9 +14,11 @@
 		"setting": {
 			"button": "Cài đặt"
 		},
+		"app-name": "Cờ vua",
 		"home": "Trang chủ",
-		"history": "Lịch sử",
-		"about": "Thông tin"
+		"users": "Người dùng",
+		"analytics": "Phân tích",
+		"logout": "Đăng xuất"
 	},
 	"settings": {
 		"header": "Cài đặt",
@@ -27,9 +26,20 @@
 		"dark-mode": "Chế độ tối",
 		"close": "Đóng"
 	},
+	"popup": {
+		"confirm": {
+			"ok": "Ok",
+			"cancel": "Huỷ"
+		}
+	},
 	"home": {
 		"turn": {
 			"title": "Lượt đánh"
+		}
+	},
+	"game": {
+		"king": {
+			"captured": "Vua đã bị bắt. Game kết thúc"
 		}
 	}
 }

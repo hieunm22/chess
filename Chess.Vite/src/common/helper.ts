@@ -12,18 +12,24 @@ const initGameState: (Piece | null)[] = [
 ]
 
 export function initNewGame() {
-	const board = Array.from({ length: 64 }, (_, id): CellProps => ({
-		id,
-		piece: initGameState[id],
-		team: initGameState[id] !== null ? (id < 32 ? "black" : "white") : null
-	}))
+	const board = Array.from({ length: 64 }, (_, id): CellProps | null => {
+		if (initGameState[id] === null) return null
+		return {
+			id,
+			piece: initGameState[id],
+			team: id < 32 ? "black" : "white"
+		}
+	})
 
 	return {
 		board,
 		selected: null,
 		availableMoves: [],
 		teamTurn: "white" as Team,
-		animatingPiece: null
+		capturedPieces: {
+			white: [],
+			black: []
+		}
 	}
 }
 
@@ -68,7 +74,7 @@ function slide(offset: number, current: number, occupied: CellProps[]): number[]
 }
 
 export function getAvailableMoves(
-	gameState: CellProps[],
+	gameState: (CellProps | null)[],
 	selectedIndex: number,
 	direction: 1 | -1
 ): number[] {
@@ -79,13 +85,11 @@ export function getAvailableMoves(
 
 	const pieceType = selectedTile.piece
 	const moves: number[] = []
-	const occupiedIndexes = gameState
-		.map(tile => tile.piece ? tile : null)
-		.filter(tile => tile !== null)
+	const occupiedIndexes = gameState.filter(tile => tile !== null)
 	switch (pieceType) {
 		case "pawn":
 			const forwardTile = gameState[selectedIndex + direction * 8]
-			if (forwardTile && forwardTile.piece === null) {
+			if (forwardTile === null) {
 				// If there isn't a piece directly in front, the pawn can move forward
 				moves.push(selectedIndex + direction * 8)
 			}
@@ -94,7 +98,7 @@ export function getAvailableMoves(
 				const captureIndex = selectedIndex + offset
 				if (captureIndex >= 0 && captureIndex < 64) {
 					const captureTile = gameState[captureIndex]
-					if (captureTile.piece && captureTile.team !== selectedTile.team) {
+					if (captureTile && captureTile.team !== selectedTile.team) {
 						moves.push(captureIndex)
 					}
 				}
@@ -104,8 +108,12 @@ export function getAvailableMoves(
 				(direction === -1 && selectedIndex >= 48) ||
 				(direction === 1 && selectedIndex < 16)
 			) {
+				const move1CellsId = selectedIndex + direction * 8
+				const move2CellsId = selectedIndex + direction * 16
 				// Check if the pawn is in its initial position and can move two squares
-				moves.push(selectedIndex + direction * 16) // Move forward two squares from initial position
+				if (gameState[move2CellsId] === null && gameState[move1CellsId] === null) {
+					moves.push(move2CellsId) // Move forward two squares from initial position
+				}
 			}
 
 			// check for en passant
@@ -113,16 +121,12 @@ export function getAvailableMoves(
 			for (const offset of enPassantOffsets) {
 				const adjacentIndex = selectedIndex + offset - direction * 8
 				const captureIndex = selectedIndex + offset
-				if (captureIndex >= 0 && captureIndex < 64) {
-					const adjacentTile = gameState[adjacentIndex]
-					const captureTile = gameState[captureIndex]
-					if (
-						adjacentTile.piece === "pawn" &&
-						adjacentTile.team !== selectedTile.team &&
-						captureTile.piece === null
-					) {
-						moves.push(captureIndex) // Add en passant capture move
-					}
+				if (captureIndex < 0 || captureIndex >= 64) {
+					continue
+				}
+				const adjacentTile = gameState[adjacentIndex]
+				if (adjacentTile?.canBeEnPassant === true) {
+					moves.push(captureIndex) // Add en passant capture move
 				}
 			}
 			break
@@ -134,7 +138,7 @@ export function getAvailableMoves(
 				if (target < 0 || target >= 64) continue
 
 				const targetTile = gameState[target]
-				if (targetTile.piece && targetTile.team === selectedTile.team)
+				if (targetTile && targetTile.team === selectedTile.team)
 					continue // can't move to a tile occupied by same team
 
 				const colDiff = Math.abs((selectedIndex % 8) - (target % 8))
@@ -170,7 +174,7 @@ export function getAvailableMoves(
 				if (target < 0 || target >= 64) continue
 
 				const targetTile = gameState[target]
-				if (targetTile.piece && targetTile.team === selectedTile.team)
+				if (targetTile && targetTile.team === selectedTile.team)
 					continue // can't move to a tile occupied by same team
 
 				const colDiff = Math.abs((selectedIndex % 8) - (target % 8))
@@ -183,13 +187,14 @@ export function getAvailableMoves(
 				const rookIndex = offset === 2 ? selectedIndex + 3 : selectedIndex - 4
 				const rookTile = gameState[rookIndex]
 				// check if no pieces between king and rook and rook is in the correct position for castling
+				const queenCastlingOffset = gameState[selectedIndex + offset + offset / 2]
 				if (
+					rookTile &&
 					rookTile.piece === "rook" &&
 					rookTile.team === selectedTile.team &&
-					!gameState[selectedIndex + offset].piece &&
-					!gameState[selectedIndex + offset / 2].piece &&
-					(!gameState[selectedIndex + offset + offset / 2].piece
-						|| gameState[selectedIndex + offset + offset / 2].piece === "rook")
+					!gameState[selectedIndex + offset] &&
+					!gameState[selectedIndex + offset / 2] &&
+					(queenCastlingOffset === null || queenCastlingOffset.piece === "rook")
 				) {
 					moves.push(selectedIndex + offset) // add castling move
 				}

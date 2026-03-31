@@ -6,17 +6,16 @@ import {
 	ThemeProvider,
 	type PaletteMode
 } from "@mui/material"
+import { LS_DARKMODE } from "common/constant"
 import Layout from "components/Layout"
-import AboutPage from "pages/About"
 import HomePage from "pages/Home"
-import PlayPage from "pages/History"
 import useToolkit from "hooks/useToolkit"
 import "App.scss"
-import "styles/common.scss"
 import "styles/responsive.scss"
+import "styles/common.scss"
 
 function App() {
-	const darkMode = localStorage.getItem("dark-mode") || "light"
+	const darkMode = localStorage.getItem(LS_DARKMODE) || "light"
 	const { state } = useToolkit()
 
 	const createThemeCallback = () =>
@@ -60,8 +59,6 @@ function App() {
 			<Routes>
 				<Route element={<Layout />}>
 					<Route path="/" element={<HomePage />} />
-					<Route path="/history" element={<PlayPage />} />
-					<Route path="/about" element={<AboutPage />} />
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Route>
 			</Routes>

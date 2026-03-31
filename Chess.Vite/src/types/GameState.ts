@@ -1,20 +1,20 @@
 export interface GameState {
-	board: CellProps[]
+	board: (CellProps | null)[]
 	selected: CellProps | null
 	availableMoves: number[]
-	teamTurn: Team
+	teamTurn: Team | null
+	capturedPieces: {
+		white: Piece[]
+		black: Piece[]
+	}
 }
 
 export interface CellProps {
 	id: number
-	piece: Piece | null
-	team: Team | null
+	piece: Piece
+	team: Team
 	animateTo?: number
-}
-
-export interface AnimatingPiece {
-	fromId: number
-	toId: number
+	canBeEnPassant?: boolean
 }
 
 export type Team = "white" | "black"

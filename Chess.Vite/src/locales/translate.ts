@@ -1,7 +1,6 @@
 import i18n from "./i18n"
 
-export const translate = (key?: string) =>
-	i18n.t(key || "", { nsSeparator: false }) as string
+export const translate = (key?: string) => i18n.t(key || "", { nsSeparator: false }) as string
 
 export const translateMany = (keys: string, separator = " ") => {
 	const split = keys.split(separator)
