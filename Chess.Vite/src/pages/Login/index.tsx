@@ -58,9 +58,8 @@ export default function LoginPage() {
 				minHeight: "100vh",
 				display: "flex",
 				alignItems: "center",
-				justifyContent: "center",
-				p: 2,
-				background: "linear-gradient(135deg, #f3f8ff 0%, #eef7f2 100%)"
+        width: "100%",
+        justifyContent: "center",
 			}}
 		>
 			<Paper elevation={4} sx={{ width: "100%", maxWidth: 420, p: 4, borderRadius: 3 }}>
