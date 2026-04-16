@@ -9,10 +9,14 @@ import {
 import { LS_DARKMODE } from "common/constant"
 import Layout from "components/Layout"
 import HomePage from "pages/Home"
+import LoginPage from "pages/Login"
+import LostPasswordPage from "pages/LostPassword"
+import RegisterPage from "pages/Register"
 import useToolkit from "hooks/useToolkit"
 import "App.scss"
 import "styles/responsive.scss"
 import "styles/common.scss"
+import LayoutUnAuth from "components/LayoutUnAuth"
 
 function App() {
 	const darkMode = localStorage.getItem(LS_DARKMODE) || "light"
@@ -57,10 +61,19 @@ function App() {
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
 			<Routes>
+				<Route element={<LayoutUnAuth />}>
+					<Route path="/login" element={<LoginPage />} />
+				</Route>
+				<Route element={<LayoutUnAuth />}>
+					<Route path="/lost-password" element={<LostPasswordPage />} />
+				</Route>
+				<Route element={<LayoutUnAuth />}>
+					<Route path="/register" element={<RegisterPage />} />
+				</Route>
 				<Route element={<Layout />}>
 					<Route path="/" element={<HomePage />} />
-					<Route path="*" element={<Navigate to="/" replace />} />
 				</Route>
+				<Route path="*" element={<Navigate to="/login" replace />} />
 			</Routes>
 		</ThemeProvider>
 	)

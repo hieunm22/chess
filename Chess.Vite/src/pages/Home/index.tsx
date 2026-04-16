@@ -99,7 +99,7 @@ export default function HomePage() {
 				</div>
 			</div>
 			<div className="horizontal-index-container">
-				{Array.from({ length: 8 }, (_, i) => String.fromCharCode(97 + i)).map(
+				{Array.from({ length: 8 }, (_, i) => String.fromCharCode(65 + i)).map(
 					(char, index) => {
 						const horizontalIndexClass = classnames({
 							"board-index horizontal": true,

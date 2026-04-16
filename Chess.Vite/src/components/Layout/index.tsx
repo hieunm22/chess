@@ -99,10 +99,10 @@ export default function Layout() {
 
 	const menuItems = [
 		{ text: "menu.home", icon: "fa-home", click: () => navigate("/") },
-		{ text: "menu.users", icon: "fa-users", click: () => navigate("/users") },
-		{ text: "menu.analytics", icon: "fa-chart-mixed", click: () => navigate("/analytics") },
+		{ text: "menu.users", icon: "fa-users", click: () => navigate("/users"), disabled: true },
+		{ text: "menu.analytics", icon: "fa-chart-mixed", click: () => navigate("/analytics"), disabled: true },
 		{ text: "menu.setting.button", icon: "fa-gear", click: handleShowSettings },
-		{ text: "menu.restart", icon: "fa-rotate", click: restartGame }
+		{ text: "Restart", icon: "fa-rotate", click: restartGame }
 	]
 
 	const toogleDrawerClass = classnames("fas", {
@@ -126,7 +126,7 @@ export default function Layout() {
 			<List>
 				{menuItems.map(item => (
 					<ListItem key={item.text} disablePadding>
-						<ListItemButton onClick={item.click}>
+						<ListItemButton onClick={item.click} disabled={item.disabled}>
 							<i className={`fas ${item.icon} mr-10 fsx-20`} title={translate(item.text)} />
 							{drawerOpen && <TTypography content={item.text} sx={{ fontSize: 14 }} />}
 						</ListItemButton>
