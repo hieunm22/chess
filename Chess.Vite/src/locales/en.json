@@ -41,5 +41,26 @@
 		"king": {
 			"captured": "King has been captured. Game over"
 		}
+	},
+	"login": {
+		"form": {
+			"title": "Login",
+			"error1": "Login failed. Please check your credentials ",
+			"forgot-password": "Forgot password",
+			"register": "Register",
+			"submit": "Login"
+		},
+		"username": {
+			"label": "User name",
+			"placeholder": "User name",
+			"error1": "User name is required"
+		},
+		"password": {
+			"label": "Password",
+			"placeholder": "Password",
+			"error1": "Password is required",
+			"show": "Show password",
+			"hide": "Hide password"
+		}
 	}
 }

@@ -1,22 +1,26 @@
 import { FormEvent, useState } from "react"
+import classnames from "classnames"
 import {
 	Alert,
 	Box,
 	Button,
 	CircularProgress,
 	InputAdornment,
-	IconButton,
 	Link,
 	Paper,
 	Stack,
 	Typography
 } from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
-import { TTextField } from "components/TranslationTag"
+import { TI, TTextField } from "components/TranslationTag"
+import { translate } from "locales/translate"
+import "./Login.scss"
 
 export default function LoginPage() {
 	const [username, setUsername] = useState("")
 	const [password, setPassword] = useState("")
+	const [userNameError, setUsernameError] = useState<string | null>(null)
+	const [passwordError, setPasswordError] = useState<string | null>(null)
 	const [showPassword, setShowPassword] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
@@ -39,10 +43,10 @@ export default function LoginPage() {
 			})
 
 			if (!response.ok) {
-				throw new Error("Login failed. Please check your credentials.")
+				throw new Error(translate("login.form.error1"))
 			}
 
-			setMessage("Login request sent successfully.")
+			setMessage(translate("login.form.success"))
 		} catch (submitError) {
 			const submitMessage =
 				submitError instanceof Error ? submitError.message : "Unexpected error while logging in."
@@ -51,6 +55,11 @@ export default function LoginPage() {
 			setLoading(false)
 		}
 	}
+
+	const eyeIconClass = classnames("show-password fas", {
+		"fa-eye": !showPassword,
+		"fa-eye-slash": showPassword
+	})
 
 	return (
 		<Box
@@ -62,20 +71,25 @@ export default function LoginPage() {
         justifyContent: "center",
 			}}
 		>
-			<Paper elevation={4} sx={{ width: "100%", maxWidth: 420, p: 4, borderRadius: 3 }}>
+			<Paper elevation={4} sx={{ width: "100%", maxWidth: 450, p: 4, borderRadius: 3 }}>
 				<Stack component="form" spacing={2.5} onSubmit={handleSubmit}>
 					<Typography variant="h5" component="h1" fontWeight={700}>
-						Login
+						{translate("login.form.title")}
 					</Typography>
 
 					<TTextField
-						label="User name"
+						label="login.username.label"
+						placeholder="login.username.placeholder"
             variant="standard"
 						name="username"
+						autoFocus
 						value={username}
 						onChange={event => setUsername(event.target.value)}
 						required
 						fullWidth
+						error={!!userNameError}
+						helperText={userNameError}
+						onBlur={() => setUsernameError(username ? null : "login.username.error1")}
             slotProps={{
               input: {
                 startAdornment: (
@@ -88,15 +102,18 @@ export default function LoginPage() {
 					/>
 
 					<TTextField
-            label="Password"
-						name="password"
+            label="login.password.label"
+            placeholder="login.password.placeholder"
             variant="standard"
-            placeholder="Password"
+						name="password"
 						type={showPassword ? "text" : "password"}
 						value={password}
 						onChange={event => setPassword(event.target.value)}
 						required
 						fullWidth
+						error={!!passwordError}
+						helperText={passwordError}
+						onBlur={() => setPasswordError(password ? null : "login.password.error1")}
             slotProps={{
               input: {
                 startAdornment: (
@@ -106,13 +123,11 @@ export default function LoginPage() {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(prev => !prev)}
-                      edge="end"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                    >
-                      <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"} />
-                    </IconButton>
+										<TI
+											className={eyeIconClass}
+											title={showPassword ? "login.password.hide" : "login.password.show"}
+											onClick={() => setShowPassword(prev => !prev)}
+										/>
                   </InputAdornment>
                 )
               }
@@ -121,10 +136,10 @@ export default function LoginPage() {
 
 					<Stack direction="row" justifyContent="space-between" spacing={2}>
 						<Link component={RouterLink} to="/lost-password" underline="hover" variant="body2">
-							Forgot password
+							{translate("login.form.forgot-password")}
 						</Link>
 						<Link component={RouterLink} to="/register" underline="hover" variant="body2">
-							Register new account
+							{translate("login.form.register")}
 						</Link>
 					</Stack>
 
@@ -132,7 +147,7 @@ export default function LoginPage() {
 					{message && <Alert severity="success">{message}</Alert>}
 
 					<Button type="submit" variant="contained" disabled={loading} fullWidth size="large">
-						{loading ? <CircularProgress size={22} color="inherit" /> : "Login"}
+						{loading ? <CircularProgress size={22} color="inherit" /> : translate("login.form.submit")}
 					</Button>
 				</Stack>
 			</Paper>

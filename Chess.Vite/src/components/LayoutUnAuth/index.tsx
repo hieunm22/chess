@@ -13,7 +13,7 @@ import {
 } from "@mui/material"
 import i18n from "locales/i18n"
 import { COUNTRIES_DROPDOWN, LS_DARKMODE, LS_LANGUAGE } from "common/constant"
-import { TButton, TTypography } from "components/TranslationTag"
+import { TTypography } from "components/TranslationTag"
 import { ComboBoxWithLabel } from "components/ComboBoxWithLabel"
 import useToolkit from "hooks/useToolkit"
 import { setDarkMode } from "toolkit/slice/home"
@@ -28,15 +28,11 @@ export default function LayoutUnAuth() {
 	const setDarkModeAction = (darkMode: boolean) => dispatch(setDarkMode(darkMode))
 
 	useEffect(() => {
-		if (openSettings) {
-			const lang = localStorage.getItem(LS_LANGUAGE) || "en"
-			setLanguage(lang)
-		}
-	}, [openSettings])
-
-	useEffect(() => {
 		const isDarkMode = localStorage.getItem(LS_DARKMODE) === "dark"
 		setDarkModeAction(isDarkMode)
+		const lang = localStorage.getItem(LS_LANGUAGE) || "en"
+		setLanguage(lang)
+		i18n.changeLanguage(lang)
 	}, [])
 
 	const onChangeLanguage = (e: any) => {
@@ -72,7 +68,15 @@ export default function LayoutUnAuth() {
 		<Box sx={{ display: "flex" }}>
 			<CssBaseline />
 			<Outlet />
-			<TButton onClick={handleShowSettings}>123</TButton>
+			<Button
+				className="unauth-setting-btn"
+				variant="outlined"
+				startIcon={<i className="fa-solid fa-gear" />}
+				size="small"
+				onClick={handleShowSettings}
+			>
+				Setting
+			</Button>
 
 			<Dialog
 				open={openSettings}
