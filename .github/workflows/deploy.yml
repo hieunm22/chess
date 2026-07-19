@@ -1,0 +1,203 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        env:
+          SERVER_IP: ${{ vars.SERVER_IP }}
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          FACEBOOK_APP_ID: ${{ vars.FACEBOOK_APP_ID }}
+          AD_TAG_URL: ${{ vars.AD_TAG_URL }}
+          AWS_ACCESS_ID: ${{ vars.AWS_ACCESS_ID }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
+          FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          TOOL_API_KEY: ${{ secrets.TOOL_API_KEY }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        with:
+          host: ${{ vars.SERVER_IP }}
+          username: root
+          port: 23
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: SERVER_IP,JWT_SECRET,GOOGLE_APP_PASSWORD,GOOGLE_CLIENT_ID,FACEBOOK_APP_ID,AD_TAG_URL,FACEBOOK_APP_SECRET,REDIS_PASSWORD,MONGO_PASSWORD,AWS_ACCESS_ID,AWS_SECRET_KEY,TOOL_API_KEY,POSTGRES_PASSWORD
+          script: |
+            set -euo pipefail
+
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            cd ~/projects/chess
+
+            # Load config from GitHub Actions vars/secrets or .env.local fallback
+            load_config() {
+              local var_name="$1"
+              local var_value="${!var_name:-}"
+
+              # Treat empty, null, or placeholder-like values as missing
+              if [[ -z "$var_value" || "$var_value" == "null" || "$var_value" =~ ^\<.*\>$ ]]; then
+                var_value=""
+              fi
+
+              if [ -z "$var_value" ] && [ -f ".env.local" ]; then
+                var_value=$(grep "^${var_name}=" .env.local | cut -d= -f2- | tr -d '"' || true)
+              fi
+
+              export "$var_name=$var_value"
+            }
+
+            load_config "SERVER_IP"
+            load_config "JWT_SECRET"
+            load_config "GOOGLE_APP_PASSWORD"
+            load_config "GOOGLE_CLIENT_ID"
+            load_config "FACEBOOK_APP_ID"
+            load_config "AD_TAG_URL"
+            load_config "FACEBOOK_APP_SECRET"
+            load_config "REDIS_PASSWORD"
+            load_config "MONGO_PASSWORD"
+            load_config "AWS_ACCESS_ID"
+            load_config "AWS_SECRET_KEY"
+            load_config "TOOL_API_KEY"
+            load_config "POSTGRES_PASSWORD"
+
+            # Generate frontend/.env.local with VITE_ prefix
+
+            env_path="frontend/.env.local"
+            echo "creating env file at $env_path"
+            echo "VITE_BACKEND_BASE_URL=https://xaa.hieunm.io.vn" > $env_path
+            echo "VITE_PUBLIC_DISTRIBUTION=https://clf.hieunm.io.vn" >> $env_path
+            echo "VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> $env_path
+            echo "VITE_FACEBOOK_APP_ID=$FACEBOOK_APP_ID" >> $env_path
+            echo "VITE_AD_TAG_URL=$AD_TAG_URL" >> $env_path
+
+            echo "env file created on $(date)"
+
+            # Regenerate backend/.env.local only if it was removed
+            backend_env="backend/.env.local"
+            if [ ! -f "$backend_env" ]; then
+              echo "backend/.env.local missing — regenerating from forwarded config"
+              echo "DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@${SERVER_IP}:5432/chess" > "$backend_env"
+              echo "SERVER_IP=$SERVER_IP" >> "$backend_env"
+              echo "JWT_SECRET=$JWT_SECRET" >> "$backend_env"
+              echo "JWT_ISSUER=xaa.hieunm.io.vn" >> "$backend_env"
+              echo "GOOGLE_APP_PASSWORD=$GOOGLE_APP_PASSWORD" >> "$backend_env"
+              echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> "$backend_env"
+              echo "FACEBOOK_APP_ID=$FACEBOOK_APP_ID" >> "$backend_env"
+              echo "FACEBOOK_APP_SECRET=$FACEBOOK_APP_SECRET" >> "$backend_env"
+              echo "REDIS_HOST=cache" >> "$backend_env"
+              echo "REDIS_PASSWORD=$REDIS_PASSWORD" >> "$backend_env"
+              echo "CORS_ORIGINS=http://localhost:3004,http://localhost:5001,http://localhost:8000,https://xaq.hieunm.io.vn,https://xaa.hieunm.io.vn" >> "$backend_env"
+              echo "API_HOST=https://xaa.hieunm.io.vn" >> "$backend_env"
+              echo "APP_EMAIL=hieuami@gmail.com" >> "$backend_env"
+              echo "MONGODB_DB_NAME=chess" >> "$backend_env"
+              echo "MONGO_PASSWORD=$MONGO_PASSWORD" >> "$backend_env"
+              echo "FAIRY_STOCKFISH_PATH=/usr/local/bin/fairy-stockfish" >> "$backend_env"
+              echo "AWS_ACCESS_ID=$AWS_ACCESS_ID" >> "$backend_env"
+              echo "AWS_SECRET_KEY=$AWS_SECRET_KEY" >> "$backend_env"
+              echo "AMOUNT_RECONCILE_AUTOFIX=true" >> "$backend_env"
+              echo "TOOL_API_KEY=$TOOL_API_KEY" >> "$backend_env"
+            fi
+
+            # Reset all changes
+            git restore . :!backend/yarn.lock
+            git clean -fd
+
+            # Fetch and attach HEAD to the target branch BEFORE capturing OLD_COMMIT,
+            # so the diff base is the branch tip and not whatever HEAD happened to be
+            # (e.g. a detached HEAD left by a manual pull/checkout on the server).
+            git fetch origin
+            git checkout ${{ github.ref_name }}
+
+            # Currently-deployed commit (branch tip, now attached) before updating
+            OLD_COMMIT=$(git rev-parse HEAD)
+
+            # Deterministically match the remote (robust against manual pulls / drift)
+            git reset --hard origin/${{ github.ref_name }}
+            NEW_COMMIT=$(git rev-parse HEAD)
+
+            # Get the list of changed files
+            CHANGED_FILES=$(git diff --name-only "$OLD_COMMIT" "$NEW_COMMIT")
+
+            echo "=== Changed files ==="
+            echo "$CHANGED_FILES"
+            echo "===================="
+
+            # Deploy frontend
+            if echo "$CHANGED_FILES" | grep -q "^frontend/"; then
+              echo "--- Deploying frontend ---"
+
+              PACKAGE_CHANGED=$(echo "$CHANGED_FILES" | grep -c "^frontend/package.json" || true)
+              OTHER_FILES=$(echo "$CHANGED_FILES" | grep -v "^frontend/package.json" | grep -c "^frontend/" || true)
+
+              cd frontend
+
+              if [ "$PACKAGE_CHANGED" -gt 0 ] && [ "$OTHER_FILES" -gt 0 ]; then
+                echo "package.json and other files changed"
+                yarn install
+                make publish
+              else
+                echo "Running make publish only"
+                make publish
+              fi
+
+              cd ..
+            fi
+
+            # Deploy backend
+            if echo "$CHANGED_FILES" | grep -q "^backend/"; then
+              echo "--- Deploying backend ---"
+
+              PACKAGE_CHANGED=$(echo "$CHANGED_FILES" | grep -c "^backend/package.json" || true)
+              OTHER_FILES=$(echo "$CHANGED_FILES" | grep -v "^backend/package.json" | grep -c "^backend/" || true)
+
+              cd backend
+
+              if [ "$PACKAGE_CHANGED" -gt 0 ] && [ "$OTHER_FILES" -gt 0 ]; then
+                echo "package.json and other files changed"
+                yarn install
+                make publish
+              else
+                echo "Running make publish only"
+                make publish
+              fi
+
+              cd ..
+            fi
+
+            echo "=== Deployment completed ==="
+
+  notify:
+    needs: deploy
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram message
+        run: |
+          STATUS="${{ needs.deploy.result }}"
+          TIMESTAMP=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          if [ "$STATUS" = "success" ]; then
+            EMOJI="✅"
+            printf -v MESSAGE '%s GitHub Action finished at %s: %s\n%s' "$EMOJI" "$TIMESTAMP" "$STATUS" "$RUN_URL"
+          else
+            EMOJI="❌"
+            printf -v MESSAGE '%s GitHub Action finished at %s: %s\n%s' "$EMOJI" "$TIMESTAMP" "$STATUS" "$RUN_URL"
+          fi
+
+          curl -s \
+            -X POST \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            --data-urlencode "text=$MESSAGE"

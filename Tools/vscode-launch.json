@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Backend (Hot Reload)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/backend",
+      "runtimeExecutable": "/Users/hieunm/.nvm/versions/node/v24.16.0/bin/node",
+      "runtimeArgs": [
+        "${workspaceFolder}/backend/node_modules/nodemon/bin/nodemon.js",
+        "--legacy-watch",
+        "--watch",
+        "src",
+        "--ext",
+        "ts",
+        "--exec",
+        "/Users/hieunm/.nvm/versions/node/v24.16.0/bin/node --inspect=9229 -r ts-node/register -r tsconfig-paths/register ./src/server.ts"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/backend/tsconfig.json"
+      },
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "restart": true,
+      "autoAttachChildProcesses": true
+    }
+  ]
+}

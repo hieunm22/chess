@@ -1,0 +1,116 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: chess-postgres
+    environment:
+      POSTGRES_DB: chess
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "<database_password>"
+    ports:
+      - "5432:5432"
+    volumes:
+      - /Users/macbook/projects/hieunm/.postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - chess-network
+  # docker run -dit \
+  #   -p 5432:5432 \
+  #   --name chess-postgres \
+  #   --restart unless-stopped \
+  #   --network chess-network \
+  #   -e POSTGRES_DB=chess \
+  #   -e POSTGRES_USER=postgres \
+  #   -e POSTGRES_PASSWORD=<database_password> \
+  #   -v ..persist/postgres:/var/lib/postgresql/data \
+  #   postgres:17
+
+  mongodb:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: "<mongodb_password>"
+    ports:
+      - "27017:27017"
+    volumes:
+      - /Users/macbook/projects/hieunm/.mongodb:/data/db
+    restart: unless-stopped
+    networks:
+      - chess-network
+  # docker run -dit \
+  #   -p 27017:27017 \
+  #   --name chess-mongodb \
+  #   --restart unless-stopped \
+  #   --network chess-network \
+  #   -e MONGO_INITDB_ROOT_USERNAME=root \
+  #   -e MONGO_INITDB_ROOT_PASSWORD=<mongodb_password> \
+  #   -v /Users/macbook/projects/hieunm/.mongodb:/data/db \
+  #   mongo:8
+
+  mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: chess-mongodb
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: "<mongodb_password>"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: "<mongo_express_password>"
+    depends_on:
+      - chess-mongodb
+    restart: unless-stopped
+    networks:
+      - chess-network
+  # docker run -dit \
+  #   -p 8081:8081 \
+  #   --name chess-mongo-express \
+  #   --restart unless-stopped \
+  #   --network chess-network \
+  #   -e ME_CONFIG_MONGODB_SERVER=chess-mongodb \
+  #   -e ME_CONFIG_MONGODB_ADMINUSERNAME=root \
+  #   -e ME_CONFIG_MONGODB_ADMINPASSWORD=<mongodb_password> \
+  #   -e ME_CONFIG_BASICAUTH_USERNAME=admin \
+  #   -e ME_CONFIG_BASICAUTH_PASSWORD=<mongo_express_password> \
+  #   mongo-express:1.0.2-20-alpine3.19
+
+  # cache:
+  #   container_name: chess-cache
+  #   image: redis:8.2
+  #   ports:
+  #     - "6379:6379"
+  #   restart: "unless-stopped"
+  #   networks:
+  #     - chess-network
+  # # docker run -dit \
+  # #   -p 6379:6379 \
+  # #   --name chess-cache \
+  # #   --network chess-network \
+  # #   --restart unless-stopped \
+  # #   redis:8.2 \
+  # #   redis-server --requirepass '<redis_password>' --protected-mode yes --enable-debug-command no --enable-module-command no --enable-protected-configs no --rename-command FLUSHALL "" --rename-command FLUSHDB "" --rename-command KEYS ""
+
+  backend:
+    container_name: chess-api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env.local
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - chess-network
+  # run this command in the backend directory to build and run the container
+  # docker run -dit \
+  #   -p 5001:8000 \
+  #   --env-file ./.env.local \
+  #   --network chess-network \
+  #   --name chess-api \
+  #   chess-api
+
+networks:
+  chess-network:
+    driver: bridge

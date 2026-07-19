@@ -10,13 +10,6 @@ import {
 	Typography,
 } from "@mui/material"
 import parse from "html-react-parser"
-import generalImg from "assets/general.png"
-import advisorImg from "assets/advisor.png"
-import elephantImg from "assets/elephant.png"
-import chariotImg from "assets/chariot.png"	
-import horseImg from "assets/horse.png"
-import cannonImg from "assets/cannon.png"
-import soldierImg from "assets/soldier.png"
 import { TTypography } from "components/TranslationTag"
 import { translate } from "locales/translate"
 import "./Guide.scss"
@@ -90,48 +83,41 @@ export const Guide = () => {
 			<Typography component="div">
 				{parse(translate("guide.general.paragraph2"))}
 			</Typography>
-			<Box component="img" src={generalImg} alt="General" className="image" />
 
 			{/* Advisor */}
 			<TTypography variant="subtitle1" className="paragraph" content="guide.advisor.paragraph1" />
 			<Typography component="div">
 				{parse(translate("guide.advisor.paragraph2"))}
 			</Typography>
-			<Box component="img" src={advisorImg} alt="Advisor" className="image" />
 
 			{/* Elephant */}
 			<TTypography variant="subtitle1" className="paragraph" content="guide.elephant.paragraph1" />
 			<Typography component="div">
 				{parse(translate("guide.elephant.paragraph2"))}
 			</Typography>
-			<Box component="img" src={elephantImg} alt="Elephant" className="image" />
 
 			{/* Chariot */}
 			<TTypography variant="subtitle1" className="paragraph" content="guide.chariot.paragraph1" />
 			<Typography component="div">
 				{parse(translate("guide.chariot.paragraph2"))}
 			</Typography>
-			<Box component="img" src={chariotImg} alt="Chariot" className="image" />
 
 			{/* Horse */}
 			<TTypography variant="subtitle1" className="paragraph" content="guide.horse.paragraph1" />
 			<Typography component="div">
 				{parse(translate("guide.horse.paragraph2"))}
 			</Typography>
-			<Box component="img" src={horseImg} alt="Horse" className="image" />
 
 			<TTypography variant="subtitle1" className="paragraph" content="guide.cannon.paragraph1" />
 			<Typography component="div">
 				{parse(translate("guide.cannon.paragraph2"))}
 			</Typography>
-			<Box component="img" src={cannonImg} alt="Cannon" className="image" />
 
 			{/* Soldier */}
 			<TTypography variant="subtitle1" className="paragraph" content="guide.soldier.paragraph1" />
 			<Typography component="div">
 				{parse(translate("guide.soldier.paragraph2"))}
 			</Typography>
-			<Box component="img" src={soldierImg} alt="Soldier" className="image" />
 
 			{/* Capturing */}
 			<TTypography variant="h5" className="section" content="guide.section.capturing" />

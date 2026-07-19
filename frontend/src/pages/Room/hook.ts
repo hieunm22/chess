@@ -401,8 +401,8 @@ const useRoomHook = () => {
 				return
 			}
 
-			if (roomInfoResponse.data.room.game_type !== "xiangqi") {
-				// do nothing if the room is not a Xiangqi game type
+			if (roomInfoResponse.data.room.game_type !== "chess") {
+				// do nothing if the room is not a Chess game type
 				return
 			}
 

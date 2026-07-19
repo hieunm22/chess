@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "types": ["node", "vitest/globals"],
+    "baseUrl": "src",
+		"ignoreDeprecations": "6.0",
+    "paths": {
+      "common/*": ["common/*"],
+      "job/*": ["job/*"],
+      "middleware/*": ["middleware/*"],
+      "prisma/*": ["prisma/*"],
+      "routes/*": ["routes/*"],
+      "templates/*": ["templates/*"],
+      "types/*": ["types/*"]
+    },
+    "rootDir": "src",
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,471 @@
+﻿Key;English;Vietnamese
+common.input.is-required;is required;bắt buộc nhập
+common.loading;Loading...;Đang tải...
+common.password.policy-1;Must contain lower case character;Phải chứa một ký tự chữ in thường
+common.password.policy-2;Must contain upper case character;Phải chứa một ký tự chữ in hoa
+common.password.policy-3;Must contain digit;Phải chứa một ký tự số
+common.password.policy-4;Must contain a special character;Phải chứa một ký tự đặc biệt
+common.password.policy-5;Text length at least 8;Ít nhất 8 ký tự
+common.date.today;Today;Hôm nay
+common.date.yesterday;Yesterday;Hôm qua
+common.date.mon;Mon;Thứ 2
+common.date.tue;Tue;Thứ 3
+common.date.wed;Wed;Thứ 4
+common.date.thu;Thu;Thứ 5
+common.date.fri;Fri;Thứ 6
+common.date.sat;Sat;Thứ 7
+common.date.sun;Sun;Chủ nhật
+page.home.title;Home;Trang chủ
+page.history.no-games;No finished games yet;Chưa có trận đấu nào hoàn thành
+page.replay.title;Game Replay;Xem lại ván đấu
+page.replay.no-moves;No moves to replay;Không có nước đi để xem lại
+page.replay.play;Play;Phát
+page.replay.pause;Pause;Tạm dừng
+page.replay.end-title;Game over;Ván đấu kết thúc
+page.replay.reason-checkmate;{{name}} won by checkmate;{{name}} thắng bằng chiếu bí
+page.replay.reason-stalemate;Stalemate;Hết nước đi
+page.replay.reason-perpetual-check;{{name}} won by opponent's perpetual check;{{name}} thắng do đối thủ chiếu tướng liên tục
+page.replay.reason-surrender;{{name}} surrendered;{{name}} đã đầu hàng
+page.replay.reason-leave;{{name}} left the game;{{name}} đã rời trận
+page.replay.reason-draw;Draw;Hoà
+page.replay.reason-timeout;{{name}} ran out of total game time;{{name}} đã hết giờ cả ván
+page.replay.reason-per-move-timeout;{{name}} ran out of time for a move;{{name}} đã hết giờ cho một nước đi
+page.replay.reason-ended;The game has ended;Ván đấu đã kết thúc
+menu.app-name;Chess;Cờ vua
+menu.profile;Profile;Trang cá nhân
+menu.messages;Message;Tin nhắn
+menu.change-password;Change password;Đổi mật khẩu
+menu.guide;Guide;Luật chơi
+menu.announce;Announcement;Thông báo
+menu.extra;Daily tasks;Kiếm tiền
+menu.leaderboard;Leaderboard;Bảng xếp hạng
+menu.setting.button;Settings;Cài đặt
+menu.app-name;Chess;Cờ vua
+menu.home;Home;Trang chủ
+menu.expired;Set expired;Hết hạn token
+menu.logout;Logout;Đăng xuất
+announce.title;Announcement;Thông báo
+announce.placeholder;Type an announcement...;Nhập thông báo...
+announce.empty;No announcements yet;Chưa có thông báo nào
+announce.loading-older;Loading older announcements...;Đang tải thông báo cũ hơn...
+achievement.title-01;Checkmate an opponent who still has 13 or more pieces;Chiếu bí khi đối thủ vẫn còn >= 13 quân
+achievement.title-02;Win your first game;Thắng trận đầu khi chơi game
+achievement.title-03;Leave your opponent with no legal moves;Đánh cho đối thủ không còn nước đi
+achievement.title-04;Defeat opponents of equal or higher rank in 10 games;Thắng đối thủ cùng hoặc hơn đẳng cấp 10 ván
+achievement.title-05;Hold a draw with only your king remaining;Cầm hoà đối thủ khi chỉ còn tướng
+achievement.title-06;Win 100 games;Thắng 100 trận
+achievement.title-07;Draw 50 games;Hoà 50 trận
+achievement.title-08;Checkmate an opponent with only 1 attacking piece remaining;Chiếu bí khi đối thủ khi chỉ còn 1 quân tấn công
+achievement.title-09;Checkmate an opponent with only a knight remaining;Chiếu bí khi đối thủ khi chỉ còn mã
+achievement.title-10;Checkmate an opponent with only a pawn remaining;Chiếu bí khi đối thủ khi chỉ còn tốt
+achievement.title-11;Checkmate an opponent with only a cannon remaining;Chiếu bí khi đối thủ khi chỉ còn pháo
+achievement.title-12;Defeat opponents with master rank in 50 games;Thắng đối thủ có đẳng cấp kỳ thủ 50 ván
+achievement.tab-title;Achievements;Thành tựu
+achievement.messages.success;Success;Thành công
+achievement.messages.invalid-user-id;Invalid user ID;ID người dùng không hợp lệ
+achievement.messages.internal-server-error;Internal server error;Lỗi máy chủ
+chat.conversation.you;You;Bạn
+chat.messages.unread;Unread messages;Tin nhắn chưa đọc
+search.user.title;Search user;Tìm kiếm
+search.user.placeholder;Search user...;Tìm kiếm người dùng...
+search.user.no-results;No users found;Không tìm thấy người dùng
+search.button.search;Search;Tìm kiếm
+leaderboard.title;Leaderboard;Bảng xếp hạng
+leaderboard.search-placeholder;Search user...;Tìm kiếm người dùng...
+leaderboard.no-results;No users found;Không tìm thấy người dùng
+leaderboard.empty;No players yet;Chưa có người chơi nào
+dashboard.page.title;Room list;Danh sách phòng
+dashboard.filters.all;All;Tất cả
+dashboard.filters.available;Available;Chờ
+dashboard.filters.playing;Playing;Đang chơi
+dashboard.feedback.empty;No room tables match the selected filter.;Không có bàn chơi phù hợp với bộ lọc đã chọn.
+dashboard.feedback.error;Unable to load room tables.;Không tải được danh sách phòng chơi.
+dashboard.status.unknown;Unknown;Không xác định
+dashboard.room.create;Create room;Tạo phòng chơi
+dashboard.popup.piece-selection;Select team;Chọn quân
+dashboard.popup.red-first;Red first;Đỏ tiên
+dashboard.popup.pve-mode;PVE mode;Chơi với máy
+dashboard.popup.bet-amount;Bet amount;Giá trị cược
+dashboard.popup.time-limit;Time limit;Giới hạn thời gian
+dashboard.popup.time-limit-per-player;Time per player;Thời gian mỗi người
+dashboard.popup.time-unlimited;Unlimited;Không giới hạn
+dashboard.popup.time-minutes;{0} min;{0} phút
+dashboard.popup.time-seconds;{0}s;{0}s
+dashboard.popup.time-off;Off;Tắt
+dashboard.popup.time-increment;Bonus per move;Cộng giờ mỗi nước
+dashboard.popup.time-per-move;Time per move;Thời gian mỗi nước
+dashboard.popup.room-name-label;Room table name;Tên phòng chơi
+dashboard.popup.room-name-helptext;is required;không được để trống
+dashboard.popup.play;Play;Chơi
+dashboard.popup.view;View;Xem
+settings.header;Settings;Cài đặt
+settings.language;Language;Ngôn ngữ
+settings.dark-mode;Dark mode;Chế độ tối
+settings.sound;Sound;Âm thanh
+settings.debug-mode;Debug mode;Chế độ test
+settings.connected-accounts.label;Connected accounts;Tài khoản liên kết
+settings.connected-accounts.link-facebook;Link Facebook;Liên kết Facebook
+settings.connected-accounts.unlink-facebook;Unlink Facebook;Huỷ liên kết Facebook
+settings.connected-accounts.link-success;Facebook linked successfully;Đã liên kết Facebook
+settings.connected-accounts.unlink-success;Facebook unlinked;Đã huỷ liên kết Facebook
+settings.connected-accounts.link-error;Could not update Facebook link;Không cập nhật được liên kết Facebook
+settings.close;Close;Đóng
+popup.alert.title;Warning;Cảnh báo
+popup.confirm.title;Confirm;Xác nhận
+popup.confirm.ok;Ok;Ok
+popup.confirm.cancel;Cancel;Huỷ
+game.general.captured;General has been captured. Room over;Tướng đã bị bắt. Game kết thúc
+game.general.in-check;Your general is under attack;Tướng của bạn đang bị chiếu
+game.perpetual-check.warning-self;You are perpetual checking. If you make one more repeated check, you will lose;Bạn đang chiếu quẩn, nếu thực hiện 1 nước nữa, bạn sẽ bị xử thua
+game.perpetual-check.warning-sent;A perpetual-check warning has been sent to your opponent;Đã gửi cảnh báo chiếu quẩn cho đối thủ
+game.label.win;Win;Thắng
+game.label.draw;Draw;Hoà
+game.label.lose;Lose;Thua
+room.bot-difficulty.title;Select Bot Difficulty;Chọn độ khó của Bot
+room.bot-difficulty.beginner;Beginner;Mới bắt đầu
+room.bot-difficulty.amateur;Amateur;Nghiệp dư
+room.bot-difficulty.intermediate;Intermediate;Trung bình
+room.bot-difficulty.advanced;Advanced;Nâng cao
+room.bot-difficulty.master;Master;Lão luyện
+login.page.title;Login;Đăng nhập
+login.form.title;Login;Đăng nhập
+login.username.label;User name;Tên người dùng
+login.username.placeholder;User name;Tên người dùng
+login.password.label;Password;Mật khẩu
+login.password.placeholder;Password;Mật khẩu
+login.password.show;Show password;Hiện mật khẩu
+login.password.hide;Hide password;Ẩn mật khẩu
+login.form.error1;Login failed. Please check your credentials ;Đăng nhập không thành công. Hãy kiểm tra lại
+login.form.forgot-password;Forgot password;Quên mật khẩu
+login.form.register;Register;Đăng ký
+login.form.submit;Login;Đăng nhập
+login.form.or;or;hoặc
+login.google.load-error;Could not load Google Sign-In;Không tải được đăng nhập Google
+login.facebook.button;Sign-in with Facebook;Đăng nhập với Facebook
+login.messages.incorrect-login;Invalid username or password;Tên người dùng hoặc mật khẩu không hợp lệ
+login.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+login.messages.missing-credentials;Username and password are required;Tên người dùng và mật khẩu là bắt buộc
+login.messages.success;Login successful;Đăng nhập thành công
+notfound.title;Page Not Found;Trang không tìm thấy
+notfound.description;The page you are looking for does not exist or has been moved.;Trang bạn tìm kiếm không tồn tại hoặc đã được di chuyển.
+notfound.home;Go to Home;Về trang chủ
+notfound.back;Go Back;Quay lại
+register.confirm-password.error1;Confirm password does not match password;Mật khẩu xác nhận không khớp với mật khẩu
+register.confirm-password.label;Confirm Password;Xác nhận mật khẩu
+register.confirm-password.placeholder;Confirm Password;Xác nhận mật khẩu
+register.display-name.label;Display name;Tên hiển thị
+register.display-name.placeholder;Display name;Tên hiển thị
+register.email.error1;Invalid email format;Định dạng email không hợp lệ
+register.email.label;Email;Email
+register.email.placeholder;Email;Email
+register.form.login;Back to login;Về trang đăng nhập
+register.form.submit;Register;Đăng ký
+register.form.success;Registration successful. Redirecting to login...;Đăng ký thành công. Đang chuyển hướng...
+register.form.title;Register;Đăng ký
+register.gender.female;Female;Nữ
+register.gender.label;Gender;Giới tính
+register.gender.male;Male;Nam
+register.gender.select;Select gender;Chọn giới tính
+register.page.title;Register;Đăng ký
+register.password.error1;Password must be at least 8 characters and contain uppercase, lowercase, number, and special character;Mật khẩu phải có ít nhất 8 ký tự và chứa chữ hoa, chữ thường, số và ký tự đặc biệt
+register.password.hide;Hide password;Ẩn mật khẩu
+register.password.label;Password;Mật khẩu
+register.password.placeholder;Password;Mật khẩu
+register.password.show;Show password;Hiện mật khẩu
+register.username.error1;User name must contain only alphanumeric characters, underscore, and dot;Tên người dùng chỉ chứa ký tự chữ số, dấu gạch dưới và dấu chấm
+register.username.label;User name;Tên người dùng
+register.username.placeholder;User name;Tên người dùng
+forgot-password.page.title;Forgot Password;Quên mật khẩu
+forgot-password.form.title;Forgot Password;Quên mật khẩu
+forgot-password.form.login;Back to login;Về trang đăng nhập
+forgot-password.form.submit;Forgot password;Quên mật khẩu
+forgot-password.form.success;Check your email for reset password details.;Hãy kiểm tra email để xem thông tin đặt lại mật khẩu.
+forgot-password.form.error1;Forgot password failed.;Quên mật khẩu không thành công.
+reset-password.page.title;Reset Password;Đặt lại mật khẩu
+reset-password.form.title;Reset your password;Đặt lại mật khẩu của bạn
+reset-password.form.submit;Reset Password;Đặt lại mật khẩu
+reset-password.form.error1;An error occurred while resetting your password. Please try again.;Có lỗi xảy ra khi đặt lại mật khẩu. Vui lòng thử lại.
+reset-password.form.invalid-token;Invalid or expired reset password token;Token đặt lại mật khẩu không hợp lệ hoặc đã hết hạn
+reset-password.form.success;Password reset successfully. Redirecting to login...;Đặt lại mật khẩu thành công. Đang chuyển hướng đến đăng nhập...
+reset-password.action.back-to-login;Back to login;Quay lại trang chủ
+auth-middleware.messages.invalid-token-payload;Invalid token payload;Payload của token không hợp lệ
+auth-middleware.messages.session-not-found;Session not found;Không tìm thấy phiên
+auth-middleware.messages.token-expired;Token is expired;Token đã hết hạn
+auth-middleware.messages.token-invalid;Token is invalid;Token không hợp lệ
+auth-middleware.messages.token-required;Token not provided;Token không được cung cấp
+auth-middleware.messages.token-subject-mismatch;Token subject mismatch;Token chủ đề không khớp
+auth-middleware.messages.token-validation-failed;Token validation failed;Xác thực token không thành công
+create-room.messages.insufficient-amount;You do not have enough balance to create a room with this bet;Bạn không còn đủ amount để tạo phòng với mức cược này
+create-room.messages.internal-server-error;Internal server error while creating room;Lỗi máy chủ nội bộ khi tạo phòng
+create-room.messages.invalid-bet-amount;Bet amount is required and must be one of the acceptable values;Số tiền cược là bắt buộc và phải là một trong các giá trị được chấp nhận
+create-room.messages.invalid-time-limit;Invalid time limit;Thời gian không hợp lệ
+create-room.messages.invalid-time-increment;Invalid bonus per move;Thời gian cộng mỗi nước không hợp lệ
+create-room.messages.invalid-time-per-move;Invalid time per move;Thời gian mỗi nước không hợp lệ
+create-room.messages.invalid-redFirst;'redFirst' must be a boolean;'redFirst' phải là giá trị boolean
+create-room.messages.invalid-team-name;Team name must be either 'red', 'black', or null;Tên đội phải là 'red', 'black' hoặc null
+create-room.messages.name-required;Room name (tableName) is required and must not be empty;Tên phòng (tableName) là bắt buộc và không được để trống
+create-room.messages.room-created;Room created successfully;Phòng được tạo thành công
+fetch-rooms.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+fetch-rooms.messages.invalid-status;Query parameter 'status' must be an integer;Tham số truy vấn 'status' phải là số nguyên
+fetch-rooms.messages.success;Fetch rooms successfully;Lấy phòng thành công
+forgot-password.messages.email-not-found;Email does not exist;Email không tồn tại
+forgot-password.messages.email-service-not-configured;Email service is not configured;Dịch vụ email chưa được cấu hình
+forgot-password.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+forgot-password.messages.invalid-email-format;Invalid email format;Định dạng email không hợp lệ
+forgot-password.messages.missing-email;Email is required;Email là bắt buộc
+forgot-password.messages.success;Forgot password email sent;Email đặt lại mật khẩu đã được gửi
+join-room.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+join-room.messages.invalid-team;Field 'team' must be 'red', 'black', null, or undefined;Trường 'team' phải là 'red', 'black', null hoặc không truyền
+join-room.messages.invalid-room-id;Field 'id' is required and must be a positive integer;Trường 'id' là bắt buộc và phải là số nguyên dương
+join-room.messages.room-not-found;Room not found;Không tìm thấy phòng
+join-room.messages.success;Successfully joined the room;Tham gia phòng thành công
+join-room.messages.team-seat-occupied;Selected team seat is already occupied;Vị trí đội đã chọn đã có người chơi
+kick-user.messages.cannot-kick-self;You cannot kick yourself;Bạn không thể kick chính mình
+kick-user.messages.forbidden;Only the host can kick users;Chỉ chủ phòng mới có thể kick người dùng
+kick-user.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+kick-user.messages.invalid-room-id;Field 'id' is required and must be a positive integer;Trường 'id' là bắt buộc và phải là số nguyên dương
+kick-user.messages.invalid-user-id;Field 'userId' is required and must be a positive integer;Trường 'userId' là bắt buộc và phải là số nguyên dương
+kick-user.messages.room-not-found;Room not found;Không tìm thấy phòng
+kick-user.messages.room-not-waiting;You can only kick users while the room is waiting;Chỉ có thể kick người dùng khi phòng đang ở trạng thái chờ
+kick-user.messages.success;User has been kicked;Người dùng đã bị kick
+kick-user.messages.user-not-in-room;User is not in this room;Người dùng không trong phòng này
+kick-user.messages.you-were-kicked;You have been removed from the room by the host;Bạn đã bị chủ phòng đưa ra khỏi phòng
+leave-room.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+leave-room.messages.invalid-room-id;Field 'id' is required and must be a positive integer;Trường 'id' là bắt buộc và phải là số nguyên dương
+leave-room.messages.player-not-in-room;Player is not in this room;Người chơi không trong phòng này
+leave-room.messages.success;Leave room successfully;Rời phòng thành công
+load-room.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+load-room.messages.invalid-room-id;Room ID must be a positive integer;ID phòng phải là số nguyên dương
+load-room.messages.room-not-found;Room not found;Không tìm thấy phòng
+load-room.messages.success;Load room successfully;Tải phòng thành công
+google-login.messages.email-not-verified;Your Google email is not verified;Email Google của bạn chưa được xác minh
+google-login.messages.failed;Login failed;Đăng nhập không thành công
+google-login.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+google-login.messages.invalid-token;Invalid Google credential;Thông tin đăng nhập Google không hợp lệ
+google-login.messages.missing-credential;Google credential is required;Thiếu thông tin đăng nhập Google
+facebook-login.messages.missing-token;Facebook token is required;Thiếu thông tin đăng nhập Facebook
+facebook-login.messages.invalid-token;Invalid Facebook token;Thông tin đăng nhập Facebook không hợp lệ
+facebook-login.messages.not-linked;This Facebook account is not linked. Log in another way and link it in Settings;Tài khoản Facebook này chưa được liên kết. Hãy đăng nhập cách khác rồi liên kết trong Cài đặt
+facebook-login.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+facebook-link.messages.missing-token;Facebook token is required;Thiếu thông tin đăng nhập Facebook
+facebook-link.messages.invalid-token;Invalid Facebook token;Thông tin đăng nhập Facebook không hợp lệ
+facebook-link.messages.linked;Facebook linked successfully;Đã liên kết Facebook
+facebook-link.messages.already-linked;This Facebook account is already linked to your account;Tài khoản Facebook này đã được liên kết với bạn
+facebook-link.messages.linked-to-other;This Facebook account is already linked to another account;Tài khoản Facebook này đã được liên kết với tài khoản khác
+facebook-link.messages.already-has-facebook;You already linked a different Facebook account;Bạn đã liên kết một tài khoản Facebook khác
+facebook-link.messages.unlinked;Facebook unlinked;Đã huỷ liên kết Facebook
+facebook-link.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+logout.messages.already-inactive;Session already inactive;Phiên đã ngưng hoạt động
+logout.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+logout.messages.success;Logout successful;Đăng xuất thành công
+refresh-token.messages.missing-refresh-token;Missing refresh token cookie;Thiếu cookie token làm mới
+refresh-token.messages.mismatch-or-expired;Refresh token mismatch or expired;Thiếu refresh token hoặc đã hết hạn
+refresh-token.messages.success;Token refreshed;Token đã làm mới
+register.messages.email-exists;Email already exists;Email đã tồn tại
+register.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+register.messages.missing-fields;Username, password, gender, displayName and email are required;Tên người dùng, mật khẩu, giới tính, tên hiển thị và email là bắt buộc
+register.messages.success;User created successfully;Người dùng được tạo thành công
+register.messages.username-exists;Username already exists;Tên người dùng đã tồn tại
+reset-password.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+reset-password.messages.invalid-or-expired-token;Invalid or expired reset password token;Token đặt lại mật khẩu không hợp lệ hoặc đã hết hạn
+reset-password.messages.invalid-user-id;Invalid user id;ID người dùng không hợp lệ
+reset-password.messages.missing-id-or-token;ID and token are required;ID và token là bắt buộc
+reset-password.messages.missing-userId-or-password;UserId and password are required;UserId và mật khẩu là bắt buộc
+reset-password.messages.token-valid;Reset password token is valid;Token đặt lại mật khẩu hợp lệ
+reset-password.messages.user-not-found;User not found;Không tìm thấy người dùng
+room.actions.start-room;Start room;Bắt đầu chơi
+room.actions.challenge;Challenge;Vào chơi
+room.actions.leave-seat;Leave seat;Ra xem
+room.actions.undo;Undo;Hoán tác
+room.actions.surrender;Surrender;Đầu hàng
+room.actions.draw;Draw;Hòa
+room.actions.back-home;Back to home;Thoát phòng
+room.actions.flip-board;Flip board;Đảo chiều bàn cờ
+room.actions.accept-draw;Accept;Chấp nhận
+room.actions.reject-draw;Reject;Từ chối
+room.actions.send-pm;Send PM;Chat
+room.actions.view-history;History;Lịch sử
+room.actions.kick;Kick;Kick
+room.actions.back-to-room;Back to room;Quay lại phòng chơi
+room.actions.chat;Room chat;Phòng chat
+room.messages.draw-accepted;Opponent accepted the draw;Đối phương đã đồng ý hòa
+room.messages.draw-rejected;Opponent rejected the draw;Đối phương từ chối hòa
+room.messages.opponent-surrendered;Opponent surrendered! You won!;Đối phương đã đầu hàng! Bạn thắng!
+room.messages.confirm-leave;Are you sure you want to leave room?;Bạn có chắc muốn rời bàn chơi?
+room.messages.confirm-surrender;Are you sure you want to surrender?;Bạn có chắc chắn muốn đầu hàng không?
+room.messages.confirm-draw;Are you sure you want to draw?;Bạn có chắc chắn muốn hòa không?
+room.messages.confirm-accept-draw;Opponent has proposed a draw. Do you accept?;Đối phương đã chủ hòa, bạn có đồng ý không?
+room.messages.insufficient-amount;You do not have enough balance to join this room;Bạn không đủ tiền để tham gia bàn chơi này
+room.messages.will-leave-current-room;You are currently in another room. Joining this room will remove you from the current room;Bạn đang ở trong một phòng khác. Tham gia phòng này sẽ loại bạn ra khỏi phòng hiện tại
+room.messages.game-ended;Game ended;Ván đấu đã kết thúc
+room.messages.you-win;You win;Bạn đã chiến thắng
+room.messages.you-lose;You lose;Bạn đã thua
+room.messages.you-draw;The game is a draw;Ván đấu hòa
+room.messages.you-win-perpetual-check;You win — your opponent lost by perpetual check;Bạn thắng vì đối thủ chiếu quẩn
+room.messages.you-lose-perpetual-check;You lose by perpetual check;Bạn thua do chiếu quẩn
+room.messages.you-win-per-move-timeout;You win — your opponent ran out of move time;Bạn thắng vì đối thủ hết giờ đi một nước
+room.messages.you-lose-per-move-timeout;You lose — you ran out of move time;Bạn thua do hết giờ đi một nước
+room.messages.spectator-win-checkmate;{0} won by checkmate;{0} thắng do chiếu bí
+room.messages.spectator-win-stalemate;{0} won — opponent had no legal moves;{0} thắng do đối thủ hết nước đi
+room.messages.spectator-win-timeout;{0} won on time;{0} thắng do đối thủ hết giờ
+room.messages.spectator-win-per-move-timeout;{0} won — opponent ran out of move time;{0} thắng do đối thủ hết giờ đi một nước
+room.messages.spectator-win-perpetual-check;{0} won — opponent lost by perpetual check;{0} thắng do đối thủ chiếu quẩn
+room.messages.spectator-draw;The game ended in a draw;Ván đấu kết thúc với tỉ số hòa
+room.messages.back-to-room;Back to room;Quay lại phòng
+room.messages.auto-back-countdown;{0}. Press the back button to return to the room. You will be automatically returned in {1}s;{0}. Bấm nút quay lại để quay lại room. Bạn sẽ tự động quay lại trong {1}s
+room.notifications.joined;{0} joined the room;{0} đã vào phòng
+room.notifications.left;{0} left the room;{0} đã rời phòng
+room.settings.title;Room Settings;Cài đặt phòng
+room.settings.room-name;Room name;Tên phòng
+room.settings.players;Spectators;Người xem
+room.settings.save;Save;Lưu
+room-invite.messages.title;Room Invitation;Lời mời vào phòng
+start-game.messages.success;Game started successfully;Bắt đầu trò chơi thành công
+start-game.messages.internal-server-error;Internal server error while starting game;Lỗi máy chủ nội bộ khi bắt đầu trò chơi
+start-game.messages.invalid-room-id;Field 'id' is required and must be a positive integer;Trường 'id' là bắt buộc và phải là số nguyên dương
+start-game.messages.invalid-difficulty;Bot difficulty must be between 1 and 5;Độ khó của bot phải từ 1 đến 5
+start-game.messages.room-not-found;Room not found;Không tìm thấy phòng
+start-game.messages.forbidden;Only the room host can start the game;Chỉ chủ phòng mới có thể bắt đầu trò chơi
+start-game.messages.insufficient-amount;You do not have enough balance to start a game with this bet;Bạn không còn đủ amount để start room
+start-game.messages.requester-must-pick-team;You must select a team before starting a game with bot;Bạn phải chọn team trước khi bắt đầu trò chơi với bot
+update-room.messages.success;Room updated successfully;Cập nhật phòng thành công
+update-room.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+update-room.messages.invalid-room-id;Invalid room ID;ID phòng không hợp lệ
+update-room.messages.invalid-time-limit;Invalid time limit;Thời gian không hợp lệ
+update-room.messages.invalid-time-increment;Invalid bonus per move;Thời gian cộng mỗi nước không hợp lệ
+update-room.messages.invalid-time-per-move;Invalid time per move;Thời gian mỗi nước không hợp lệ
+update-room.messages.name-required;Room name is required;Tên phòng không được để trống
+update-room.messages.room-not-found;Room not found;Không tìm thấy phòng
+update-room.messages.forbidden;You are not the host of this room;Bạn không phải chủ phòng
+draw-game.messages.invalid-game-id;Invalid game ID;ID trò chơi không hợp lệ
+draw-game.messages.game-not-found;Game not found;Không tìm thấy trò chơi
+draw-game.messages.forbidden;You are not in this room;Bạn không có trong phòng này
+draw-game.messages.game-history-not-found;Game history not found;Không tìm thấy lịch sử trò chơi
+draw-game.messages.game-already-finished;Game is already finished;Trò chơi đã kết thúc
+draw-game.messages.success;Draw game successfully;Hòa cờ thành công
+draw-game.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+surrender.messages.game-already-finished;Game is already finished;Trò chơi đã kết thúc
+surrender.messages.game-history-not-found;Game history not found;Không tìm thấy lịch sử trò chơi
+surrender.messages.game-not-found;Game not found;Không tìm thấy trò chơi
+surrender.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+surrender.messages.invalid-game-id;Invalid game ID;ID trò chơi không hợp lệ
+surrender.messages.invalid-surrender-player;You are not a player in this game;Bạn không phải là người chơi trong trò chơi này
+surrender.messages.opponent-not-found;Opponent not found;Không tìm thấy đối thủ
+surrender.messages.success;Surrendered;Đã đầu hàng
+undo.messages.invalid-game-id;Invalid game ID;ID trò chơi không hợp lệ
+undo.messages.unauthorized;Unauthorized;Không được phép truy cập
+undo.messages.game-not-found;Game not found;Không tìm thấy trò chơi
+undo.messages.not-in-game;You are not part of this game;Bạn không phải là người chơi trong trò chơi này
+undo.messages.not-in-room;You are not in this room;Bạn không trong phòng này
+undo.messages.pve-only;Undo is only available in PvE rooms;Hoàn tác chỉ khả dụng trong phòng PvE
+undo.messages.spectator-cannot-undo;Spectators cannot undo moves;Người xem không thể hoàn tác nước đi
+undo.messages.no-moves;No moves to undo;Không có nước đi để hoàn tác
+undo.messages.delete-failed;Failed to undo move;Không thể hoàn tác nước đi
+undo.messages.undo-limit-exceeded;Maximum 3 undo per game exceeded;Đã đạt tối đa 3 lần hoàn tác trong trò chơi
+undo.messages.success;Move undone successfully;Hoàn tác nước đi thành công
+undo.messages.internal-server-error;Internal server error;Lỗi máy chủ nội bộ
+player-history.messages.invalid-user-id;Invalid user ID;ID người dùng không hợp lệ
+player-history.messages.success;Fetch game history successfully;Lấy lịch sử trò chơi thành công
+validate-token.messages.success;Token is valid;Token hợp lệ
+guide.section.objective;Objective of the game;Mục tiêu của trò chơi
+guide.section.pieces;Pieces;Quân cờ
+guide.section.moving-pieces;Moving pieces;Đi quân
+guide.section.capturing;Capturing;Bắt quân
+guide.section.check;Check;Chiếu tướng
+guide.section.result;Result;Kết quả
+guide.table.piece;Piece;Quân
+guide.table.symbol;Symbol;Ký hiệu
+guide.table.quantity;Quantity;Số lượng
+guide.objective.paragraph1;A match is played between two players: one controls the Red pieces, and the other controls the Black pieces. The objective of each player is to use their pieces on the board to <b>checkmate</b> the opponent's General, and win the game.;Ván cờ được tiến hành giữa 2 đấu thủ, một người cầm Quân Đỏ, một người cầm Quân Đen. Mục đích của mỗi đấu thủ là tìm mọi cách sử dụng các quân trên bàn cờ để <b>chiếu bí Tướng</b> của đối phương, giành thắng lợi.
+guide.pieces.paragraph1;At the start of each game, there must be 32 pieces in total, consisting of <b>7 piece types</b> split evenly between both sides: 16 Red pieces and 16 Black pieces. The 7 piece types with their symbols and quantities are as follows:;Mỗi ván cờ lúc bắt đầu phải có đủ 32 quân, gồm 7 loại chia đều cho mỗi bên gồm 16 quân Đỏ và 16 quân Đen. <b>7 loại quân</b> có ký hiệu và số lượng như sau:
+guide.piece.general;General;Tướng
+guide.piece.advisor;Advisor;Sĩ
+guide.piece.elephant;Elephant;Tượng
+guide.piece.chariot;Chariot;Xe
+guide.piece.horse;Horse;Mã
+guide.piece.cannon;Cannon;Pháo
+guide.piece.soldier;Soldier;Tốt
+guide.moving-pieces.paragraph1;On each turn, each side may move only one of its own pieces according to the rules. The movement rules are as follows:;Mỗi nước đi, mỗi bên chỉ được di chuyển quân của mình theo đúng quy định. Quy định di chuyển của các quân như sau:
+guide.general.paragraph1;General;Tướng
+guide.general.paragraph2;Moves one step <b>horizontally or vertically</b> within the palace. The two Generals may not face each other directly on the same file. If they are facing each other, there must be at least one piece of either side placed between them.;Mỗi nước được đi một bước <b>ngang hoặc dọc</b> tùy ý trong cung Tướng. Hai tướng của 2 bên không được đối mặt nhau trực tiếp trên cùng một đường thẳng. Nếu đối mặt, bắt buộc phải có quân của bất kỳ bên nào đứng che mặt.
+guide.advisor.paragraph1;Advisor;Sĩ
+guide.advisor.paragraph2;Moves one step <b>diagonally</b> within the palace.;Mỗi nước <b>đi chéo một bước</b> trong cung Tướng.
+guide.elephant.paragraph1;Elephant;Tượng
+guide.elephant.paragraph2;Moves <b>two steps diagonally</b> on its own side of the board and may not cross the river. If there is another piece on the midpoint of that diagonal path, the Elephant is blocked and cannot move.;Mỗi nước <b>đi chéo hai bước</b> tại trận địa bên mình, không được qua sông. Nếu ở giữa đường chéo đó có quân khác đứng thì quân Tượng bị cản, không đi được.
+guide.chariot.paragraph1;Chariot;Xe
+guide.chariot.paragraph2;Moves <b>horizontally or vertically</b> with no limit on distance, as long as no piece blocks the path.;Mỗi nước được <b>đi dọc hoặc đi ngang</b>, không hạn chế số bước đi nếu không có quân khác cản đường.
+guide.horse.paragraph1;Horse;Mã
+guide.horse.paragraph2;Moves in an <b>L-shape</b> (one step orthogonally then one step diagonally outward). If the adjacent orthogonal point is occupied by any piece, the Horse is blocked and cannot move.;Đi theo <b>đường chéo hình chữ nhật</b> của hai ô vuông liền nhau. Nếu giao điểm liền kề bước thẳng dọc ngang có một quân khác đứng thì Mã bị cản, không đi được.
+guide.cannon.paragraph1;Cannon;Pháo
+guide.cannon.paragraph2;Moves <b>horizontally or vertically</b> like a Chariot when not capturing. To capture, it must <b>jump over exactly one piece</b> to reach its target. If there are zero or more than one pieces between the Cannon and the target, it cannot capture.;Đi ngang hoặc dọc giống Xe khi không bắt quân. Để bắt quân, nó phải <b>nhảy qua đúng một quân khác</b> để đến mục tiêu. Nếu không có hoặc có nhiều hơn một quân giữa Pháo và mục tiêu, nó không thể bắt quân.
+guide.soldier.paragraph1;Soldier;Tốt
+guide.soldier.paragraph2;Moves <b>one step</b> each turn. Before crossing the river, it can only move forward. After crossing the river, it may move <b>forward or sideways</b>, but never backward.;Mỗi nước đi <b>một bước</b>. Khi chưa qua sông, Tốt chỉ được tiến. Khi Tốt đã qua sông được quyền <b>đi tiến và đi ngang</b>, không được phép lùi.
+guide.capturing.paragraph1;When a piece moves to an intersection occupied by an opponent's piece, it may <b>capture that piece</b> and occupy its position.;Khi một quân đi tới một giao điểm khác đã có quân đối phương đứng thì được quyền <b>bắt quân đó</b>, đồng thời chiếm giữ vị trí quân bị bắt.
+guide.capturing.paragraph2;You may not capture your own pieces. You may sacrifice your own pieces to be captured by the opponent, <b>except for the General</b>.;Không được bắt quân bên mình. Được phép cho đối phương bắt đầu quân mình chủ động hiến mình cho đối phương, <b>trừ Tướng</b>.
+guide.capturing.paragraph3;A captured piece is removed from the board. <b>Chasing one piece for more than 6 consecutive moves is not allowed</b>.;Quân bị bắt phải bị loại và bị nhấc ra khỏi bàn cờ. <b>Không được đuổi 1 quân quá 6 nước cờ liên tiếp</b>.
+guide.check.paragraph1;If a player makes a move that threatens to capture the opponent's General on the next move (by the same piece or another piece), it is called a <b>Check</b>. The checked side must respond to avoid check. Otherwise, that side loses;Nếu người chơi thực hiện một nước đi đe dọa bắt Tướng của đối phương ở nước đi tiếp theo (bằng chính quân cờ đó hoặc một quân cờ khác), thì đó được gọi là <b>Chiếu</b>. Bên bị chiếu phải đáp trả để tránh bị chiếu. Nếu không sẽ bị xử thua
+guide.check.paragraph2;When the General is checked from any direction (including from behind), the checked side may respond in one of the following ways:;Tướng bị chiếu từ cả bốn hướng (bị chiếu cả từ phía sau) có thể ứng phó với nước chiếu tướng bằng một trong các cách sau:
+guide.check.paragraph3;Move the General to another position to escape check;Di chuyển tướng sang vị trí khác để tránh nước chiếu
+guide.check.paragraph4;Capture the checking piece;Bắt quân đang chiếu
+guide.check.paragraph5;Block the checking line with another piece to protect the General;Dùng quân khác cản quân chiếu, đi quân che đỡ cho tướng
+guide.check.paragraph6;Repeatedly checking for more than 6 consecutive moves is not allowed;Không được chiếu tướng quá 6 nước cờ liên tiếp
+guide.result.paragraph1;When one side gives Check and the other side has no legal way to protect the General, it is called a <b>Checkmate</b>. The side that delivers Checkmate wins.;Khi một bên chiếu Tướng mà bên còn lại không thể làm gì để bảo vệ Tướng thì được gọi là <b>Chiếu Hết</b>, bên thực hiện được Chiếu Hết sẽ giành chiến thắng.
+guide.result.paragraph2;If a player runs out of time for a single move (for example: 90s) without moving, the other side is awarded a <b>win</b>.;Khi hết thời gian một nước đi (ví dụ: 90s) mà vẫn chưa di chuyển quân thì bên còn lại sẽ được <b>xử Thắng</b>.
+guide.result.paragraph3;If a player runs out of total game time (for example: 5 minutes or 10 minutes), the other side is awarded a <b>win</b>.;Khi một bên hết thời gian ván đấu (ví dụ: 5 phút, 10 phút) thì bên còn lại sẽ được <b>xử Thắng</b>.
+guide.result.paragraph4;If both sides have no pieces that have crossed the river, the game is declared a <b>draw</b>. If one side still has pieces across the river but runs out of time, while the other side still has time but has no pieces across the river, the game is declared a <b>draw</b>.;Khi cả 2 bên đều không còn quân qua sông, ván đấu sẽ được <b>xử Hòa</b>. Khi một bên còn quân qua sông nhưng cạn thời gian, một bên còn thời gian nhưng hết quân qua sông, ván đấu sẽ được <b>xử Hòa</b>.
+guide.result.paragraph5;Within 50 moves, if there is no capture and no Soldier advances by one square, the game is declared a <b>draw</b>.;Trong vòng 50 nước nếu không phát sinh nước bắt quân, Tốt không tiến 1 ô thì ván đấu sẽ được <b>xử Hòa</b>.
+extra-money.title;Daily tasks;Kiếm tiền
+extra-money.tab.lucky-wheel;Lucky Wheel;Vòng Quay May Mắn
+extra-money.tab.bonus-coin;Bonus Coin;Xu Thưởng
+extra-money.tab.daily-bonus;Daily Bonus;Thưởng hàng ngày
+extra-money.bonus-coin.subtitle;Watch a short video to earn free coin;Xem video ngắn để nhận xu miễn phí
+extra-money.bonus-coin.next-in;Next in:;Lượt kế tiếp:
+extra-money.bonus-coin.collect;Collect;Thu thập
+extra-money.bonus-coin.watch-video;Watch video;Xem video
+extra-money.daily-bonus.subtitle;Login 7 days in a row to earn 4000 coin;Đăng nhập 7 ngày liên tiếp để nhận 4000 xu
+extra-money.daily-bonus.day;Day;Ngày
+extra-money.reward-ad.loading;Loading ad...;Đang tải quảng cáo...
+extra-money.reward-ad.error;Could not load the ad. Please try again.;Không tải được quảng cáo. Vui lòng thử lại.
+extra-money.reward-ad.retry;Try again;Thử lại
+extra-money.reward-ad.close;Close;Đóng
+profile.button.save;Save;Lưu
+profile.button.cancel;Cancel;Huỷ
+change-password.title;Change password;Đổi mật khẩu
+change-password.current.label;Current password;Mật khẩu hiện tại
+change-password.current.placeholder;Enter current password;Nhập mật khẩu hiện tại
+change-password.new.label;New password;Mật khẩu mới
+change-password.new.placeholder;Enter new password;Nhập mật khẩu mới
+change-password.confirm.label;Confirm new password;Xác nhận mật khẩu mới
+change-password.confirm.placeholder;Re-enter new password;Nhập lại mật khẩu mới
+change-password.confirm.mismatch;Passwords do not match;Mật khẩu xác nhận không khớp
+change-password.show;Show password;Hiện mật khẩu
+change-password.hide;Hide password;Ẩn mật khẩu
+change-password.submit;Change password;Đổi mật khẩu
+change-password.submitting;Changing...;Đang đổi...
+change-password.messages.success;Password changed successfully;Đổi mật khẩu thành công
+change-password.messages.missing-fields;Please fill in all fields;Vui lòng nhập đầy đủ thông tin
+change-password.messages.weak-password;New password does not meet the requirements;Mật khẩu mới không đạt yêu cầu
+change-password.messages.same-as-current;New password must be different from the current one;Mật khẩu mới phải khác mật khẩu hiện tại
+change-password.messages.incorrect-current-password;Current password is incorrect;Mật khẩu hiện tại không đúng
+change-password.messages.user-not-found;User not found;Không tìm thấy người dùng
+change-password.messages.unauthorized;Session expired. Please sign in again.;Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.
+change-password.messages.internal-server-error;Something went wrong. Please try again.;Đã có lỗi xảy ra. Vui lòng thử lại.
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+;;

@@ -45,7 +45,7 @@ export default function RoomPage() {
 
 	if (
 		roomSettingsDialogValue.room === null
-		|| roomSettingsDialogValue.room.game_type !== "xiangqi"
+		|| roomSettingsDialogValue.room.game_type !== "chess"
 	) {
 		return <NotFoundPage />
 	}
