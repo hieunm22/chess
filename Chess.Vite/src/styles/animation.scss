@@ -1,0 +1,119 @@
+@keyframes opacityKF {
+	0% {
+		opacity: 1;
+	}
+	25% {
+		opacity: 0.9;
+	}
+	50% {
+		opacity: 0.8;
+	}
+	75% {
+		opacity: 0.6;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes float {
+	0%, 100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-20px);
+	}
+}
+
+@keyframes checking-glow {
+	0%, 100% {
+		box-shadow:
+			0 2px 0 rgba(82, 42, 18, 0.45),
+			0 0 8px 2px rgba(255, 74, 74, 0.65);
+		filter: saturate(1);
+	}
+	50% {
+		box-shadow:
+			0 2px 0 rgba(82, 42, 18, 0.45),
+			0 0 18px 7px rgba(255, 0, 0, 0.95);
+		filter: saturate(1.4);
+	}
+}
+
+@keyframes previous-move-glow {
+	0%, 100% {
+		box-shadow:
+			0 2px 0 rgba(82, 42, 18, 0.45),
+			0 0 6px 2px rgba(60, 221, 95, 0.5);
+	}
+	50% {
+		box-shadow:
+			0 2px 0 rgba(82, 42, 18, 0.45),
+			0 0 16px 6px rgb(217 26 26 / 95%)
+	}
+}
+
+@keyframes player-card-turn-pulse {
+	0%, 100% {
+		box-shadow: 0 0 0 3px rgba(208, 10, 10, 0.7), 0 8px 14px rgba(52, 24, 8, 0.24);
+	}
+
+	50% {
+		box-shadow: 0 0 0 5px rgba(255, 209, 74, 0.7), 0 12px 20px rgba(52, 24, 8, 0.34);
+	}
+}
+
+@keyframes bonus-sunburst-spin {
+	to {
+		transform: translate(-50%, -50%) rotate(360deg);
+	}
+}
+
+@keyframes bonus-coin-pulse {
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.1);
+	}
+}
+
+@keyframes wheel-hub-attention-blink {
+	0%,
+	100% {
+		filter: brightness(1);
+		box-shadow: inset 0 0 0 10px #c9a961;
+	}
+	50% {
+		filter: brightness(1.18);
+		box-shadow: inset 0 0 0 10px #c9a961, 0 0 0 8px rgba(255, 214, 92, 0.38);
+	}
+}
+
+@keyframes room-border-run {
+	to {
+		--room-border-angle: 360deg;
+	}
+}
+
+@keyframes player-clock-low-pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.55;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lucky-wheel-container {
+		.wheel-hub {
+			&.attention-blink {
+				animation: none;
+			}
+		}
+	}
+}

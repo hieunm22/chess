@@ -1,45 +1,730 @@
 {
+	"common": {
+		"input": {
+			"is-required": "is required"
+		},
+		"loading": "Loading...",
+		"password": {
+			"policy-1": "Must contain lower case character",
+			"policy-2": "Must contain upper case character",
+			"policy-3": "Must contain digit",
+			"policy-4": "Must contain a special character",
+			"policy-5": "Text length at least 8"
+		},
+		"date": {
+			"today": "Today",
+			"yesterday": "Yesterday",
+			"mon": "Mon",
+			"tue": "Tue",
+			"wed": "Wed",
+			"thu": "Thu",
+			"fri": "Fri",
+			"sat": "Sat",
+			"sun": "Sun"
+		}
+	},
 	"page": {
 		"home": {
 			"title": "Home"
 		},
 		"history": {
-			"title": "History"
+			"no-games": "No finished games yet"
 		},
-		"about": {
-			"title": "About"
+		"replay": {
+			"title": "Game Replay",
+			"no-moves": "No moves to replay",
+			"play": "Play",
+			"pause": "Pause",
+			"end-title": "Game over",
+			"reason-checkmate": "{{name}} won by checkmate",
+			"reason-stalemate": "Stalemate",
+			"reason-perpetual-check": "{{name}} won by opponent's perpetual check",
+			"reason-surrender": "{{name}} surrendered",
+			"reason-leave": "{{name}} left the game",
+			"reason-draw": "Draw",
+			"reason-timeout": "{{name}} ran out of total game time",
+			"reason-per-move-timeout": "{{name}} ran out of time for a move",
+			"reason-ended": "The game has ended"
 		}
 	},
 	"menu": {
+		"app-name": "Xiangqi",
+		"profile": "Profile",
+		"messages": "Message",
+		"change-password": "Change password",
+		"guide": "Guide",
+		"announce": "Announcement",
+		"extra": "Daily tasks",
+		"leaderboard": "Leaderboard",
 		"setting": {
 			"button": "Settings"
 		},
-		"app-name": "Chess game",
 		"home": "Home",
-		"users": "Users",
-		"analytics": "Analytic",
+		"expired": "Set expired",
 		"logout": "Logout"
+	},
+	"announce": {
+		"title": "Announcement",
+		"placeholder": "Type an announcement...",
+		"empty": "No announcements yet",
+		"loading-older": "Loading older announcements..."
+	},
+	"achievement": {
+		"title-01": "Checkmate an opponent who still has 13 or more pieces",
+		"title-02": "Win your first game",
+		"title-03": "Leave your opponent with no legal moves",
+		"title-04": "Defeat opponents of equal or higher rank in 10 games",
+		"title-05": "Hold a draw with only your king remaining",
+		"title-06": "Win 100 games",
+		"title-07": "Draw 50 games",
+		"title-08": "Checkmate an opponent with only 1 attacking piece remaining",
+		"title-09": "Checkmate an opponent with only a knight remaining",
+		"title-10": "Checkmate an opponent with only a pawn remaining",
+		"title-11": "Checkmate an opponent with only a cannon remaining",
+		"title-12": "Defeat opponents with master rank in 50 games",
+		"tab-title": "Achievements",
+		"messages": {
+			"success": "Success",
+			"invalid-user-id": "Invalid user ID",
+			"internal-server-error": "Internal server error"
+		}
+	},
+	"chat": {
+		"conversation": {
+			"you": "You"
+		},
+		"messages": {
+			"unread": "Unread messages"
+		}
+	},
+	"search": {
+		"user": {
+			"title": "Search user",
+			"placeholder": "Search user...",
+			"no-results": "No users found"
+		},
+		"button": {
+			"search": "Search"
+		}
+	},
+	"leaderboard": {
+		"title": "Leaderboard",
+		"search-placeholder": "Search user...",
+		"no-results": "No users found",
+		"empty": "No players yet"
+	},
+	"dashboard": {
+		"page": {
+			"title": "Room list"
+		},
+		"filters": {
+			"all": "All",
+			"available": "Available",
+			"playing": "Playing"
+		},
+		"feedback": {
+			"empty": "No room tables match the selected filter.",
+			"error": "Unable to load room tables."
+		},
+		"status": {
+			"unknown": "Unknown"
+		},
+		"room": {
+			"create": "Create room"
+		},
+		"popup": {
+			"piece-selection": "Select team",
+			"red-first": "Red first",
+			"pve-mode": "PVE mode",
+			"bet-amount": "Bet amount",
+			"time-limit": "Time limit",
+			"time-limit-per-player": "Time per player",
+			"time-unlimited": "Unlimited",
+			"time-minutes": "{0} min",
+			"time-seconds": "{0}s",
+			"time-off": "Off",
+			"time-increment": "Bonus per move",
+			"time-per-move": "Time per move",
+			"room-name-label": "Room table name",
+			"room-name-helptext": "is required",
+			"play": "Play",
+			"view": "View"
+		}
 	},
 	"settings": {
 		"header": "Settings",
 		"language": "Language",
 		"dark-mode": "Dark mode",
+		"sound": "Sound",
+		"debug-mode": "Debug mode",
+		"connected-accounts": {
+			"label": "Connected accounts",
+			"link-facebook": "Link Facebook",
+			"unlink-facebook": "Unlink Facebook",
+			"link-success": "Facebook linked successfully",
+			"unlink-success": "Facebook unlinked",
+			"link-error": "Could not update Facebook link"
+		},
 		"close": "Close"
 	},
 	"popup": {
+		"alert": {
+			"title": "Warning"
+		},
 		"confirm": {
+			"title": "Confirm",
 			"ok": "Ok",
 			"cancel": "Cancel"
 		}
 	},
-	"home": {
-		"turn": {
-			"title": "Turn"
+	"game": {
+		"general": {
+			"captured": "General has been captured. Room over",
+			"in-check": "Your general is under attack"
+		},
+		"perpetual-check": {
+			"warning-self": "You are perpetual checking. If you make one more repeated check, you will lose",
+			"warning-sent": "A perpetual-check warning has been sent to your opponent"
+		},
+		"label": {
+			"win": "Win",
+			"draw": "Draw",
+			"lose": "Lose"
 		}
 	},
-	"game": {
-		"king": {
-			"captured": "King has been captured. Game over"
+	"room": {
+		"bot-difficulty": {
+			"title": "Select Bot Difficulty",
+			"beginner": "Beginner",
+			"amateur": "Amateur",
+			"intermediate": "Intermediate",
+			"advanced": "Advanced",
+			"master": "Master"
+		},
+		"actions": {
+			"start-room": "Start room",
+			"challenge": "Challenge",
+			"leave-seat": "Leave seat",
+			"undo": "Undo",
+			"surrender": "Surrender",
+			"draw": "Draw",
+			"back-home": "Back to home",
+			"flip-board": "Flip board",
+			"accept-draw": "Accept",
+			"reject-draw": "Reject",
+			"send-pm": "Send PM",
+			"view-history": "History",
+			"kick": "Kick",
+			"back-to-room": "Back to room",
+			"chat": "Room chat"
+		},
+		"messages": {
+			"draw-accepted": "Opponent accepted the draw",
+			"draw-rejected": "Opponent rejected the draw",
+			"opponent-surrendered": "Opponent surrendered! You won!",
+			"confirm-leave": "Are you sure you want to leave room?",
+			"confirm-surrender": "Are you sure you want to surrender?",
+			"confirm-draw": "Are you sure you want to draw?",
+			"confirm-accept-draw": "Opponent has proposed a draw. Do you accept?",
+			"insufficient-amount": "You do not have enough balance to join this room",
+			"will-leave-current-room": "You are currently in another room. Joining this room will remove you from the current room",
+			"game-ended": "Game ended",
+			"you-win": "You win",
+			"you-lose": "You lose",
+			"you-draw": "The game is a draw",
+			"you-win-perpetual-check": "You win — your opponent lost by perpetual check",
+			"you-lose-perpetual-check": "You lose by perpetual check",
+			"you-win-per-move-timeout": "You win — your opponent ran out of move time",
+			"you-lose-per-move-timeout": "You lose — you ran out of move time",
+			"spectator-win-checkmate": "{0} won by checkmate",
+			"spectator-win-stalemate": "{0} won — opponent had no legal moves",
+			"spectator-win-timeout": "{0} won on time",
+			"spectator-win-per-move-timeout": "{0} won — opponent ran out of move time",
+			"spectator-win-perpetual-check": "{0} won — opponent lost by perpetual check",
+			"spectator-draw": "The game ended in a draw",
+			"back-to-room": "Back to room",
+			"auto-back-countdown": "{0}. Press the back button to return to the room. You will be automatically returned in {1}s"
+		},
+		"notifications": {
+			"joined": "{0} joined the room",
+			"left": "{0} left the room"
+		},
+		"settings": {
+			"title": "Room Settings",
+			"room-name": "Room name",
+			"players": "Spectators",
+			"save": "Save"
+		}
+	},
+	"login": {
+		"page": {
+			"title": "Login"
+		},
+		"form": {
+			"title": "Login",
+			"error1": "Login failed. Please check your credentials ",
+			"forgot-password": "Forgot password",
+			"register": "Register",
+			"submit": "Login",
+			"or": "or"
+		},
+		"username": {
+			"label": "User name",
+			"placeholder": "User name"
+		},
+		"password": {
+			"label": "Password",
+			"placeholder": "Password",
+			"show": "Show password",
+			"hide": "Hide password"
+		},
+		"google": {
+			"load-error": "Could not load Google Sign-In"
+		},
+		"facebook": {
+			"button": "Sign-in with Facebook"
+		},
+		"messages": {
+			"incorrect-login": "Invalid username or password",
+			"internal-server-error": "Internal server error",
+			"missing-credentials": "Username and password are required",
+			"success": "Login successful"
+		}
+	},
+	"notfound": {
+		"title": "Page Not Found",
+		"description": "The page you are looking for does not exist or has been moved.",
+		"home": "Go to Home",
+		"back": "Go Back"
+	},
+	"register": {
+		"confirm-password": {
+			"error1": "Confirm password does not match password",
+			"label": "Confirm Password",
+			"placeholder": "Confirm Password"
+		},
+		"display-name": {
+			"label": "Display name",
+			"placeholder": "Display name"
+		},
+		"email": {
+			"error1": "Invalid email format",
+			"label": "Email",
+			"placeholder": "Email"
+		},
+		"form": {
+			"login": "Back to login",
+			"submit": "Register",
+			"success": "Registration successful. Redirecting to login...",
+			"title": "Register"
+		},
+		"gender": {
+			"female": "Female",
+			"label": "Gender",
+			"male": "Male",
+			"select": "Select gender"
+		},
+		"page": {
+			"title": "Register"
+		},
+		"password": {
+			"error1": "Password must be at least 8 characters and contain uppercase, lowercase, number, and special character",
+			"hide": "Hide password",
+			"label": "Password",
+			"placeholder": "Password",
+			"show": "Show password"
+		},
+		"username": {
+			"error1": "User name must contain only alphanumeric characters, underscore, and dot",
+			"label": "User name",
+			"placeholder": "User name"
+		},
+		"messages": {
+			"email-exists": "Email already exists",
+			"internal-server-error": "Internal server error",
+			"missing-fields": "Username, password, gender, displayName and email are required",
+			"success": "User created successfully",
+			"username-exists": "Username already exists"
+		}
+	},
+	"forgot-password": {
+		"page": {
+			"title": "Forgot Password"
+		},
+		"form": {
+			"title": "Forgot Password",
+			"login": "Back to login",
+			"submit": "Forgot password",
+			"success": "Check your email for reset password details.",
+			"error1": "Forgot password failed."
+		},
+		"messages": {
+			"email-not-found": "Email does not exist",
+			"email-service-not-configured": "Email service is not configured",
+			"internal-server-error": "Internal server error",
+			"invalid-email-format": "Invalid email format",
+			"missing-email": "Email is required",
+			"success": "Forgot password email sent"
+		}
+	},
+	"reset-password": {
+		"page": {
+			"title": "Reset Password"
+		},
+		"form": {
+			"title": "Reset your password",
+			"submit": "Reset Password",
+			"error1": "An error occurred while resetting your password. Please try again.",
+			"invalid-token": "Invalid or expired reset password token",
+			"success": "Password reset successfully. Redirecting to login..."
+		},
+		"action": {
+			"back-to-login": "Back to login"
+		},
+		"messages": {
+			"internal-server-error": "Internal server error",
+			"invalid-or-expired-token": "Invalid or expired reset password token",
+			"invalid-user-id": "Invalid user id",
+			"missing-id-or-token": "ID and token are required",
+			"missing-userId-or-password": "UserId and password are required",
+			"token-valid": "Reset password token is valid",
+			"user-not-found": "User not found"
+		}
+	},
+	"auth-middleware": {
+		"messages": {
+			"invalid-token-payload": "Invalid token payload",
+			"session-not-found": "Session not found",
+			"token-expired": "Token is expired",
+			"token-invalid": "Token is invalid",
+			"token-required": "Token not provided",
+			"token-subject-mismatch": "Token subject mismatch",
+			"token-validation-failed": "Token validation failed"
+		}
+	},
+	"create-room": {
+		"messages": {
+			"insufficient-amount": "You do not have enough balance to create a room with this bet",
+			"internal-server-error": "Internal server error while creating room",
+			"invalid-bet-amount": "Bet amount is required and must be one of the acceptable values",
+			"invalid-time-limit": "Invalid time limit",
+			"invalid-time-increment": "Invalid bonus per move",
+			"invalid-time-per-move": "Invalid time per move",
+			"invalid-redFirst": "'redFirst' must be a boolean",
+			"invalid-team-name": "Team name must be either 'red', 'black', or null",
+			"name-required": "Room name (tableName) is required and must not be empty",
+			"room-created": "Room created successfully"
+		}
+	},
+	"fetch-rooms": {
+		"messages": {
+			"internal-server-error": "Internal server error",
+			"invalid-status": "Query parameter 'status' must be an integer",
+			"success": "Fetch rooms successfully"
+		}
+	},
+	"join-room": {
+		"messages": {
+			"internal-server-error": "Internal server error",
+			"invalid-team": "Field 'team' must be 'red', 'black', null, or undefined",
+			"invalid-room-id": "Field 'id' is required and must be a positive integer",
+			"room-not-found": "Room not found",
+			"success": "Successfully joined the room",
+			"team-seat-occupied": "Selected team seat is already occupied"
+		}
+	},
+	"kick-user": {
+		"messages": {
+			"cannot-kick-self": "You cannot kick yourself",
+			"forbidden": "Only the host can kick users",
+			"internal-server-error": "Internal server error",
+			"invalid-room-id": "Field 'id' is required and must be a positive integer",
+			"invalid-user-id": "Field 'userId' is required and must be a positive integer",
+			"room-not-found": "Room not found",
+			"room-not-waiting": "You can only kick users while the room is waiting",
+			"success": "User has been kicked",
+			"user-not-in-room": "User is not in this room",
+			"you-were-kicked": "You have been removed from the room by the host"
+		}
+	},
+	"leave-room": {
+		"messages": {
+			"internal-server-error": "Internal server error",
+			"invalid-room-id": "Field 'id' is required and must be a positive integer",
+			"player-not-in-room": "Player is not in this room",
+			"success": "Leave room successfully"
+		}
+	},
+	"load-room": {
+		"messages": {
+			"internal-server-error": "Internal server error",
+			"invalid-room-id": "Room ID must be a positive integer",
+			"room-not-found": "Room not found",
+			"success": "Load room successfully"
+		}
+	},
+	"google-login": {
+		"messages": {
+			"email-not-verified": "Your Google email is not verified",
+			"failed": "Login failed",
+			"internal-server-error": "Internal server error",
+			"invalid-token": "Invalid Google credential",
+			"missing-credential": "Google credential is required"
+		}
+	},
+	"facebook-login": {
+		"messages": {
+			"missing-token": "Facebook token is required",
+			"invalid-token": "Invalid Facebook token",
+			"not-linked": "This Facebook account is not linked. Log in another way and link it in Settings",
+			"internal-server-error": "Internal server error"
+		}
+	},
+	"facebook-link": {
+		"messages": {
+			"missing-token": "Facebook token is required",
+			"invalid-token": "Invalid Facebook token",
+			"linked": "Facebook linked successfully",
+			"already-linked": "This Facebook account is already linked to your account",
+			"linked-to-other": "This Facebook account is already linked to another account",
+			"already-has-facebook": "You already linked a different Facebook account",
+			"unlinked": "Facebook unlinked",
+			"internal-server-error": "Internal server error"
+		}
+	},
+	"logout": {
+		"messages": {
+			"already-inactive": "Session already inactive",
+			"internal-server-error": "Internal server error",
+			"success": "Logout successful"
+		}
+	},
+	"refresh-token": {
+		"messages": {
+			"missing-refresh-token": "Missing refresh token cookie",
+			"mismatch-or-expired": "Refresh token mismatch or expired",
+			"success": "Token refreshed"
+		}
+	},
+	"room-invite": {
+		"messages": {
+			"title": "Room Invitation"
+		}
+	},
+	"start-game": {
+		"messages": {
+			"success": "Game started successfully",
+			"internal-server-error": "Internal server error while starting game",
+			"invalid-room-id": "Field 'id' is required and must be a positive integer",
+			"invalid-difficulty": "Bot difficulty must be between 1 and 5",
+			"room-not-found": "Room not found",
+			"forbidden": "Only the room host can start the game",
+			"insufficient-amount": "You do not have enough balance to start a game with this bet",
+			"requester-must-pick-team": "You must select a team before starting a game with bot"
+		}
+	},
+	"update-room": {
+		"messages": {
+			"success": "Room updated successfully",
+			"internal-server-error": "Internal server error",
+			"invalid-room-id": "Invalid room ID",
+			"invalid-time-limit": "Invalid time limit",
+			"invalid-time-increment": "Invalid bonus per move",
+			"invalid-time-per-move": "Invalid time per move",
+			"name-required": "Room name is required",
+			"room-not-found": "Room not found",
+			"forbidden": "You are not the host of this room"
+		}
+	},
+	"draw-game": {
+		"messages": {
+			"invalid-game-id": "Invalid game ID",
+			"game-not-found": "Game not found",
+			"forbidden": "You are not in this room",
+			"game-history-not-found": "Game history not found",
+			"game-already-finished": "Game is already finished",
+			"success": "Draw game successfully",
+			"internal-server-error": "Internal server error"
+		}
+	},
+	"surrender": {
+		"messages": {
+			"game-already-finished": "Game is already finished",
+			"game-history-not-found": "Game history not found",
+			"game-not-found": "Game not found",
+			"internal-server-error": "Internal server error",
+			"invalid-game-id": "Invalid game ID",
+			"invalid-surrender-player": "You are not a player in this game",
+			"opponent-not-found": "Opponent not found",
+			"success": "Surrendered"
+		}
+	},
+	"undo": {
+		"messages": {
+			"invalid-game-id": "Invalid game ID",
+			"unauthorized": "Unauthorized",
+			"game-not-found": "Game not found",
+			"not-in-game": "You are not part of this game",
+			"not-in-room": "You are not in this room",
+			"pve-only": "Undo is only available in PvE rooms",
+			"spectator-cannot-undo": "Spectators cannot undo moves",
+			"no-moves": "No moves to undo",
+			"delete-failed": "Failed to undo move",
+			"undo-limit-exceeded": "Maximum 3 undo per game exceeded",
+			"success": "Move undone successfully",
+			"internal-server-error": "Internal server error"
+		}
+	},
+	"player-history": {
+		"messages": {
+			"invalid-user-id": "Invalid user ID",
+			"success": "Fetch game history successfully"
+		}
+	},
+	"validate-token": {
+		"messages": {
+			"success": "Token is valid"
+		}
+	},
+	"guide": {
+		"section": {
+			"objective": "Objective of the game",
+			"pieces": "Pieces",
+			"moving-pieces": "Moving pieces",
+			"capturing": "Capturing",
+			"check": "Check",
+			"result": "Result"
+		},
+		"table": {
+			"piece": "Piece",
+			"symbol": "Symbol",
+			"quantity": "Quantity"
+		},
+		"objective": {
+			"paragraph1": "A match is played between two players: one controls the Red pieces, and the other controls the Black pieces. The objective of each player is to use their pieces on the board to <b>checkmate</b> the opponent's General, and win the game."
+		},
+		"pieces": {
+			"paragraph1": "At the start of each game, there must be 32 pieces in total, consisting of <b>7 piece types</b> split evenly between both sides: 16 Red pieces and 16 Black pieces. The 7 piece types with their symbols and quantities are as follows:"
+		},
+		"piece": {
+			"general": "General",
+			"advisor": "Advisor",
+			"elephant": "Elephant",
+			"chariot": "Chariot",
+			"horse": "Horse",
+			"cannon": "Cannon",
+			"soldier": "Soldier"
+		},
+		"moving-pieces": {
+			"paragraph1": "On each turn, each side may move only one of its own pieces according to the rules. The movement rules are as follows:"
+		},
+		"general": {
+			"paragraph1": "General",
+			"paragraph2": "Moves one step <b>horizontally or vertically</b> within the palace. The two Generals may not face each other directly on the same file. If they are facing each other, there must be at least one piece of either side placed between them."
+		},
+		"advisor": {
+			"paragraph1": "Advisor",
+			"paragraph2": "Moves one step <b>diagonally</b> within the palace."
+		},
+		"elephant": {
+			"paragraph1": "Elephant",
+			"paragraph2": "Moves <b>two steps diagonally</b> on its own side of the board and may not cross the river. If there is another piece on the midpoint of that diagonal path, the Elephant is blocked and cannot move."
+		},
+		"chariot": {
+			"paragraph1": "Chariot",
+			"paragraph2": "Moves <b>horizontally or vertically</b> with no limit on distance, as long as no piece blocks the path."
+		},
+		"horse": {
+			"paragraph1": "Horse",
+			"paragraph2": "Moves in an <b>L-shape</b> (one step orthogonally then one step diagonally outward). If the adjacent orthogonal point is occupied by any piece, the Horse is blocked and cannot move."
+		},
+		"cannon": {
+			"paragraph1": "Cannon",
+			"paragraph2": "Moves <b>horizontally or vertically</b> like a Chariot when not capturing. To capture, it must <b>jump over exactly one piece</b> to reach its target. If there are zero or more than one pieces between the Cannon and the target, it cannot capture."
+		},
+		"soldier": {
+			"paragraph1": "Soldier",
+			"paragraph2": "Moves <b>one step</b> each turn. Before crossing the river, it can only move forward. After crossing the river, it may move <b>forward or sideways</b>, but never backward."
+		},
+		"capturing": {
+			"paragraph1": "When a piece moves to an intersection occupied by an opponent's piece, it may <b>capture that piece</b> and occupy its position.",
+			"paragraph2": "You may not capture your own pieces. You may sacrifice your own pieces to be captured by the opponent, <b>except for the General</b>.",
+			"paragraph3": "A captured piece is removed from the board. <b>Chasing one piece for more than 6 consecutive moves is not allowed</b>."
+		},
+		"check": {
+			"paragraph1": "If a player makes a move that threatens to capture the opponent's General on the next move (by the same piece or another piece), it is called a <b>Check</b>. The checked side must respond to avoid check. Otherwise, that side loses",
+			"paragraph2": "When the General is checked from any direction (including from behind), the checked side may respond in one of the following ways:",
+			"paragraph3": "Move the General to another position to escape check",
+			"paragraph4": "Capture the checking piece",
+			"paragraph5": "Block the checking line with another piece to protect the General",
+			"paragraph6": "Repeatedly checking for more than 6 consecutive moves is not allowed"
+		},
+		"result": {
+			"paragraph1": "When one side gives Check and the other side has no legal way to protect the General, it is called a <b>Checkmate</b>. The side that delivers Checkmate wins.",
+			"paragraph2": "If a player runs out of time for a single move (for example: 90s) without moving, the other side is awarded a <b>win</b>.",
+			"paragraph3": "If a player runs out of total game time (for example: 5 minutes or 10 minutes), the other side is awarded a <b>win</b>.",
+			"paragraph4": "If both sides have no pieces that have crossed the river, the game is declared a <b>draw</b>. If one side still has pieces across the river but runs out of time, while the other side still has time but has no pieces across the river, the game is declared a <b>draw</b>.",
+			"paragraph5": "Within 50 moves, if there is no capture and no Soldier advances by one square, the game is declared a <b>draw</b>."
+		}
+	},
+	"extra-money": {
+		"title": "Daily tasks",
+		"tab": {
+			"lucky-wheel": "Lucky Wheel",
+			"bonus-coin": "Bonus Coin",
+			"daily-bonus": "Daily Bonus"
+		},
+		"bonus-coin": {
+			"subtitle": "Watch a short video to earn free coin",
+			"next-in": "Next in:",
+			"collect": "Collect",
+			"watch-video": "Watch video"
+		},
+		"daily-bonus": {
+			"subtitle": "Login 7 days in a row to earn 4000 coin",
+			"day": "Day"
+		},
+		"reward-ad": {
+			"loading": "Loading ad...",
+			"error": "Could not load the ad. Please try again.",
+			"retry": "Try again",
+			"close": "Close"
+		}
+	},
+	"profile": {
+		"button": {
+			"save": "Save",
+			"cancel": "Cancel"
+		}
+	},
+	"change-password": {
+		"title": "Change password",
+		"current": {
+			"label": "Current password",
+			"placeholder": "Enter current password"
+		},
+		"new": {
+			"label": "New password",
+			"placeholder": "Enter new password"
+		},
+		"confirm": {
+			"label": "Confirm new password",
+			"placeholder": "Re-enter new password",
+			"mismatch": "Passwords do not match"
+		},
+		"show": "Show password",
+		"hide": "Hide password",
+		"submit": "Change password",
+		"submitting": "Changing...",
+		"messages": {
+			"success": "Password changed successfully",
+			"missing-fields": "Please fill in all fields",
+			"weak-password": "New password does not meet the requirements",
+			"same-as-current": "New password must be different from the current one",
+			"incorrect-current-password": "Current password is incorrect",
+			"user-not-found": "User not found",
+			"unauthorized": "Session expired. Please sign in again.",
+			"internal-server-error": "Something went wrong. Please try again."
 		}
 	}
 }
