@@ -16,7 +16,7 @@ destroy:
 
 docker:
 	docker build -t chess -f Dockerfile .
-	docker run --name chess -ditp 7777:80 --restart unless-stopped chess
+	docker run --name chess -ditp 3003:80 --restart unless-stopped chess
 	rm -rf dist
 
 publish:

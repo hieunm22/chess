@@ -1,134 +1,85 @@
 import classnames from "classnames"
-import { StyledTile } from "components/Common"
-import { TileContent } from "./components"
-import { getAvailableMoves } from "common/helper"
-import useGameToolkit from "hooks/useGameToolkit"
-import { setGameState } from "toolkit/slice/game"
+import { PieceCharacter } from "types/GameState"
 import { TileProps } from "./types"
+import "./Tile.scss"
 
-const Tile = ({ element, index }: TileProps) => {
-	const { state, dispatch } = useGameToolkit()
+// FEN char (case-insensitive) -> Font Awesome chess icon suffix
+const PIECE_ICON: Record<string, string> = {
+	k: "king",
+	q: "queen",
+	b: "bishop",
+	n: "knight",
+	r: "rook",
+	p: "pawn"
+}
 
-	const onSelected = async () => {
-		const gameStateClone = [...state.board]
-		// if no piece is selected
-		if (state.selected === null || state.selected === null) {
-			const availableMoves = getAvailableMoves(
-				gameStateClone,
-				index,
-				state.teamTurn === "black" ? 1 : -1
-			)
-			dispatch(setGameState({
-				...state,
-				board: gameStateClone,
-				selected: element,
-				availableMoves
-			}))
-			return
-		}
+// In FEN, uppercase = white, lowercase = black
+const isWhitePiece = (piece: PieceCharacter) => piece === piece.toUpperCase()
 
-		if (
-			state.selected
-			&& element !== null
-			&& element.team === state.selected.team
-		) {
-			// if the clicked tile has a piece of the same team, change selected piece
-			const availableMoves = getAvailableMoves(
-				gameStateClone,
-				index,
-				element.team === "black" ? 1 : -1
-			)
-			dispatch(setGameState({
-				...state,
-				board: gameStateClone,
-				selected: element,
-				availableMoves
-			}))
-			return
-		}
+const Tile = ({
+	element,
+	index,
+	isSelected = false,
+	isAvailableMove = false,
+	isPreviousMove = false,
+	isChecking = false,
+	isRotated = false,
+	onClick,
+	onAnimateEnd
+}: TileProps) => {
+	const row = Math.floor(index / 8)
+	const col = index % 8
+	const isLight = (row + col) % 2 === 0
 
-		// if the clicked tile is an available move, move the piece
-		if (state.availableMoves.includes(index)) {
-			// check if the move is a castling move
-			const isCastlingMove =
-				state.selected.piece === "king" && Math.abs(state.selected.id - index) === 2
-			if (isCastlingMove) {
-				if (index - state.selected.id === 2) {
-					if (state.selected.team === "white") {
-						gameStateClone[63] = {
-							id: 63,
-							piece: gameStateClone[63]!.piece,
-							team: gameStateClone[63]!.team,
-							animateTo: 61
-						}
-					} else {
-						gameStateClone[7] = {
-							id: 7,
-							piece: gameStateClone[7]!.piece,
-							team: gameStateClone[7]!.team,
-							animateTo: 5
-						}
-					}
-				}
-				if (index - state.selected.id === -2) {
-					if (state.selected.team === "white") {
-						gameStateClone[56] = {
-							id: 56,
-							piece: gameStateClone[56]!.piece,
-							team: gameStateClone[56]!.team,
-							animateTo: 59
-						}
-					} else {
-						gameStateClone[0] = {
-							id: 0,
-							piece: gameStateClone[0]!.piece,
-							team: gameStateClone[0]!.team,
-							animateTo: 3
-						}
-					}
-				}
-			}
-			const oldIndex = state.selected.id
-			gameStateClone[oldIndex] = {
-				id: oldIndex,
-				piece: gameStateClone[oldIndex]!.piece,
-				team: gameStateClone[oldIndex]!.team,
-				animateTo: index
-			}
-			dispatch(setGameState({
-				...state,
-				board: gameStateClone
-			}))
-		} else {
-			// if the clicked tile is not an available move, de-select current piece
-			dispatch(setGameState({
-				...state,
-				selected: null,
-				availableMoves: []
-			}))
-		}
+	const piece = element?.piece ?? null
+	const iconName = piece ? PIECE_ICON[piece.toLowerCase()] : null
+	// A legal move onto an occupied square is a capture (ring); onto an empty one is a dot.
+	const isCaptureMove = isAvailableMove && piece !== null
+
+	// A move in progress: this cell's piece slides toward `animateTo`, and fires
+	// `onAnimateEnd` when the slide finishes so the parent can commit the move.
+	const targetIndex = element?.animateTo
+	const isAnimating = targetIndex !== undefined
+
+	// The board flips via a 180° rotation on the container; the slide translate is in
+	// board space (applied first), then the counter-rotation keeps the glyph upright.
+	const transforms: string[] = []
+	if (targetIndex !== undefined) {
+		const dx = (targetIndex % 8) - col
+		const dy = Math.floor(targetIndex / 8) - row
+		transforms.push(`translate(calc(${dx} * 100%), calc(${dy} * 100%))`)
 	}
+	if (isRotated) {
+		transforms.push("rotate(180deg)")
+	}
+	const pieceStyle = transforms.length > 0 ? { transform: transforms.join(" ") } : undefined
 
-	const clsName = classnames("cell", {
-		"cursor-pointer":
-			(element !== null && element.team === state.teamTurn) ||
-			state.availableMoves.includes(index)
+	const cellClass = classnames("tile", {
+		"light": isLight,
+		"dark": !isLight,
+		"interactive": !!onClick,
+		"previous-move": isPreviousMove,
+		"selected": isSelected,
+		"capture": isCaptureMove,
+		"checking": isChecking,
+		"animating": isAnimating
 	})
 
-	const canClick =
-		(element && element.team === state.teamTurn) || state.availableMoves.includes(index)
-
 	return (
-		<StyledTile
-			className={clsName}
-			element={element}
-			$index={index}
-			$selected={state.selected !== null && state.selected.id === index}
-			$available={state.availableMoves.includes(index)}
-			onClick={canClick ? onSelected : undefined}
-		>
-			<TileContent element={element} index={index} />
-		</StyledTile>
+		<div className={cellClass} onClick={onClick}>
+			{piece && iconName && (
+				<i
+					className={classnames(
+						"tile-piece",
+						isWhitePiece(piece) ? "white" : "black",
+						`fas fa-chess-${iconName}`
+					)}
+					style={pieceStyle}
+					onTransitionEnd={isAnimating ? onAnimateEnd : undefined}
+				/>
+			)}
+			{isAvailableMove && !isCaptureMove && <span className="tile-move-dot" />}
+		</div>
 	)
 }
 

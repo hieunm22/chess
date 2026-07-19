@@ -1,9 +1,30 @@
-import type { CellProps, GameState } from "./GameState"
-import type { ReduxState } from "./ReduxState"
+import type { CellProps } from "./GameState"
+import type { GameState, ReduxState } from "./ReduxState"
 
 export interface ReduxStore {
-	home: ReduxState
 	game: GameState
+	home: ReduxState
+}
+
+export type EmptyVoid = () => void
+export type NumberVoid = (num: number) => void
+export type StringVoid = (str: string) => void
+
+export type EmptyPromise = () => Promise<void>
+
+export type Nullable<T> = T | null
+
+export interface APIResponseEmpty {
+	success: boolean
+	status_code: number
+	message: string
+}
+
+export interface APIResponse<T> {
+	success: boolean
+	data: T
+	status_code: number
+	message: string
 }
 
 export interface DropdownProps {
@@ -29,3 +50,27 @@ export interface ElementWithAnimationType {
 export interface ComponentWithChild {
 	children: React.ReactNode
 }
+
+export interface ConfirmProps {
+	title?: string
+	message: string
+	icon?: React.ReactNode
+	okLabel?: string
+	countdownSeconds?: number
+	countdownMessageBuilder?: (secondsLeft: number) => string
+}
+
+export interface FenMoveDiffResult {
+	oldIndex: number
+	newIndex: number
+	movedCell: CellProps
+	capturedCell: CellProps | null
+}
+
+export type UserAvatarType = {
+	id: number
+	display_name: string
+	avatar_url: string
+}
+
+export type PresenceStatus = "online" | "busy" | "inactive" | "offline"

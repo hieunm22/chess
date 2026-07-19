@@ -1,0 +1,20 @@
+export interface BotDifficulty {
+	BEGINNER: 1,
+	AMATEUR: 2,
+	INTERMEDIATE: 3,
+	ADVANCED: 4,
+	MASTER: 5
+}
+
+export const PopupState = {
+	NONE: 1,
+	SETTINGS: 2,
+	PROFILE: 4,
+	GUIDE: 8,
+	SEND_PM: 16,
+	SEARCH_USERS: 32,
+	JOIN_ROOM: 64,
+	BOT_DIFFICULTY: 128,
+	CHANGE_PASSWORD: 256,
+	GAME_REPLAY: 512,
+}

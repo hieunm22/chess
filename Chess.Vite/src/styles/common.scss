@@ -5,9 +5,33 @@
 .flex {
 	display: flex;
 	justify-content: space-around;
+	
+	&.center {
+		justify-content: center;
+	}
+
+	&.start {
+		justify-content: flex-start;
+	}
+
+	&.end {
+		justify-content: flex-end;
+	}
 }
 
-@for $i from 1 through 20 {
+.align-center {
+	align-items: center;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.no-padding {
+	padding: 0 !important;
+}
+
+@for $i from 1 through 50 {
 	$length: 1px * $i;
 	.top-#{$i} {
 		top: $length;
@@ -37,6 +61,35 @@
 		padding-bottom: $length !important;
 	}
 	.fsx-#{$i} {
-		font-size: $length;
+		font-size: $length !important;
+	}
+}
+
+@for $i from 1 through 50 {
+	$length: 1rem * $i;
+	.gap-#{$i} {
+		gap: $length !important;
+	}
+	.mx-#{$i} {
+		margin-left: $length !important;
+		margin-right: $length !important;
+	}
+	.my-#{$i} {
+		margin-top: $length !important;
+		margin-bottom: $length !important;
+	}
+	.px-#{$i} {
+		padding-left: $length !important;
+		padding-right: $length !important;
+	}
+	.py-#{$i} {
+		padding-top: $length !important;
+		padding-bottom: $length !important;
+	}
+}
+
+.data-content {
+	&::after {
+		content: attr(data-content);
 	}
 }

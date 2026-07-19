@@ -1,11 +1,16 @@
 import { forwardRef } from "react"
 import {
+	Button,
+	Tab,
+	TabProps,
 	TextField,
+	Tooltip,
+	TooltipProps,
 	Typography,
 	type TextFieldProps,
 	type TypographyProps
 } from "@mui/material"
-import { translate as t } from "../../locales/translate"
+import { translate as t } from "locales/translate"
 import type {
 	TButtonProps,
 	TDivProps,
@@ -15,7 +20,7 @@ import type {
 	TSpanProps
 } from "./types"
 
-const TButton = forwardRef<HTMLButtonElement, Partial<TButtonProps>>((props, ref) => {
+const TButton = forwardRef<HTMLButtonElement, TButtonProps>((props, ref) => {
 	const translatedProps = {
 		...props,
 		value: typeof props.value === "string" ? t(props.value) : props.value,
@@ -23,9 +28,9 @@ const TButton = forwardRef<HTMLButtonElement, Partial<TButtonProps>>((props, ref
 	}
 
 	return (
-		<button ref={ref} {...translatedProps}>
+		<Button ref={ref} {...translatedProps}>
 			{props.children ?? translatedProps.value}
-		</button>
+		</Button>
 	)
 })
 
@@ -84,6 +89,16 @@ const TSpan = forwardRef<HTMLElement, TSpanProps>((props, ref) => {
 	)
 })
 
+const TTab = (props: TabProps) => {
+	const translatedProps = {
+		...props,
+		label: typeof props.label === "string" ? t(props.label) : props.label,
+		title: typeof props.title === "string" ? t(props.title) : props.title
+	}
+
+	return <Tab {...translatedProps} />
+}
+
 const TTextField = (props: TextFieldProps) => {
 	const translatedProps = {
 		...props,
@@ -94,6 +109,15 @@ const TTextField = (props: TextFieldProps) => {
 	}
 
 	return <TextField {...translatedProps} />
+}
+
+const TTooltip = (props: TooltipProps) => {
+	const translatedProps = {
+		...props,
+		title: typeof props.title === "string" ? t(props.title) : props.title
+	}
+
+	return <Tooltip {...translatedProps}>{props.children}</Tooltip>
 }
 
 const TTypography = (props: TypographyProps) => {
@@ -111,7 +135,20 @@ TI.displayName = "TI"
 TInput.displayName = "TInput"
 TLabel.displayName = "TLabel"
 TSpan.displayName = "TSpan"
+TTab.displayName = "TTab"
 TTextField.displayName = "TTextField"
+TTooltip.displayName = "TTooltip"
 TTypography.displayName = "TTypography"
 
-export { TButton, TDiv, TI, TInput, TLabel, TSpan, TTextField, TTypography }
+export {
+	TButton,
+	TDiv,
+	TI,
+	TInput,
+	TLabel,
+	TSpan,
+	TTab,
+	TTextField,
+	TTooltip,
+	TTypography
+}

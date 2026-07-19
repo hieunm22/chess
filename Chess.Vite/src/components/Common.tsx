@@ -25,9 +25,17 @@ function createTransform(props: ElementWithAnimationType) {
 	return `translate(calc(${tileSize} * ${props.$dx}), calc(${tileSize} * ${props.$dy}))`
 }
 
+function getColor(props: ElementWithColorType) {
+	if (!props.element) {
+		return "inherit"
+	}
+
+	return props.element.piece?.toUpperCase() === props.element.piece ? "white" : "black"
+}
+
 function createStyledElementWithColor<T extends ElementType>(BaseComponent: T) {
 	return styled(BaseComponent)<ElementWithColorType>`
-		${props => props.element ? `color: ${props.element.team};` : ""};
+		${props => props.element ? `color: ${getColor(props)};` : ""};
 		background-color: ${props => getTileBackgroundColor(props.$index, props.$available)};
 		opacity: ${props => props.$available ? 0.7 : 1};
 	`
@@ -41,7 +49,7 @@ function createAnimatedElement<T extends ElementType>(BaseComponent: T) {
 
 function createStyledElementWithBGColor<T extends ElementType>(BaseComponent: T) {
 	return styled(BaseComponent)<ElementWithColorType>`
-		${props => props.element ? `background-color: ${props.element.team};` : ""};
+		${props => props.element ? `background-color: ${getColor(props)};` : ""};
 	`
 }
 

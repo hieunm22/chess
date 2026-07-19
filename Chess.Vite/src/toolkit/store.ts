@@ -4,8 +4,8 @@ import homeSlice from "./slice/home"
 
 export const store = configureStore({
 	reducer: {
-		home: homeSlice,
-		game: gameSlice
+		game: gameSlice,
+		home: homeSlice
 	}
 })
 
