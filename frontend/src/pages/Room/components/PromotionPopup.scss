@@ -1,0 +1,44 @@
+.promotion-subtitle {
+	text-align: center;
+	margin-bottom: 16px;
+	opacity: 0.75;
+	font-size: 13px;
+}
+
+.promotion-choices {
+	justify-content: center;
+}
+
+.promotion-choice {
+	all: unset;
+	flex: 1;
+	max-width: 76px;
+	aspect-ratio: 1;
+	display: grid;
+	place-items: center;
+	background: #f0d9b5;
+	border: 2px solid transparent;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: border-color 120ms ease, transform 120ms ease;
+
+	&:hover,
+	&:focus-visible {
+		border-color: #ffd14a;
+		transform: translateY(-2px);
+	}
+}
+
+.promotion-piece {
+	font-size: 40px;
+	line-height: 1;
+
+	&.white {
+		color: #ffffff;
+		-webkit-text-stroke: 1.5px #171717;
+	}
+
+	&.black {
+		color: #131313;
+	}
+}

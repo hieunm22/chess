@@ -3,6 +3,7 @@ import { GameInfo } from "types/Entities"
 import {
 	CapturedPieces,
 	CellProps,
+	NullableCellProps,
 	PieceCharacter,
 	Team
 } from "types/GameState"
@@ -182,6 +183,20 @@ export interface DrawRequest {
 export interface MoveProps {
 	from: number
 	to: number
+}
+
+export type PromotionPiece = "q" | "r" | "b" | "n"
+
+// A pawn move at the last rank awaiting the player's piece choice; nothing is committed
+// yet, so it carries everything finalizeMove needs to complete (or discard) the move.
+export interface PendingPromotion {
+	from: number
+	to: number
+	team: Team
+	board: NullableCellProps[]
+	oldTarget: NullableCellProps
+	isEnPassant: boolean
+	enPassantCapturedPiece: PieceCharacter | null
 }
 
 export interface RemoteMoveProps extends MoveProps {

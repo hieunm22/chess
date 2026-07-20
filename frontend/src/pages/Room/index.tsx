@@ -8,6 +8,7 @@ import NotFoundPage from "pages/NotFound"
 import CapturedPiecesDisplay from "./components/CapturedPiecesDisplay"
 import { GameMenu } from "./components/GameMenu"
 import PlayerInfoCard from "./components/PlayerInfoCard"
+import PromotionPopup from "./components/PromotionPopup"
 import { RoomChatButton } from "./components/RoomChatButton"
 import SettingsButton from "./components/SettingsButton"
 import useRoomHook from "./hook"
@@ -29,13 +30,16 @@ export default function RoomPage() {
 		isInGame,
 		isRoomLoading,
 		previousMove,
+		promotionTeam,
 		roomChatDialogContext,
 		roomSettingsDialogValue,
 		selected,
 		showConfetti,
 
 		onAnimateEnd,
+		onCancelPromotion,
 		onPieceClick,
+		onSelectPromotion,
 		startGame
 	} = useRoomHook()
 
@@ -168,6 +172,11 @@ export default function RoomPage() {
 				</Stack>
 			</div>
 			<BotDifficultyPopup onConfirm={startGame} />
+			<PromotionPopup
+				team={promotionTeam}
+				onSelect={onSelectPromotion}
+				onCancel={onCancelPromotion}
+			/>
 		</Box>
 	)
 }

@@ -1,15 +1,14 @@
 import { flatArrayToProjectFen, projectFenToFlatArray } from "./fen-converter"
 
 /**
- * Apply a from/to move to a project FEN and return the new FEN plus any captured piece.
- *
- * The captured piece is returned in its original case (the FEN char that was on `toIdx`),
- * or null if the destination was empty.
+ * Apply a from/to move to a project FEN, returning the new FEN and any captured piece
+ * (original case, or null). When `promotion` is set, the pawn lands as that piece instead.
  */
 export const applyMoveToProjectFen = (
 	projectFen: string,
 	fromIdx: number,
-	toIdx: number
+	toIdx: number,
+	promotion: string | null = null
 ): { newFen: string; capturePiece: string | null } => {
 	const cells = projectFenToFlatArray(projectFen)
 	const moving = cells[fromIdx]
@@ -17,7 +16,10 @@ export const applyMoveToProjectFen = (
 		throw new Error(`No piece at fromIdx=${fromIdx} in FEN '${projectFen}'`)
 	}
 	const captured = cells[toIdx]
-	cells[toIdx] = moving
+	const landing = promotion
+		? (moving === moving.toUpperCase() ? promotion.toUpperCase() : promotion.toLowerCase())
+		: moving
+	cells[toIdx] = landing
 	cells[fromIdx] = null
 	return {
 		newFen: flatArrayToProjectFen(cells),

@@ -63,6 +63,8 @@ import {
 	HistoryData,
 	MovePieceRequest,
 	MoveProps,
+	PendingPromotion,
+	PromotionPiece,
 	RemoteMoveProps,
 	RoomActionButton,
 	RoomChatDialogContextValue,
@@ -153,6 +155,8 @@ const useRoomHook = () => {
 	const [bottomSideUser, setBottomSideUser] = useState<RoomUser | null>(null)
 	// Remote move waiting for its animation to finish before being committed to history
 	const [pendingRemoteMove, setPendingRemoteMove] = useState<HistoryData | null>(null)
+	// A pawn that reached the last rank; waiting for the player to pick the promoted piece.
+	const [pendingPromotion, setPendingPromotion] = useState<PendingPromotion | null>(null)
 	const [pendingDrawRequest, setPendingDrawRequest] = useState<DrawRequest | null>(null)
 	// Latest server countdown snapshot; useGameClock ticks it locally for display.
 	const [clock, setClock] = useState<ClockSnapshot | null>(null)
@@ -731,6 +735,22 @@ const useRoomHook = () => {
 			const currentFen = boardToFen(boardRef.current)
 			const newFen = moveRecord.fen
 			const diff = diffFenMove(currentFen, newFen)
+
+			// Multi-square moves (castling, en passant) make diffFenMove return null; commit
+			// them straight to history (updateToState rebuilds from FEN) with no animation.
+			if (diff === null) {
+				remoteMoveRef.current = null
+				const placementCount = (fen: string) =>
+					(fen.split(/\s+/)[0].match(/[a-zA-Z]/g) ?? []).length
+				const isCapture = placementCount(newFen) < placementCount(currentFen)
+				playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION +
+					(isCapture ? CAPTURE_SOUND_URL : MOVE_SOUND_URL))
+				setHistory(prev => prev.some(h => h._id === moveRecord._id)
+					? prev
+					: [...prev, moveRecord])
+				return
+			}
+
 			// Remember this move so updateToState can highlight it once the FEN lands
 			remoteMoveRef.current = diff !== null
 				? {
@@ -987,7 +1007,7 @@ const useRoomHook = () => {
 		}
 	}, [isConnected, roomId, onGameStarted, offGameStarted])
 
-	// Socket.io: mirror an opponent's undo (ignore our own — already rewound via HTTP).
+	// Socket.io: mirror an opponent's undo (ignore our own - already rewound via HTTP).
 	// Everyone else trims the same trailing moves and syncs to the rewound clock.
 	useEffect(() => {
 		if (!isConnected || !Number.isInteger(roomId) || roomId <= 0) {
@@ -1345,6 +1365,8 @@ const useRoomHook = () => {
 	const onPieceClick = (id: number) => () => {
 		// Prevent piece selection while a move is pending
 		if (isMovePending) return
+		// Block board interaction while the promotion picker is open (awaiting a choice).
+		if (pendingPromotion) return
 
 		const clickedTeam = getTeamFromPieceChar(board[id]?.piece)
 		const isAvailableMove = availableMoves.includes(id)
@@ -1387,82 +1409,21 @@ const useRoomHook = () => {
 		setSelected(nextSelected)
 	}
 
-	const onAnimateEnd = async () => {
-		// Animation finished — commit remote move to history.
-		// updateToState rebuilds from FEN; seamless since piece is already at its final position.
-		if (pendingRemoteMove) {
-			const moveRecord = pendingRemoteMove
-			setPendingRemoteMove(null)
-			const remoteWasCapture = remoteMoveRef.current?.fen === moveRecord.fen
-				&& remoteMoveRef.current.isCapture
-			if (remoteWasCapture) {
-				playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + CAPTURE_SOUND_URL)
-			} else {
-				playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + MOVE_SOUND_URL)
-			}
-			setHistory(prev => prev.some(h => h._id === moveRecord._id)
-				? prev
-				: [...prev, moveRecord])
-			return
-		}
-
-		// Prevent race condition: don't allow multiple simultaneous moves
-		if (isMovePending) return
-
-		if (selected === null) return
-
-		const selectedId = selected
-		const targetId = board[selectedId]!.animateTo
-		if (targetId === undefined) return
-		const oldTarget = board[targetId]
-		const movingPiece = board[selectedId]!.piece
-		const movedTeam = getTeamFromPieceChar(movingPiece)
-		if (!movedTeam) {
-			return
-		}
-
-		const colDelta = (targetId % 8) - (selectedId % 8)
-		const isEnPassant =
-			movingPiece?.toLowerCase() === "p" &&
-			Math.abs(colDelta) === 1 &&
-			!oldTarget?.piece
-		const enPassantCapturedIndex = isEnPassant ? selectedId + colDelta : -1
-		const enPassantCapturedPiece = isEnPassant
-			? board[enPassantCapturedIndex]?.piece ?? null
-			: null
-
-		// Create new board state with the move applied
-		const gameStateClone = applyMove(board, selectedId, targetId)
-		if (isEnPassant && enPassantCapturedIndex >= 0) {
-			gameStateClone[enPassantCapturedIndex] = null
-		}
-
+	// Commit a fully-resolved move (piece at its final square, promotion applied): update
+	// state, persist to the server, evaluate end-of-game. Shared by normal + promotion paths.
+	const finalizeMove = async (params: {
+		from: number
+		to: number
+		finalBoard: NullableCellProps[]
+		movedTeam: Team
+		oldTarget: NullableCellProps
+		isEnPassant: boolean
+		enPassantCapturedPiece: PieceCharacter | null
+	}) => {
+		const { from, to, finalBoard, movedTeam, oldTarget, isEnPassant, enPassantCapturedPiece } = params
 		// Board orientation drives soldier attack direction in check detection.
 		const redFirst = room?.red_first ?? true
 
-		// Check if this move puts the moving team's general in check
-		const checkingPieces = findCheckingPieces(gameStateClone, movedTeam, redFirst)
-		const isMovedTeamGeneralInCheck = checkingPieces.length > 0
-
-		if (isMovedTeamGeneralInCheck) {
-			// Revert the move if it puts general in check - restore original board state
-			const revertedBoard = [...board]
-			revertedBoard[selectedId] = {
-				id: selectedId,
-				piece: revertedBoard[selectedId]!.piece,
-			}
-
-			await openAlert({
-				title: "popup.alert.title",
-				message: "game.general.in-check"
-			})
-
-			setSelected(null)
-			setBoard(revertedBoard)
-			return
-		}
-
-		// Move is valid, commit it
 		const capturedPiecesClone = structuredClone(capturedPieces)
 		let capturedPieceCharacter: PieceCharacter | null = null
 		const oldTargetTeam = getTeamFromPieceChar(oldTarget?.piece)
@@ -1479,10 +1440,10 @@ const useRoomHook = () => {
 		}
 
 		const enemyTeam = movedTeam === "white" ? "black" : "white"
-		const enemyCheckingPieces = findCheckingPieces(gameStateClone, enemyTeam, redFirst)
+		const enemyCheckingPieces = findCheckingPieces(finalBoard, enemyTeam, redFirst)
 		const enemyInCheck = enemyCheckingPieces.length > 0
 		const enemyLegalMovesCount = room
-			? countLegalMoves(gameStateClone, enemyTeam, room.red_first)
+			? countLegalMoves(finalBoard, enemyTeam, room.red_first)
 			: 0
 		const shouldVerifyState = enemyInCheck || enemyLegalMovesCount === 0
 		if (capturedPieceCharacter) {
@@ -1491,20 +1452,20 @@ const useRoomHook = () => {
 			playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + MOVE_SOUND_URL)
 		}
 		// Flag a two-square pawn advance so the opponent can answer with en passant next move.
-		const committedBoard = markEnPassantTarget(gameStateClone, selectedId, targetId)
+		const committedBoard = markEnPassantTarget(finalBoard, from, to)
 
 		setAvailableMoves([])
 		setCapturedPieces(capturedPiecesClone)
 		setBoard(committedBoard)
 		setSelected(null)
 		// Mark from/to right away so local moves get the same previous-move highlight
-		setPreviousMove({ from: selectedId, to: targetId })
+		setPreviousMove({ from, to })
 		// After a legal move, if the opponent is in check, highlight the checking piece(s).
 		setCheckingPieces(enemyCheckingPieces)
 		setCurrentTurn(enemyTeam)
 
 		if (room?.status === 2 && game) {
-			const newFen = boardToFen(gameStateClone)
+			const newFen = boardToFen(finalBoard)
 			const body: MovePieceRequest = {
 				gameId: game.id,
 				newFen,
@@ -1553,6 +1514,162 @@ const useRoomHook = () => {
 			})
 			await enforcePostGameBalance()
 		}
+	}
+
+	const onAnimateEnd = async () => {
+		// Animation finished - commit remote move to history.
+		// updateToState rebuilds from FEN; seamless since piece is already at its final position.
+		if (pendingRemoteMove) {
+			const moveRecord = pendingRemoteMove
+			setPendingRemoteMove(null)
+			const remoteWasCapture = remoteMoveRef.current?.fen === moveRecord.fen
+				&& remoteMoveRef.current.isCapture
+			if (remoteWasCapture) {
+				playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + CAPTURE_SOUND_URL)
+			} else {
+				playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + MOVE_SOUND_URL)
+			}
+			setHistory(prev => prev.some(h => h._id === moveRecord._id)
+				? prev
+				: [...prev, moveRecord])
+			return
+		}
+
+		// Prevent race condition: don't allow multiple simultaneous moves
+		if (isMovePending) return
+
+		if (selected === null) return
+
+		const selectedId = selected
+		const targetId = board[selectedId]!.animateTo
+		if (targetId === undefined) return
+		const oldTarget = board[targetId]
+		const movingPiece = board[selectedId]!.piece
+		const movedTeam = getTeamFromPieceChar(movingPiece)
+		if (!movedTeam) {
+			return
+		}
+
+		const colDelta = (targetId % 8) - (selectedId % 8)
+		const isEnPassant =
+			movingPiece?.toLowerCase() === "p" &&
+			Math.abs(colDelta) === 1 &&
+			!oldTarget?.piece
+		const enPassantCapturedIndex = isEnPassant ? selectedId + colDelta : -1
+		const enPassantCapturedPiece = isEnPassant
+			? board[enPassantCapturedIndex]?.piece ?? null
+			: null
+
+		const isCastling = movingPiece?.toLowerCase() === "k" && Math.abs(colDelta) === 2
+		const castlingRookFrom = isCastling ? (colDelta > 0 ? selectedId + 3 : selectedId - 4) : -1
+		const castlingRookTo = isCastling ? (colDelta > 0 ? selectedId + 1 : selectedId - 1) : -1
+
+		// Create new board state with the move applied
+		const gameStateClone = applyMove(board, selectedId, targetId)
+		if (isEnPassant && enPassantCapturedIndex >= 0) {
+			gameStateClone[enPassantCapturedIndex] = null
+		}
+		if (isCastling && castlingRookFrom >= 0) {
+			const rookPiece = board[castlingRookFrom]?.piece
+			if (rookPiece) {
+				gameStateClone[castlingRookTo] = { id: castlingRookTo, piece: rookPiece }
+				gameStateClone[castlingRookFrom] = null
+			}
+		}
+
+		// Board orientation drives soldier attack direction in check detection.
+		const redFirst = room?.red_first ?? true
+
+		// Check if this move puts the moving team's general in check
+		const checkingPieces = findCheckingPieces(gameStateClone, movedTeam, redFirst)
+		const isMovedTeamGeneralInCheck = checkingPieces.length > 0
+
+		if (isMovedTeamGeneralInCheck) {
+			// Revert the move if it puts general in check - restore original board state
+			const revertedBoard = [...board]
+			revertedBoard[selectedId] = {
+				id: selectedId,
+				piece: revertedBoard[selectedId]!.piece,
+			}
+
+			await openAlert({
+				title: "popup.alert.title",
+				message: "game.general.in-check"
+			})
+
+			setSelected(null)
+			setBoard(revertedBoard)
+			return
+		}
+
+		// A pawn reaching the last rank must promote: pause (nothing committed yet) and open
+		// the picker. Own-king legality was checked above and is independent of the choice.
+		const targetRow = Math.floor(targetId / 8)
+		const isPromotion =
+			movingPiece?.toLowerCase() === "p" && (targetRow === 0 || targetRow === 7)
+		if (isPromotion) {
+			setPendingPromotion({
+				from: selectedId,
+				to: targetId,
+				team: movedTeam,
+				board: gameStateClone,
+				oldTarget: oldTarget ?? null,
+				isEnPassant,
+				enPassantCapturedPiece
+			})
+			dispatch(setPopup(PopupState.PROMOTION))
+			return
+		}
+
+		await finalizeMove({
+			from: selectedId,
+			to: targetId,
+			finalBoard: gameStateClone,
+			movedTeam,
+			oldTarget: oldTarget ?? null,
+			isEnPassant,
+			enPassantCapturedPiece
+		})
+	}
+
+	// The player picked a promotion piece: swap the pawn on the landing square for the
+	// chosen piece (in the mover's colour) and complete the move.
+	const onSelectPromotion = async (piece: PromotionPiece) => {
+		const ctx = pendingPromotion
+		if (!ctx) {
+			return
+		}
+		const pieceChar = (ctx.team === "white" ? piece.toUpperCase() : piece) as PieceCharacter
+		const promotedBoard = [...ctx.board]
+		promotedBoard[ctx.to] = { id: ctx.to, piece: pieceChar }
+
+		dispatch(setPopup(PopupState.NONE))
+		setPendingPromotion(null)
+		await finalizeMove({
+			from: ctx.from,
+			to: ctx.to,
+			finalBoard: promotedBoard,
+			movedTeam: ctx.team,
+			oldTarget: ctx.oldTarget,
+			isEnPassant: ctx.isEnPassant,
+			enPassantCapturedPiece: ctx.enPassantCapturedPiece
+		})
+	}
+
+	// The player dismissed the picker. Nothing was committed, so just drop the pending
+	// animation and return the pawn to its origin square — it stays their turn.
+	const onCancelPromotion = () => {
+		const ctx = pendingPromotion
+		dispatch(setPopup(PopupState.NONE))
+		setPendingPromotion(null)
+		if (!ctx) {
+			return
+		}
+		setBoard(prev => prev.map(cell =>
+			cell?.id === ctx.from ? { id: ctx.from, piece: cell.piece } : cell
+		))
+		setSelected(null)
+		setAvailableMoves([])
 	}
 
 	const showHideSettings = (open: boolean) => () => setIsOpen(open)
@@ -1610,6 +1727,7 @@ const useRoomHook = () => {
 		isInGame,
 		isRoomLoading,
 		previousMove,
+		promotionTeam: pendingPromotion?.team ?? null,
 		roomChatDialogContext,
 		roomSettingsDialogValue,
 		selected,
@@ -1617,7 +1735,9 @@ const useRoomHook = () => {
 
 		markerClass,
 		onAnimateEnd,
+		onCancelPromotion,
 		onPieceClick,
+		onSelectPromotion,
 		startGame
 	}
 }

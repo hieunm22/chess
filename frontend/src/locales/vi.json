@@ -181,6 +181,17 @@
 			"captured": "Tướng đã bị bắt. Game kết thúc",
 			"in-check": "Tướng của bạn đang bị chiếu"
 		},
+		"piece": {
+			"queen": "Hậu",
+			"rook": "Xe",
+			"bishop": "Tượng",
+			"knight": "Mã"
+		},
+		"promotion": {
+			"title": "Phong cấp quân tốt",
+			"subtitle": "Chọn quân thay thế cho tốt",
+			"cancel": "Huỷ nước đi"
+		},
 		"label": {
 			"win": "Thắng",
 			"draw": "Hoà",

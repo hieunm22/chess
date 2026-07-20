@@ -29,10 +29,15 @@ describe("uci-move", () => {
 			expect(toIdx).toBe(28)
 		})
 
-		it("parses a promotion move (e7e8q) ignoring the promotion piece", () => {
-			const { fromIdx, toIdx } = uciMoveToProjectIndices("e7e8q", true)
+		it("parses a promotion move (e7e8q) and returns the promotion piece", () => {
+			const { fromIdx, toIdx, promotion } = uciMoveToProjectIndices("e7e8q", true)
 			expect(fromIdx).toBe(12)
 			expect(toIdx).toBe(4)
+			expect(promotion).toBe("q")
+		})
+
+		it("returns a null promotion for a non-promotion move", () => {
+			expect(uciMoveToProjectIndices("e2e4", true).promotion).toBeNull()
 		})
 
 		it("is orientation-independent: redFirst does not change the mapping", () => {

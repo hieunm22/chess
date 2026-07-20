@@ -282,9 +282,18 @@
 		font-size: 24px;
 		font-weight: 700;
 		border-radius: 50%;
+		background-color: #b58863;
+
+		.team-white {
+			color: #fff;
+		}
+
+		.team-black {
+			color: #000;
+		}
 
 		&:not(.active) {
-			opacity: 0.5;
+			opacity: 0.3;
 		}
 	}
 }

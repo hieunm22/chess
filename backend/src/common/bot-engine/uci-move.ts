@@ -51,25 +51,22 @@ const indexToFileRank = (index: number): { file: string; rank: number } => {
 }
 
 /**
- * Convert a UCI move (e.g. "e2e4" or "e7e8q") from fairy-stockfish into project
- * board indices (0 = top-left / a8, 63 = bottom-right / h1). Any promotion suffix
- * is parsed but does not affect the from/to squares.
- *
- * `_redFirst` is accepted for signature stability but is a no-op for chess, whose
- * board is always stored in the standard orientation.
+ * Convert a UCI move ("e2e4" / "e7e8q") into project board indices (a8=0, h1=63); a
+ * trailing promotion piece is returned as `promotion`.
  */
 export const uciMoveToProjectIndices = (
 	uciMove: string,
 	_redFirst: boolean
-): { fromIdx: number; toIdx: number } => {
+): { fromIdx: number; toIdx: number; promotion: string | null } => {
 	const match = MOVE_PATTERN.exec(uciMove.trim())
 	if (!match) {
 		throw new Error(`Invalid UCI move: '${uciMove}'`)
 	}
-	const [, fromFile, fromRankStr, toFile, toRankStr] = match
+	const [, fromFile, fromRankStr, toFile, toRankStr, promotion] = match
 	return {
 		fromIdx: fileRankToIndex(fromFile, Number(fromRankStr)),
-		toIdx: fileRankToIndex(toFile, Number(toRankStr))
+		toIdx: fileRankToIndex(toFile, Number(toRankStr)),
+		promotion
 	}
 }
 

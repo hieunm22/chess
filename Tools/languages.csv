@@ -115,6 +115,13 @@ popup.confirm.ok;Ok;Ok
 popup.confirm.cancel;Cancel;Huỷ
 game.general.captured;General has been captured. Room over;Tướng đã bị bắt. Game kết thúc
 game.general.in-check;Your general is under attack;Tướng của bạn đang bị chiếu
+game.piece.queen;Queen;Hậu
+game.piece.rook;Rook;Xe
+game.piece.bishop;Bishop;Tượng
+game.piece.knight;Knight;Mã
+game.promotion.title;Pawn promotion;Phong cấp quân tốt
+game.promotion.subtitle;Choose the piece to promote to;Chọn quân thay thế cho tốt
+game.promotion.cancel;Cancel move;Huỷ nước đi
 game.label.win;Win;Thắng
 game.label.draw;Draw;Hoà
 game.label.lose;Lose;Thua

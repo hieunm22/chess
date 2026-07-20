@@ -45,8 +45,7 @@ export interface SeatAvatarProps {
 }
 
 export interface PieceButtonProps {
-	piece: Team
-	// label: string
+	team: Team
 }
 
 export interface RoomCardProps {

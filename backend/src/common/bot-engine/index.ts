@@ -20,8 +20,8 @@ export interface RequestBotMoveOptions {
 }
 
 const buildResult = (uci: string, projectFen: string, redFirst: boolean): BotMoveResult => {
-	const { fromIdx, toIdx } = uciMoveToProjectIndices(uci, redFirst)
-	const { newFen, capturePiece } = applyMoveToProjectFen(projectFen, fromIdx, toIdx)
+	const { fromIdx, toIdx, promotion } = uciMoveToProjectIndices(uci, redFirst)
+	const { newFen, capturePiece } = applyMoveToProjectFen(projectFen, fromIdx, toIdx, promotion)
 	return { uci, newFen, capturePiece }
 }
 

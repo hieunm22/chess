@@ -181,6 +181,17 @@
 			"captured": "General has been captured. Room over",
 			"in-check": "Your general is under attack"
 		},
+		"piece": {
+			"queen": "Queen",
+			"rook": "Rook",
+			"bishop": "Bishop",
+			"knight": "Knight"
+		},
+		"promotion": {
+			"title": "Pawn promotion",
+			"subtitle": "Choose the piece to promote to",
+			"cancel": "Cancel move"
+		},
 		"label": {
 			"win": "Win",
 			"draw": "Draw",

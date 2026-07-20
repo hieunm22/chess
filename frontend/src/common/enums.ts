@@ -17,4 +17,5 @@ export const PopupState = {
 	BOT_DIFFICULTY: 128,
 	CHANGE_PASSWORD: 256,
 	GAME_REPLAY: 512,
+	PROMOTION: 1024,
 }
