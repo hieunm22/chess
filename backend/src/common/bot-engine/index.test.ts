@@ -31,7 +31,7 @@ const PARAMS = {
 	difficulty: 1
 }
 
-describe("requestBotMove perpetual-check avoidance", () => {
+describe("requestBotMove rejectMove fallback", () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
 		getEngineForGameMock.mockResolvedValue({

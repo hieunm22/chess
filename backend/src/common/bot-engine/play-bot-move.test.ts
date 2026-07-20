@@ -1,9 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { playBotMove } from "./play-bot-move"
-import {
-	PERPETUAL_CHECK_LOSS_REPETITION,
-	PERPETUAL_CHECK_WARNING_REPETITION
-} from "../game/perpetual-check.helper"
 
 const {
 	requestBotMoveMock,
@@ -16,11 +12,8 @@ const {
 	roomUpdateMock,
 	transactionMock,
 	emitMovePieceMock,
-	emitPerpetualCheckWarningMock,
 	emitSurrenderMock,
 	evaluateTeamStateMock,
-	evaluatePerpetualCheckMock,
-	wouldCompletePerpetualLossMock,
 	concludeGameMock
 } = vi.hoisted(() => ({
 	requestBotMoveMock: vi.fn(),
@@ -33,11 +26,8 @@ const {
 	roomUpdateMock: vi.fn(),
 	transactionMock: vi.fn(),
 	emitMovePieceMock: vi.fn(),
-	emitPerpetualCheckWarningMock: vi.fn(),
 	emitSurrenderMock: vi.fn(),
 	evaluateTeamStateMock: vi.fn(),
-	evaluatePerpetualCheckMock: vi.fn(),
-	wouldCompletePerpetualLossMock: vi.fn(),
 	concludeGameMock: vi.fn()
 }))
 
@@ -65,45 +55,36 @@ vi.mock("prisma", () => ({
 
 vi.mock("../socket", () => ({
 	emitMovePiece: emitMovePieceMock,
-	emitPerpetualCheckWarning: emitPerpetualCheckWarningMock,
 	emitSurrender: emitSurrenderMock
 }))
 
 vi.mock("../game/state-evaluator", () => ({ evaluateTeamState: evaluateTeamStateMock }))
-// Keep the real threshold constants, mock only the evaluation functions.
-vi.mock("../game/perpetual-check.helper", async importActual => ({
-	...(await importActual<typeof import("../game/perpetual-check.helper")>()),
-	evaluatePerpetualCheck: evaluatePerpetualCheckMock,
-	wouldCompletePerpetualLoss: wouldCompletePerpetualLossMock
-}))
 vi.mock("../game/conclude-game.helper", () => ({ concludeGame: concludeGameMock }))
 vi.mock("../game/presence-sync", () => ({ syncPlayersPresence: vi.fn() }))
+
+const INITIAL = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
 const PARAMS = {
 	gameId: "game-1",
 	roomId: 5n,
-	projectFen: "prev-fen",
+	projectFen: INITIAL,
 	redFirst: true,
 	botTeam: "white" as const,
 	difficulty: 1
 }
 
-describe("playBotMove perpetual check enforcement", () => {
+describe("playBotMove end-state handling", () => {
 	beforeEach(() => {
-		requestBotMoveMock.mockResolvedValue({
-			newFen: "RHEAGAEHR/9/1C5C1/S1S1S1S1S/9/9/s1s1s1s1s/1c5c1/9/rheagaehr",
-			capturePiece: null
-		})
-		// A valid previous FEN so the real isSoldierAdvance(prevFen, newFen) never throws.
-		findToArrayMock.mockResolvedValue([
-			{ fen: "RHEAGAEHR/9/1C5C1/S1S1S1S1S/9/9/s1s1s1s1s/1c5c1/9/rheagaehr w - - 0 1" }
-		])
+		requestBotMoveMock.mockResolvedValue({ newFen: INITIAL, capturePiece: null })
+		// A valid chess previous FEN so the real isPawnMove(prevFen, newFen) never throws.
+		findToArrayMock.mockResolvedValue([{ fen: `${INITIAL} w - - 0 1` }])
 		insertOneMock.mockResolvedValue({ insertedId: { toString: () => "mongo-1" } })
 		gameHistoryCreateMock.mockResolvedValue({})
 		roomFindUniqueMock.mockResolvedValue({ pve_mode: true, bet_amount: 50 })
 		roomUserFindManyMock.mockResolvedValue([])
 		transactionMock.mockResolvedValue([])
 		concludeGameMock.mockResolvedValue({ ended: true, winnerId: 22 })
+		evaluateTeamStateMock.mockReturnValue({ inCheck: false, legalMovesCount: 5, status: "ongoing" })
 	})
 
 	afterEach(() => {
@@ -111,7 +92,7 @@ describe("playBotMove perpetual check enforcement", () => {
 	})
 
 	it("auto-surrenders the bot with winner and reason when it has no legal moves", async () => {
-		// Bot (red) has no move -> it surrenders; the terminal record must carry the
+		// Bot (white) has no move -> it surrenders; the terminal record must carry the
 		// human winner and the surrender reason, like every other end path.
 		requestBotMoveMock.mockResolvedValue(null)
 		roomUserFindManyMock.mockResolvedValue([
@@ -134,97 +115,13 @@ describe("playBotMove perpetual check enforcement", () => {
 		expect(emitSurrenderMock).toHaveBeenCalledWith("5", "game-1", 999)
 	})
 
-	it("ends the game in a draw when the bot's move leaves neither side any attacking material", async () => {
-		// The bot's capture removes the last attacker; only generals + advisors remain.
-		requestBotMoveMock.mockResolvedValue({
-			newFen: "3AGA3/9/9/9/9/9/9/9/9/3aga3",
-			capturePiece: "s"
-		})
-		evaluateTeamStateMock.mockReturnValue({ inCheck: false, legalMovesCount: 5, status: "ongoing" })
-
+	it("requests the bot move without a rejectMove predicate (no perpetual-check avoidance in chess)", async () => {
 		await playBotMove(PARAMS)
-
-		expect(concludeGameMock).toHaveBeenCalledWith({
-			gameId: "game-1",
-			roomId: 5n,
-			winnerTeam: null,
-			isBotGame: true,
-			betAmount: 50,
-			statusForEvent: "draw"
-		})
-		// A draw short-circuits before the perpetual-check safety net.
-		expect(evaluatePerpetualCheckMock).not.toHaveBeenCalled()
+		// Second argument (options) is omitted for chess.
+		expect(requestBotMoveMock.mock.calls[0][1]).toBeUndefined()
 	})
 
-	it("ends the game in a draw when the bot's move reaches the natural move-limit", async () => {
-		const FULL_BOARD = "RHEAGAEHR/9/1C5C1/S1S1S1S1S/9/9/s1s1s1s1s/1c5c1/9/rheagaehr"
-		// Prev no-progress clock at 99; the bot's non-capturing, non-advancing move makes it 100.
-		findToArrayMock.mockResolvedValue([{ fen: `${FULL_BOARD} w - - 99 50` }])
-		requestBotMoveMock.mockResolvedValue({ newFen: FULL_BOARD, capturePiece: null })
-		evaluateTeamStateMock.mockReturnValue({ inCheck: false, legalMovesCount: 5, status: "ongoing" })
-
-		await playBotMove(PARAMS)
-
-		expect(concludeGameMock).toHaveBeenCalledWith({
-			gameId: "game-1",
-			roomId: 5n,
-			winnerTeam: null,
-			isBotGame: true,
-			betAmount: 50,
-			statusForEvent: "draw"
-		})
-		expect(evaluatePerpetualCheckMock).not.toHaveBeenCalled()
-	})
-
-	it("ends the game (human wins) when the bot's move completes a perpetual check", async () => {
-		evaluateTeamStateMock.mockReturnValue({ inCheck: true, legalMovesCount: 1, status: "check" })
-		evaluatePerpetualCheckMock.mockResolvedValue({
-			status: "loss",
-			occurrencesCount: PERPETUAL_CHECK_LOSS_REPETITION
-		})
-
-		await playBotMove(PARAMS)
-
-		// Human is the side to move after the bot (bot = red -> human = black).
-		expect(concludeGameMock).toHaveBeenCalledWith({
-			gameId: "game-1",
-			roomId: 5n,
-			winnerTeam: "black",
-			isBotGame: true,
-			betAmount: 50,
-			statusForEvent: "perpetual-check"
-		})
-		expect(emitPerpetualCheckWarningMock).not.toHaveBeenCalled()
-	})
-
-	it("warns both sides when the bot's perpetual check reaches the warning stage", async () => {
-		evaluateTeamStateMock.mockReturnValue({ inCheck: true, legalMovesCount: 2, status: "check" })
-		evaluatePerpetualCheckMock.mockResolvedValue({
-			status: "warning",
-			occurrencesCount: PERPETUAL_CHECK_WARNING_REPETITION
-		})
-
-		await playBotMove(PARAMS)
-
-		expect(emitPerpetualCheckWarningMock).toHaveBeenCalledWith(5, {
-			gameId: "game-1",
-			offenderTeam: "white",
-			checkedTeam: "black"
-		})
-		expect(concludeGameMock).not.toHaveBeenCalled()
-	})
-
-	it("does nothing special when the bot's move is not a check", async () => {
-		evaluateTeamStateMock.mockReturnValue({ inCheck: false, legalMovesCount: 5, status: "ongoing" })
-
-		await playBotMove(PARAMS)
-
-		expect(evaluatePerpetualCheckMock).not.toHaveBeenCalled()
-		expect(concludeGameMock).not.toHaveBeenCalled()
-		expect(emitPerpetualCheckWarningMock).not.toHaveBeenCalled()
-	})
-
-	it("auto-concludes the game when the bot checkmates the human", async () => {
+	it("auto-concludes the game (bot wins) when the bot checkmates the human", async () => {
 		evaluateTeamStateMock.mockReturnValue({ inCheck: true, legalMovesCount: 0, status: "checkmate" })
 
 		await playBotMove(PARAMS)
@@ -237,27 +134,61 @@ describe("playBotMove perpetual check enforcement", () => {
 			betAmount: 50,
 			statusForEvent: "checkmate"
 		})
-		expect(evaluatePerpetualCheckMock).not.toHaveBeenCalled()
-		expect(emitPerpetualCheckWarningMock).not.toHaveBeenCalled()
 	})
 
-	it("passes a rejectMove predicate that avoids a move completing a perpetual-check loss", async () => {
+	it("ends the game in a draw when the bot stalemates the human", async () => {
+		evaluateTeamStateMock.mockReturnValue({ inCheck: false, legalMovesCount: 0, status: "stalemate" })
+
+		await playBotMove(PARAMS)
+
+		expect(concludeGameMock).toHaveBeenCalledWith({
+			gameId: "game-1",
+			roomId: 5n,
+			winnerTeam: null,
+			isBotGame: true,
+			betAmount: 50,
+			statusForEvent: "stalemate"
+		})
+	})
+
+	it("ends the game in a draw when the bot's move leaves a dead position", async () => {
+		// The bot's capture leaves only the two kings -> neither side can mate.
+		requestBotMoveMock.mockResolvedValue({ newFen: "4k3/8/8/8/8/8/8/4K3", capturePiece: "q" })
+
+		await playBotMove(PARAMS)
+
+		expect(concludeGameMock).toHaveBeenCalledWith({
+			gameId: "game-1",
+			roomId: 5n,
+			winnerTeam: null,
+			isBotGame: true,
+			betAmount: 50,
+			statusForEvent: "draw"
+		})
+	})
+
+	it("ends the game in a draw when the bot's move reaches the 50-move limit", async () => {
+		// Prev half-move clock at 99; the bot's non-capturing, non-pawn move makes it 100.
+		findToArrayMock.mockResolvedValue([{ fen: `${INITIAL} w - - 99 50` }])
+		requestBotMoveMock.mockResolvedValue({ newFen: INITIAL, capturePiece: null })
+
+		await playBotMove(PARAMS)
+
+		expect(concludeGameMock).toHaveBeenCalledWith({
+			gameId: "game-1",
+			roomId: 5n,
+			winnerTeam: null,
+			isBotGame: true,
+			betAmount: 50,
+			statusForEvent: "draw"
+		})
+	})
+
+	it("does not end the game when the bot's move leaves an ongoing position", async () => {
 		evaluateTeamStateMock.mockReturnValue({ inCheck: false, legalMovesCount: 5, status: "ongoing" })
 
 		await playBotMove(PARAMS)
 
-		const options = requestBotMoveMock.mock.calls[0][1]
-		expect(typeof options.rejectMove).toBe("function")
-
-		// A checking candidate that would complete the losing repetition is rejected...
-		evaluateTeamStateMock.mockReturnValue({ inCheck: true, legalMovesCount: 1, status: "check" })
-		wouldCompletePerpetualLossMock.mockResolvedValue(true)
-		expect(await options.rejectMove({ uci: "x", newFen: "f", capturePiece: null })).toBe(true)
-
-		// ...a non-checking candidate breaks the chain and is always allowed.
-		evaluateTeamStateMock.mockReturnValue({ inCheck: false, legalMovesCount: 5, status: "ongoing" })
-		wouldCompletePerpetualLossMock.mockClear()
-		expect(await options.rejectMove({ uci: "y", newFen: "g", capturePiece: null })).toBe(false)
-		expect(wouldCompletePerpetualLossMock).not.toHaveBeenCalled()
+		expect(concludeGameMock).not.toHaveBeenCalled()
 	})
 })

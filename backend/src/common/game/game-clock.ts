@@ -1,5 +1,5 @@
 import prisma from "prisma"
-import { hasPieceAcrossRiver } from "common/board-helper"
+import { hasMatingMaterial } from "common/board-helper"
 import { runEndGameTransaction } from "common/game/end-game.helper"
 import { activatePostGameLock } from "common/game/post-game.helper"
 import { syncPlayersPresence } from "common/game/presence-sync"
@@ -291,7 +291,7 @@ async function handleFlag(gameId: string, expectedTeam: Team): Promise<void> {
 
 		// Per-move timeout is an unconditional loss; whole-game timeout only wins with
 		// crossing material, else draw.
-		const winnerCanWin = state.perMoveBinding || hasPieceAcrossRiver(latestFen, winnerTeam)
+		const winnerCanWin = state.perMoveBinding || hasMatingMaterial(latestFen, winnerTeam)
 
 		const findUser = (team: Team) =>
 			config.participants.find(p => p.team === team)?.userId ?? null

@@ -13,7 +13,7 @@ const MULTIPV_CANDIDATES = 5
 
 export interface RequestBotMoveOptions {
 	// Return true to reject a candidate; the engine falls back to the next ranked
-	// alternative. Used to steer the bot away from a perpetual-check loss.
+	// alternative (generic hook for steering the bot away from unwanted moves).
 	rejectMove?: (candidate: BotMoveResult) => Promise<boolean> | boolean
 	// How many ranked candidates to consider when the top move is rejected.
 	multipvCandidates?: number

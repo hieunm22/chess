@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { INITIAL_FEN_BLACK_BOTTOM, INITIAL_FEN } from "../constant"
+import { INITIAL_FEN } from "../constant"
 import {
 	flatArrayToProjectFen,
 	projectFenToFlatArray,
@@ -8,55 +8,45 @@ import {
 
 describe("fen-converter", () => {
 	describe("projectFenToFlatArray ↔ flatArrayToProjectFen roundtrip", () => {
-		it("survives BLACK_TOP starting position", () => {
+		it("survives the starting position", () => {
 			const cells = projectFenToFlatArray(INITIAL_FEN)
-			expect(cells).toHaveLength(90)
+			expect(cells).toHaveLength(64)
 			expect(flatArrayToProjectFen(cells)).toBe(INITIAL_FEN)
 		})
 
-		it("survives BLACK_BOTTOM starting position", () => {
-			const cells = projectFenToFlatArray(INITIAL_FEN_BLACK_BOTTOM)
-			expect(flatArrayToProjectFen(cells)).toBe(INITIAL_FEN_BLACK_BOTTOM)
-		})
-
 		it("tolerates a full 6-field FEN by parsing the placement field only", () => {
-			const cells = projectFenToFlatArray(`${INITIAL_FEN} w - - 0 1`)
-			expect(cells).toHaveLength(90)
+			const cells = projectFenToFlatArray(`${INITIAL_FEN} w KQkq - 0 1`)
+			expect(cells).toHaveLength(64)
 			expect(flatArrayToProjectFen(cells)).toBe(INITIAL_FEN)
 		})
 
 		it("rejects FEN with wrong row count", () => {
-			expect(() => projectFenToFlatArray("9/9/9")).toThrow()
+			expect(() => projectFenToFlatArray("8/8/8")).toThrow()
 		})
 
 		it("rejects FEN with wrong column count in a row", () => {
-			// 10 squares in row 0 instead of 9
-			const bad = "rheagaehrr/9/9/9/9/9/9/9/9/9"
+			// 9 squares in row 0 instead of 8
+			const bad = "rnbqkbnrr/8/8/8/8/8/8/8"
 			expect(() => projectFenToFlatArray(bad)).toThrow()
 		})
 	})
 
 	describe("projectFenToStandardFen", () => {
-		// In INITIAL_FEN_BLACK_TOP, project lowercase=red sits at the bottom of the FEN
-		// (already canonical layout). Conversion only swaps case + maps letters.
-		it("converts BLACK_TOP starting position with red to move", () => {
-			const standard = projectFenToStandardFen(INITIAL_FEN, true, "white")
-			expect(standard).toBe(
-				"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1"
+		// The project FEN already matches standard chess (uppercase = white, rank 8
+		// on top), so conversion only appends the side/castling/counter fields.
+		it("converts the starting position with white to move", () => {
+			expect(projectFenToStandardFen(INITIAL_FEN, true, "white")).toBe(
+				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
 			)
 		})
 
-		it("converts BLACK_TOP starting position with black to move", () => {
-			const standard = projectFenToStandardFen(INITIAL_FEN, true, "black")
-			expect(standard.endsWith(" b - - 0 1")).toBe(true)
+		it("emits ' b - - 0 1' when black is to move", () => {
+			expect(projectFenToStandardFen(INITIAL_FEN, true, "black").endsWith(" b - - 0 1")).toBe(true)
 		})
 
-		// BLACK_BOTTOM has red lowercase at the top of the FEN string; the function must
-		// rotate 180° before translating so red ends up at the bottom in standard FEN.
-		it("rotates BLACK_BOTTOM starting position so red ends up at the bottom of standard FEN", () => {
-			const standard = projectFenToStandardFen(INITIAL_FEN_BLACK_BOTTOM, false, "white")
-			expect(standard).toBe(
-				"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1"
+		it("is orientation-independent: redFirst does not change the result", () => {
+			expect(projectFenToStandardFen(INITIAL_FEN, false, "white")).toBe(
+				projectFenToStandardFen(INITIAL_FEN, true, "white")
 			)
 		})
 	})

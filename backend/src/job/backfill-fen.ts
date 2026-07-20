@@ -61,7 +61,7 @@ export function planGameUpdates(records: HistoryDoc[]): PlannedUpdate[] {
 	const updates: PlannedUpdate[] = []
 	let halfmove = 0
 	records.forEach((rec, i) => {
-		// Xiangqi's 60-move rule counts moves without a capture: reset on a capturing
+		// Chess 50-move rule counts moves without a capture: reset on a capturing
 		// move, otherwise increment. The initial position starts the clock at 0.
 		if (i > 0) {
 			halfmove = rec.capture ? 0 : halfmove + 1

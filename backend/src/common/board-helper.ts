@@ -38,7 +38,7 @@ export const parseFenCounters = (fen: string): { halfmove: number; fullmove: num
 }
 
 /**
- * Build a standard 6-field chess FEN
+ * Build a standard 6-field chess FEN.
  */
 export const toStandardFen = (
 	fen: string,
@@ -62,7 +62,7 @@ export const fenToBoard = (fen: string): (CellProps | null)[] => {
 
 	for (const rowText of rows) {
 		for (const token of rowText) {
-			if (token >= "1" && token <= "9") {
+			if (token >= "1" && token <= "8") {
 				const emptyCount = Number(token)
 				for (let i = 0; i < emptyCount; i += 1) {
 					board.push(null)
@@ -76,11 +76,12 @@ export const fenToBoard = (fen: string): (CellProps | null)[] => {
 			}
 
 			const id = board.length
-			const isLowerCase = token === token.toLowerCase()
+			// Standard chess FEN: uppercase = white, lowercase = black.
+			const isUpperCase = token === token.toUpperCase()
 			board.push({
 				id,
 				piece,
-				team: isLowerCase ? "white" : "black"
+				team: isUpperCase ? "white" : "black"
 			})
 		}
 
@@ -96,102 +97,56 @@ export const fenToBoard = (fen: string): (CellProps | null)[] => {
 	return board
 }
 
-const ATTACKING_PIECES = new Set(["chariot", "horse", "cannon", "soldier"])
-
 /**
- * Whether `team` has at least one attacking piece that has crossed the river.
- * Used for the timeout rule: opponent wins only if they have crossing material, else draw.
+ * Whether `team` still has enough material to force checkmate
  */
-export const hasPieceAcrossRiver = (fen: string, team: Team): boolean => {
+export const hasMatingMaterial = (fen: string, team: Team): boolean => {
 	const board = fenToBoard(fen)
+	let pawns = 0
+	let rooks = 0
+	let queens = 0
+	let bishops = 0
+	let knights = 0
 
-	let generalRow: number | null = null
 	for (const cell of board) {
-		if (cell && cell.team === team && cell.piece === "king") {
-			generalRow = Math.floor(cell.id / BOARD_COLUMNS)
-			break
-		}
-	}
-
-	// General missing (should not happen in a live game): fall back to the normal
-	// "flag = loss" outcome rather than surprising players with a draw.
-	if (generalRow === null) {
-		return true
-	}
-
-	const homeIsTop = generalRow <= 4
-	for (const cell of board) {
-		if (!cell || cell.team !== team || !ATTACKING_PIECES.has(cell.piece)) {
+		if (!cell || cell.team !== team) {
 			continue
 		}
-		const row = Math.floor(cell.id / BOARD_COLUMNS)
-		const crossed = homeIsTop ? row >= 5 : row <= 4
-		if (crossed) {
-			return true
+		switch (cell.piece) {
+			case "pawn": pawns += 1; break
+			case "rook": rooks += 1; break
+			case "queen": queens += 1; break
+			case "bishop": bishops += 1; break
+			case "knight": knights += 1; break
+			default: break
 		}
 	}
 
+	if (pawns > 0 || rooks > 0 || queens > 0) return true
+	if (bishops >= 2) return true
+	if (bishops >= 1 && knights >= 1) return true
+	if (knights >= 3) return true
 	return false
 }
 
 /**
- * Check if the specified team has any attacking pieces (can cross river) on the board.
- * @param fen the FEN string representing the board state
- * @param team the team to check for attacking pieces ("white" or "black")
- * @returns true if the team has at least one attacking piece, false otherwise
+ * Whether the last move (prevFen -> newFen) moved a pawn belonging to `team`.
+ * The 50-move half-move clock resets on any pawn move (advance, capture or promotion),
+ * detected here as one of the team's pawns leaving its square.
  */
-export const hasAttackingMaterial = (fen: string, team: Team): boolean => {
-	const board = fenToBoard(fen)
-	for (const cell of board) {
-		if (cell && cell.team === team && ATTACKING_PIECES.has(cell.piece)) {
-			return true
-		}
-	}
-	return false
-}
-
-/**
- * Check if the previous move is a forward soldier advance.
- * Sideways soldier moves return false.
- */
-export const isSoldierAdvance = (prevFen: string, newFen: string, team: Team): boolean => {
+export const isPawnMove = (prevFen: string, newFen: string, team: Team): boolean => {
 	const prev = fenToBoard(prevFen)
 	const next = fenToBoard(newFen)
 
-	// Orientation: the side whose king sits in the top half advances toward higher rows.
-	let generalRow: number | null = null
-	for (const cell of next) {
-		if (cell && cell.team === team && cell.piece === "king") {
-			generalRow = Math.floor(cell.id / BOARD_COLUMNS)
-			break
-		}
-	}
-	if (generalRow === null) {
-		return false
-	}
-	const forwardSign = generalRow <= 3 ? 1 : -1
-
-	const isTeamSoldier = (cell: CellProps | null): boolean =>
-		cell !== null && cell.team === team && cell.piece === "soldier"
-
-	// Exactly one of the team's soldiers changes squares on a soldier move: it leaves
-	// `fromRow` and lands on `toRow`.
-	let fromRow: number | null = null
-	let toRow: number | null = null
 	for (let i = 0; i < prev.length; i += 1) {
-		const wasSoldier = isTeamSoldier(prev[i])
-		const isSoldier = isTeamSoldier(next[i])
-		if (wasSoldier && !isSoldier) {
-			fromRow = Math.floor(i / BOARD_COLUMNS)
-		} else if (!wasSoldier && isSoldier) {
-			toRow = Math.floor(i / BOARD_COLUMNS)
+		const wasTeamPawn = prev[i]?.team === team && prev[i]?.piece === "pawn"
+		const isTeamPawn = next[i]?.team === team && next[i]?.piece === "pawn"
+		if (wasTeamPawn && !isTeamPawn) {
+			return true
 		}
 	}
 
-	if (fromRow === null || toRow === null) {
-		return false
-	}
-	return forwardSign * (toRow - fromRow) > 0
+	return false
 }
 
 export const boardToFen = (board: (CellProps | null)[]): string => {
@@ -216,7 +171,8 @@ export const boardToFen = (board: (CellProps | null)[]): string => {
 			}
 
 			const token = pieceFenMap[cell.piece]
-			rowFen += cell.team === "white" ? token : token.toUpperCase()
+			// Standard chess FEN: uppercase = white.
+			rowFen += cell.team === "white" ? token.toUpperCase() : token
 		}
 
 		if (emptyCount > 0) {

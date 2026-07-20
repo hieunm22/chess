@@ -272,7 +272,7 @@ describe("game-clock flag timer", () => {
 
 	it("does not flag a zero-limit game (treated as unlimited, no instant draw)", async () => {
 		setConfig({ time_limit: 0 })
-		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4k3/8/8/8/8/8/8/4K3" }])
 
 		const snapshot = await armClock(GAME_ID)
 		expect(snapshot).toBeNull()
@@ -287,7 +287,7 @@ describe("game-clock flag timer", () => {
 		// Red has no crossing material, but a per-move timeout is an unconditional loss:
 		// black wins outright, NOT the river-crossing draw.
 		setConfig({ time_limit: 900, time_per_move: 30 })
-		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4k3/8/8/8/8/8/8/4K3" }])
 
 		const snapshot = await armClock(GAME_ID)
 		expect(snapshot).toMatchObject({
@@ -325,7 +325,7 @@ describe("game-clock flag timer", () => {
 		// Mid-game, with increment and spent time, this must still be a per-move timeout:
 		// black (12) loses, red (11) wins outright.
 		setConfig({ time_limit: 1800, time_increment: 5, time_per_move: 30 })
-		const fen = "4G4/9/9/9/9/9/9/9/9/4g4"
+		const fen = "4k3/8/8/8/8/8/8/4K3"
 		setHistory([
 			{ team: "white", time_stamp: T0 - 60, fen },
 			{ team: "black", time_stamp: T0 - 50, fen },
@@ -354,7 +354,7 @@ describe("game-clock flag timer", () => {
 		// Per-move cap (60s) is looser than the 30s of total left, so the total budget
 		// flags first at 30s -> a whole-game timeout, which draws without crossing material.
 		setConfig({ time_limit: 30, time_per_move: 60 })
-		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4k3/8/8/8/8/8/8/4K3" }])
 
 		await armClock(GAME_ID)
 		await vi.advanceTimersByTimeAsync(30_000)
@@ -371,7 +371,7 @@ describe("game-clock flag timer", () => {
 	it("returns a snapshot and flags the active team when time runs out", async () => {
 		setConfig()
 		// Black wins on time and has a chariot across the river -> real win.
-		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/R8" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4k3/8/8/8/8/8/8/r3K3" }])
 
 		const snapshot = await armClock(GAME_ID)
 		expect(snapshot).toMatchObject({
@@ -403,7 +403,7 @@ describe("game-clock flag timer", () => {
 	it("declares a draw when the player with time left has no crossing material", async () => {
 		setConfig()
 		// Black wins on time but only has a bare general -> draw (vi.json p4).
-		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4k3/8/8/8/8/8/8/4K3" }])
 
 		await armClock(GAME_ID)
 		await vi.advanceTimersByTimeAsync(60_000)

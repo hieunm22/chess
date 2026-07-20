@@ -383,19 +383,6 @@ export function emitGameEnded(roomId: string | number, data: any) {
 }
 
 /**
- * Emit a perpetual-check warning to all clients in a room.
- */
-export function emitPerpetualCheckWarning(roomId: string | number, data: any) {
-	if (!io) {
-		console.warn(`[Socket.io] Cannot emit perpetual-check-warning: Socket.io server not initialized`)
-		return
-	}
-
-	const roomChannel = `room-${roomId}`
-	io.to(roomChannel).emit("perpetual-check-warning", { roomId, ...data })
-}
-
-/**
  * Emit draw request to all clients in a room
  */
 export function emitDrawRequest(roomId: string | number, gameId: string, requestUserId: number) {

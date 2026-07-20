@@ -2,7 +2,7 @@ import express from "express"
 import jwt from "jsonwebtoken"
 import request from "supertest"
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest"
-import { INITIAL_FEN, INITIAL_FEN_BLACK_BOTTOM } from "common/constant"
+import { INITIAL_FEN } from "common/constant"
 import { BOT_USER_ID } from "common/bot-engine"
 
 const redisGetMock = vi.fn()
@@ -334,7 +334,7 @@ describe("POST /api/room/start", () => {
 		expect(playBotMoveMock).not.toHaveBeenCalled()
 	})
 
-	it("stores lowercase fen when red_first is false", async () => {
+	it("always starts with white to move and the standard FEN, even when red_first is false", async () => {
 		const accessToken = buildAccessToken(61, "session-start-2b")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 61 }))
 		gameHistoryInsertOneMock.mockResolvedValue({ insertedId: "mongo-id-2" })
@@ -385,8 +385,8 @@ describe("POST /api/room/start", () => {
 		expect(res.status).toBe(201)
 		expect(gameHistoryInsertOneMock).toHaveBeenCalledWith({
 			game_id: "d8d18f53-95f8-4e30-b834-f4b5adce4f22",
-			team: "black",
-			fen: `${INITIAL_FEN_BLACK_BOTTOM} b - - 0 1`,
+			team: "white",
+			fen: `${INITIAL_FEN} w - - 0 1`,
 			time_stamp: expect.any(Number)
 		})
 

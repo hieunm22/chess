@@ -144,7 +144,6 @@ export interface VerifyStateResponseData {
 	status: VerifyStatus
 	checkedTeam: Team
 	winnerId: number | null
-	occurrences: number
 }
 
 export interface HistoryData {

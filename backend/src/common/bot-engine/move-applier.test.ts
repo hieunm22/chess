@@ -5,25 +5,24 @@ import { projectFenToFlatArray } from "./fen-converter"
 
 describe("applyMoveToProjectFen", () => {
 	it("moves a piece to an empty square (no capture)", () => {
-		// BLACK_TOP starting pos. Red soldier at row 6, col 0 → idx 54.
-		// Move it forward one row → idx 45.
-		const { newFen, capturePiece } = applyMoveToProjectFen(INITIAL_FEN, 54, 45)
+		// Starting position. White pawn e2 = index 52, push to e4 = index 36.
+		const { newFen, capturePiece } = applyMoveToProjectFen(INITIAL_FEN, 52, 36)
 		expect(capturePiece).toBeNull()
 		const cells = projectFenToFlatArray(newFen)
-		expect(cells[54]).toBeNull()
-		expect(cells[45]).toBe("s")
+		expect(cells[52]).toBeNull()
+		expect(cells[36]).toBe("P")
 	})
 
 	it("captures the piece on the destination square", () => {
-		// Fabricate a FEN where red soldier (s) at idx 45 can capture a black soldier (S) at idx 36.
-		const start = "9/9/9/9/S8/s8/9/9/9/9"
-		// idx 45 = row 5, col 0 = 's' (red). idx 36 = row 4, col 0 = 'S' (black).
-		const { newFen, capturePiece } = applyMoveToProjectFen(start, 45, 36)
-		expect(capturePiece).toBe("S")
-		expect(newFen).toBe("9/9/9/9/s8/9/9/9/9/9")
+		// White rook at e4 (index 36) captures a black pawn at e5 (index 28).
+		const start = "8/8/8/4p3/4R3/8/8/8"
+		const { newFen, capturePiece } = applyMoveToProjectFen(start, 36, 28)
+		expect(capturePiece).toBe("p")
+		expect(newFen).toBe("8/8/8/4R3/8/8/8/8")
 	})
 
 	it("throws when fromIdx is empty", () => {
-		expect(() => applyMoveToProjectFen(INITIAL_FEN, 40, 39)).toThrow()
+		// Index 24 (rank 5, file a) is empty in the starting position.
+		expect(() => applyMoveToProjectFen(INITIAL_FEN, 24, 25)).toThrow()
 	})
 })

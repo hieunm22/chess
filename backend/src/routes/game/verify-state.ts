@@ -1,12 +1,10 @@
 import { Response, Router } from "express"
 import prisma from "prisma"
-import { fenToBoard, hasAttackingMaterial, parseFenCounters } from "common/board-helper"
+import { fenToBoard, hasMatingMaterial, parseFenCounters } from "common/board-helper"
 import { NATURAL_MOVE_LIMIT_PLIES } from "common/constant"
 import { concludeGame } from "common/game/conclude-game.helper"
-import { evaluatePerpetualCheck } from "common/game/perpetual-check.helper"
 import { evaluateTeamState } from "common/game/state-evaluator"
 import { getGameHistoryCollection } from "common/mongodb"
-import { emitPerpetualCheckWarning } from "common/socket"
 import { requireAuth, AuthenticatedRequest } from "middleware/auth"
 import { GameEndReason, Team, VerifyStateRequestDto } from "types/game.type"
 
@@ -77,9 +75,6 @@ const router = Router()
  *                     winnerId:
  *                       type: integer
  *                       nullable: true
- *                     occurrences:
- *                       type: integer
- *                       description: Number of times the current checking position has recurred in the game.
  *       400:
  *         description: Invalid request body (invalid game id, fen, or checked team)
  *       401:
@@ -163,8 +158,6 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 		let gameEnded = false
 		let winnerId: number | null = null
 		let endStatus: string = evaluation.status
-		// Number of times the current checking position has recurred in the game.
-		let occurrences = 0
 
 		// End the game for `winnerTeam` (null = draw) via the shared conclude helper.
 		const finalizeGameEnd = async (winnerTeam: Team | null, statusForEvent: GameEndReason) => {
@@ -184,7 +177,7 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 			}
 		}
 
-		// No-progress ply count, resets only on a capture or forward soldier advance.
+		// No-progress ply count (50-move rule), resets only on a capture or a pawn move.
 		let plyCount = 0
 		try {
 			const collection = await getGameHistoryCollection()
@@ -200,31 +193,24 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 			console.error(`[Verify-State] failed to read ply counter for game ${gameId}:`, err)
 		}
 
-		if (evaluation.status === "checkmate" || evaluation.status === "stalemate") {
-			// The checked/stalemated side loses; its opponent wins.
+		if (evaluation.status === "checkmate") {
+			// The checkmated side loses; its opponent wins.
 			const winnerTeam = checkedTeam === "white" ? "black" : "white"
-			await finalizeGameEnd(winnerTeam, evaluation.status)
+			await finalizeGameEnd(winnerTeam, "checkmate")
+		} else if (evaluation.status === "stalemate") {
+			// Stalemate is a draw in chess (no winner).
+			await finalizeGameEnd(null, "stalemate")
 		} else if (
-			!hasAttackingMaterial(newFen, "white") &&
-			!hasAttackingMaterial(newFen, "black")
+			!hasMatingMaterial(newFen, "white") &&
+			!hasMatingMaterial(newFen, "black")
 		) {
-			// Neither side has any attacking piece left
+			// Dead position: neither side has enough material to force checkmate.
 			await finalizeGameEnd(null, "draw")
 		} else if (plyCount >= NATURAL_MOVE_LIMIT_PLIES) {
-			// Natural move-limit: too long with no capture and no forward soldier advance.
+			// 50-move rule: too long with no capture and no pawn move.
 			await finalizeGameEnd(null, "draw")
-		} else if (evaluation.inCheck) {
-				// Check if this move creates a perpetual check.
-				// "loss" = checker loses (checkedTeam wins); "warning" = one repetition away, notify both.
-			const perpetual = await evaluatePerpetualCheck(gameId, newFen, checkedTeam, game.room.red_first)
-			occurrences = perpetual.occurrencesCount
-			if (perpetual.status === "loss") {
-				await finalizeGameEnd(checkedTeam, "perpetual-check")
-			} else if (perpetual.status === "warning") {
-				const offenderTeam = checkedTeam === "white" ? "black" : "white"
-				emitPerpetualCheckWarning(Number(game.room_id), { gameId, offenderTeam, checkedTeam })
-			}
 		}
+		// A plain check (or ongoing position) does not end the game.
 
 		res.status(200).json({
 			success: true,
@@ -236,8 +222,7 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 				legalMovesCount: evaluation.legalMovesCount,
 				status: endStatus,
 				checkedTeam,
-				winnerId,
-				occurrences
+				winnerId
 			}
 		})
 	} catch (err) {

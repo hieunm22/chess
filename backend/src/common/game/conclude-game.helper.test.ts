@@ -63,7 +63,7 @@ describe("concludeGame", () => {
 			winnerTeam: "black",
 			isBotGame: false,
 			betAmount: 100,
-			statusForEvent: "perpetual-check"
+			statusForEvent: "checkmate"
 		})
 
 		expect(result).toEqual({ ended: true, winnerId: 22 })
@@ -73,14 +73,14 @@ describe("concludeGame", () => {
 			winnerId: 22n,
 			isBotGame: false,
 			betAmount: 100,
-			endReason: "perpetual-check"
+			endReason: "checkmate"
 		})
 		expect(stopClockMock).toHaveBeenCalledWith("game-1")
 		expect(activatePostGameLockMock).toHaveBeenCalledWith(5n, "game-1")
-		expect(updateOneMock).toHaveBeenCalledWith({ _id: "mongo-id" }, { $set: { winner_id: 22, end_reason: "perpetual-check" } })
+		expect(updateOneMock).toHaveBeenCalledWith({ _id: "mongo-id" }, { $set: { winner_id: 22, end_reason: "checkmate" } })
 		expect(emitGameEndedMock).toHaveBeenCalledWith(5, {
 			gameId: "game-1",
-			status: "perpetual-check",
+			status: "checkmate",
 			winnerId: 22
 		})
 	})

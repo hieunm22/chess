@@ -3,7 +3,7 @@ import { projectPieceToStandard } from "./piece-map"
 import { Team } from "types/game.type"
 
 /**
- * Parse a project FEN (board-only, no side-to-move suffix) into a flat array of 90 cells.
+ * Parse a project FEN (board-only, no side-to-move suffix) into a flat array of 64 cells.
  * Empty squares become null.
  */
 export const projectFenToFlatArray = (projectFen: string): (string | null)[] => {
@@ -17,7 +17,7 @@ export const projectFenToFlatArray = (projectFen: string): (string | null)[] => 
 	for (const rowText of rows) {
 		let cellsInRow = 0
 		for (const token of rowText) {
-			if (token >= "1" && token <= "9") {
+			if (token >= "1" && token <= "8") {
 				const empties = Number(token)
 				for (let i = 0; i < empties; i += 1) {
 					cells.push(null)
@@ -41,7 +41,7 @@ export const projectFenToFlatArray = (projectFen: string): (string | null)[] => 
 }
 
 /**
- * Re-encode a flat array of 90 cells back into a project FEN string.
+ * Re-encode a flat array of 64 cells back into a project FEN string.
  */
 export const flatArrayToProjectFen = (cells: (string | null)[]): string => {
 	if (cells.length !== BOARD_SIZE) {
@@ -73,20 +73,20 @@ export const flatArrayToProjectFen = (cells: (string | null)[]): string => {
 }
 
 /**
- * Convert a project FEN to a standard xiangqi FEN for fairy-stockfish.
- * Rotates board when `redFirst` is false; returns `<placement> <side> - - 0 1`.
+ * Convert a project FEN to a standard chess FEN for fairy-stockfish.
+ * The project FEN placement already matches standard chess (uppercase = white,
+ * rank 8 on top), so no rotation or piece remap is needed — we validate the
+ * pieces and append `<side> - - 0 1`.
+ *
+ * `redFirst` is accepted for signature stability but is a no-op for chess, whose
+ * board is always stored in the standard orientation.
  */
 export const projectFenToStandardFen = (
 	projectFen: string,
-	redFirst: boolean,
+	_redFirst: boolean,
 	sideToMove: Team
 ): string => {
-	let cells = projectFenToFlatArray(projectFen)
-	if (!redFirst) {
-		cells = cells.slice().reverse()
-	}
-
-	// Translate each piece (case + letter) to standard.
+	const cells = projectFenToFlatArray(projectFen)
 	const translated = cells.map(cell => (cell === null ? null : projectPieceToStandard(cell)))
 	const positionPart = flatArrayToProjectFen(translated)
 	const side = sideToMove === "white" ? "w" : "b"

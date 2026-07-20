@@ -1,8 +1,9 @@
 import { fenToBoard } from "common/board-helper"
 import { GameStateStatus, Team } from "types/game.type"
 
-const BOARD_COLUMNS = 9
-const BOARD_ROWS = 10
+const BOARD_COLUMNS = 8
+const BOARD_ROWS = 8
+const TOTAL_CELLS = BOARD_COLUMNS * BOARD_ROWS
 
 type BoardState = ReturnType<typeof fenToBoard>
 type BoardCell = BoardState[number]
@@ -13,255 +14,117 @@ interface TeamStateEvaluation {
 	status: GameStateStatus
 }
 
-const toIndex = (row: number, col: number) => row * BOARD_COLUMNS + col
+const rowOf = (index: number) => Math.floor(index / BOARD_COLUMNS)
+const colOf = (index: number) => index % BOARD_COLUMNS
 
-const getMoveDirection = (redFirst: boolean, team: Team): -1 | 1 => {
-	const bottomTeam: Team = redFirst ? "white" : "black"
-	return team === bottomTeam ? -1 : 1
-}
+const enemyOf = (team: Team): Team => (team === "white" ? "black" : "white")
 
-const isInPalace = (from: number, target: number) => {
-	if (target < 0 || target >= BOARD_COLUMNS * BOARD_ROWS) return false
-	const col = target % BOARD_COLUMNS
-	if (col < 3 || col > 5) return false
-	if (from / BOARD_COLUMNS <= 3) return target / BOARD_COLUMNS <= 3
-	if (from / BOARD_COLUMNS >= 7) return target / BOARD_COLUMNS >= 7
-	return false
-}
-
-const scanLine = (
-	board: BoardState,
-	from: number,
-	step: number,
-	isValid: (current: number) => boolean,
-	team: Team,
-	cannon = false
-) => {
+/**
+ * Slide from `from` along (dRow, dCol): collect empty squares and the first enemy piece,
+ * stopping at the first occupied square.
+ */
+const slide = (board: BoardState, from: number, dRow: number, dCol: number, team: Team): number[] => {
 	const result: number[] = []
-	let cur = from + step
-	let hasScreen = false
-
-	while (isValid(cur)) {
-		const cell = board[cur]
-		const targetTeam = cell?.team
-
-		if (!cannon) {
-			if (!cell) {
-				result.push(cur)
-				cur += step
-				continue
-			}
-
-			if (targetTeam !== team) result.push(cur)
-			break
-		}
-
-		if (!hasScreen) {
-			if (!cell) {
-				result.push(cur)
-				cur += step
-				continue
-			}
-			hasScreen = true
+	let row = rowOf(from) + dRow
+	let col = colOf(from) + dCol
+	while (row >= 0 && row < BOARD_ROWS && col >= 0 && col < BOARD_COLUMNS) {
+		const idx = row * BOARD_COLUMNS + col
+		const cell = board[idx]
+		if (!cell) {
+			result.push(idx)
 		} else {
-			if (!cell) {
-				cur += step
-				continue
-			}
-
-			if (targetTeam !== team) result.push(cur)
+			if (cell.team !== team) result.push(idx)
 			break
 		}
-
-		cur += step
+		row += dRow
+		col += dCol
 	}
-
 	return result
 }
 
-const pushIfEnemyOrEmpty = (board: BoardState, team: Team, targetIndex: number, moves: number[]) => {
-	if (targetIndex < 0 || targetIndex >= BOARD_COLUMNS * BOARD_ROWS) return
-	const target = board[targetIndex]
-	if (!target || target.team !== team) {
-		moves.push(targetIndex)
-	}
+const pushStep = (board: BoardState, from: number, dRow: number, dCol: number, team: Team, moves: number[]) => {
+	const row = rowOf(from) + dRow
+	const col = colOf(from) + dCol
+	if (row < 0 || row >= BOARD_ROWS || col < 0 || col >= BOARD_COLUMNS) return
+	const idx = row * BOARD_COLUMNS + col
+	const cell = board[idx]
+	if (!cell || cell.team !== team) moves.push(idx)
 }
 
-const getAvailableMoves = (board: BoardState, selectedId: number, direction: 1 | -1): number[] => {
-	const selectedCell = board[selectedId]
-	if (!selectedCell) return []
+const DIAGONALS: Array<[number, number]> = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+const ORTHOGONALS: Array<[number, number]> = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+const KNIGHT_STEPS: Array<[number, number]> = [
+	[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]
+]
+const KING_STEPS: Array<[number, number]> = [
+	[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]
+]
 
-	const selectedPiece = selectedCell.piece
-	const selectedTeam = selectedCell.team
-	const totalCells = BOARD_COLUMNS * BOARD_ROWS
+/**
+ * Pseudo-legal moves for the piece on `selectedId` (does not filter out moves that leave
+ * the mover's own king in check — that filtering happens in countLegalMoves). Castling and
+ * en passant are intentionally omitted: they never affect check/checkmate/stalemate
+ * detection here (castling can't escape check; en passant is negligibly rare for mate/stalemate).
+ */
+const getAvailableMoves = (board: BoardState, selectedId: number): number[] => {
+	const cell = board[selectedId]
+	if (!cell) return []
+
+	const team = cell.team
 	const moves: number[] = []
+	const row = rowOf(selectedId)
+	const col = colOf(selectedId)
 
-	switch (selectedPiece) {
-		case "soldier": {
-			const forwardStep = direction * BOARD_COLUMNS
-			const forwardId = selectedId + forwardStep
-			if (forwardId >= 0 && forwardId < totalCells) {
-				pushIfEnemyOrEmpty(board, selectedTeam, forwardId, moves)
-			}
+	switch (cell.piece) {
+		case "pawn": {
+			// White advances up the board (toward row 0), black advances down (toward row 7).
+			const dir = team === "white" ? -1 : 1
+			const homeRow = team === "white" ? 6 : 1
 
-			const crossedRiver = direction === -1
-				? selectedId < 5 * BOARD_COLUMNS
-				: selectedId >= 5 * BOARD_COLUMNS
-
-			if (crossedRiver) {
-				const row = Math.floor(selectedId / BOARD_COLUMNS)
-				const left = selectedId - 1
-				const right = selectedId + 1
-
-				if (left >= 0 && Math.floor(left / BOARD_COLUMNS) === row) {
-					pushIfEnemyOrEmpty(board, selectedTeam, left, moves)
-				}
-
-				if (right < totalCells && Math.floor(right / BOARD_COLUMNS) === row) {
-					pushIfEnemyOrEmpty(board, selectedTeam, right, moves)
-				}
-			}
-			break
-		}
-
-		case "cannon": {
-			const row = Math.floor(selectedId / BOARD_COLUMNS)
-			moves.push(...scanLine(board, selectedId, -BOARD_COLUMNS, cur => cur >= 0, selectedTeam, true))
-			moves.push(...scanLine(board, selectedId, BOARD_COLUMNS, cur => cur < totalCells, selectedTeam, true))
-			moves.push(...scanLine(board, selectedId, -1, cur => cur >= 0 && Math.floor(cur / BOARD_COLUMNS) === row, selectedTeam, true))
-			moves.push(...scanLine(board, selectedId, 1, cur => cur < totalCells && Math.floor(cur / BOARD_COLUMNS) === row, selectedTeam, true))
-			break
-		}
-
-		case "chariot": {
-			const row = Math.floor(selectedId / BOARD_COLUMNS)
-			moves.push(...scanLine(board, selectedId, -BOARD_COLUMNS, cur => cur >= 0, selectedTeam))
-			moves.push(...scanLine(board, selectedId, BOARD_COLUMNS, cur => cur < totalCells, selectedTeam))
-			moves.push(...scanLine(board, selectedId, -1, cur => cur >= 0 && Math.floor(cur / BOARD_COLUMNS) === row, selectedTeam))
-			moves.push(...scanLine(board, selectedId, 1, cur => cur < totalCells && Math.floor(cur / BOARD_COLUMNS) === row, selectedTeam))
-			break
-		}
-
-		case "horse": {
-			const col = selectedId % BOARD_COLUMNS
-			const row = Math.floor(selectedId / BOARD_COLUMNS)
-
-			const pushHorseTarget = (index: number) => {
-				if (index < 0 || index >= totalCells) return
-				const cell = board[index]
-				if (!cell || cell.team !== selectedTeam) moves.push(index)
-			}
-
-			if (row > 0 && !board[toIndex(row - 1, col)]) {
-				if (row >= 2 && col > 0) pushHorseTarget(toIndex(row - 2, col - 1))
-				if (row >= 2 && col < BOARD_COLUMNS - 1) pushHorseTarget(toIndex(row - 2, col + 1))
-			}
-
-			if (row < BOARD_ROWS - 1 && !board[toIndex(row + 1, col)]) {
-				if (row < BOARD_ROWS - 2 && col > 0) pushHorseTarget(toIndex(row + 2, col - 1))
-				if (row < BOARD_ROWS - 2 && col < BOARD_COLUMNS - 1) pushHorseTarget(toIndex(row + 2, col + 1))
-			}
-
-			if (col > 0 && !board[toIndex(row, col - 1)]) {
-				if (col >= 2 && row > 0) pushHorseTarget(toIndex(row - 1, col - 2))
-				if (col >= 2 && row < BOARD_ROWS - 1) pushHorseTarget(toIndex(row + 1, col - 2))
-			}
-
-			if (col < BOARD_COLUMNS - 1 && !board[toIndex(row, col + 1)]) {
-				if (col < BOARD_COLUMNS - 2 && row > 0) pushHorseTarget(toIndex(row - 1, col + 2))
-				if (col < BOARD_COLUMNS - 2 && row < BOARD_ROWS - 1) pushHorseTarget(toIndex(row + 1, col + 2))
-			}
-			break
-		}
-
-		case "elephant": {
-			const col = selectedId % BOARD_COLUMNS
-
-			const pushElephantIfValid = (target: number) => {
-				if (target < 0 || target >= totalCells) return
-				const cell = board[target]
-				if (!cell || cell.team !== selectedTeam) moves.push(target)
-			}
-
-			const upLeft = selectedId - BOARD_COLUMNS - 1
-			if (col >= 2 && selectedId >= 2 * BOARD_COLUMNS && !board[upLeft]) {
-				pushElephantIfValid(selectedId - 2 * BOARD_COLUMNS - 2)
-			}
-
-			const upRight = selectedId - BOARD_COLUMNS + 1
-			if (col <= BOARD_COLUMNS - 3 && selectedId >= 2 * BOARD_COLUMNS && !board[upRight]) {
-				pushElephantIfValid(selectedId - 2 * BOARD_COLUMNS + 2)
-			}
-
-			const downLeft = selectedId + BOARD_COLUMNS - 1
-			if (col >= 2 && selectedId < totalCells - 2 * BOARD_COLUMNS && !board[downLeft]) {
-				pushElephantIfValid(selectedId + 2 * BOARD_COLUMNS - 2)
-			}
-
-			const downRight = selectedId + BOARD_COLUMNS + 1
-			if (col <= BOARD_COLUMNS - 3 && selectedId < totalCells - 2 * BOARD_COLUMNS && !board[downRight]) {
-				pushElephantIfValid(selectedId + 2 * BOARD_COLUMNS + 2)
-			}
-			break
-		}
-
-		case "advisor": {
-			const col = selectedId % BOARD_COLUMNS
-			if (col > 0) {
-				const upLeft = selectedId - BOARD_COLUMNS - 1
-				const downLeft = selectedId + BOARD_COLUMNS - 1
-				if (isInPalace(selectedId, upLeft)) pushIfEnemyOrEmpty(board, selectedTeam, upLeft, moves)
-				if (isInPalace(selectedId, downLeft)) pushIfEnemyOrEmpty(board, selectedTeam, downLeft, moves)
-			}
-
-			if (col < BOARD_COLUMNS - 1) {
-				const upRight = selectedId - BOARD_COLUMNS + 1
-				const downRight = selectedId + BOARD_COLUMNS + 1
-				if (isInPalace(selectedId, upRight)) pushIfEnemyOrEmpty(board, selectedTeam, upRight, moves)
-				if (isInPalace(selectedId, downRight)) pushIfEnemyOrEmpty(board, selectedTeam, downRight, moves)
-			}
-			break
-		}
-
-		case "general": {
-			const up = selectedId - BOARD_COLUMNS
-			const down = selectedId + BOARD_COLUMNS
-			if (isInPalace(selectedId, up)) pushIfEnemyOrEmpty(board, selectedTeam, up, moves)
-			if (isInPalace(selectedId, down)) pushIfEnemyOrEmpty(board, selectedTeam, down, moves)
-
-			const col = selectedId % BOARD_COLUMNS
-			if (col > 0) {
-				const left = selectedId - 1
-				if (isInPalace(selectedId, left)) pushIfEnemyOrEmpty(board, selectedTeam, left, moves)
-			}
-
-			if (col < BOARD_COLUMNS - 1) {
-				const right = selectedId + 1
-				if (isInPalace(selectedId, right)) pushIfEnemyOrEmpty(board, selectedTeam, right, moves)
-			}
-
-			const scanForEnemyGeneral = (step: number) => {
-				let current = selectedId
-				while (true) {
-					const next = current + step
-					if (next < 0 || next >= totalCells) break
-					const target = board[next]
-					if (!target) {
-						current = next
-						continue
+			const oneRow = row + dir
+			if (oneRow >= 0 && oneRow < BOARD_ROWS) {
+				const oneIdx = oneRow * BOARD_COLUMNS + col
+				if (!board[oneIdx]) {
+					moves.push(oneIdx)
+					if (row === homeRow) {
+						const twoIdx = (row + dir * 2) * BOARD_COLUMNS + col
+						if (!board[twoIdx]) moves.push(twoIdx)
 					}
-
-					if (target.piece === "general" && target.team !== selectedTeam) {
-						moves.push(next)
-					}
-					break
 				}
 			}
 
-			scanForEnemyGeneral(-BOARD_COLUMNS)
-			scanForEnemyGeneral(BOARD_COLUMNS)
+			for (const dCol of [-1, 1]) {
+				const cRow = row + dir
+				const cCol = col + dCol
+				if (cRow < 0 || cRow >= BOARD_ROWS || cCol < 0 || cCol >= BOARD_COLUMNS) continue
+				const idx = cRow * BOARD_COLUMNS + cCol
+				const target = board[idx]
+				if (target && target.team !== team) moves.push(idx)
+			}
 			break
 		}
+
+		case "knight":
+			for (const [dRow, dCol] of KNIGHT_STEPS) pushStep(board, selectedId, dRow, dCol, team, moves)
+			break
+
+		case "bishop":
+			for (const [dRow, dCol] of DIAGONALS) moves.push(...slide(board, selectedId, dRow, dCol, team))
+			break
+
+		case "rook":
+			for (const [dRow, dCol] of ORTHOGONALS) moves.push(...slide(board, selectedId, dRow, dCol, team))
+			break
+
+		case "queen":
+			for (const [dRow, dCol] of [...DIAGONALS, ...ORTHOGONALS]) {
+				moves.push(...slide(board, selectedId, dRow, dCol, team))
+			}
+			break
+
+		case "king":
+			for (const [dRow, dCol] of KING_STEPS) pushStep(board, selectedId, dRow, dCol, team, moves)
+			break
 
 		default:
 			break
@@ -271,21 +134,20 @@ const getAvailableMoves = (board: BoardState, selectedId: number, direction: 1 |
 	return moves
 }
 
-const findCheckingPieces = (board: BoardState, team: Team, redFirst: boolean): number[] => {
-	const generalIndex = board.findIndex(cell => cell?.piece === "general" && cell.team === team)
-	if (generalIndex < 0) return []
+/**
+ * Enemy pieces whose pseudo-legal moves attack `team`'s king.
+ */
+const findCheckingPieces = (board: BoardState, team: Team): number[] => {
+	const kingIndex = board.findIndex(cell => cell?.piece === "king" && cell.team === team)
+	if (kingIndex < 0) return []
 
-	const enemyTeam: Team = team === "white" ? "black" : "white"
-	const enemyDirection = getMoveDirection(redFirst, enemyTeam)
+	const enemyTeam = enemyOf(team)
 	const checkers: number[] = []
-
 	for (let id = 0; id < board.length; id += 1) {
 		const cell = board[id]
 		if (!cell || cell.team !== enemyTeam) continue
-		const moves = getAvailableMoves(board, id, enemyDirection)
-		if (moves.includes(generalIndex)) checkers.push(id)
+		if (getAvailableMoves(board, id).includes(kingIndex)) checkers.push(id)
 	}
-
 	return checkers
 }
 
@@ -297,31 +159,37 @@ const applyMove = (board: BoardState, fromId: number, toId: number): BoardState 
 	return next
 }
 
-const countLegalMoves = (board: BoardState, team: Team, redFirst: boolean): number => {
-	const direction = getMoveDirection(redFirst, team)
+/**
+ * Count fully-legal moves for `team`: pseudo-legal moves that do not leave the team's
+ * own king in check.
+ */
+const countLegalMoves = (board: BoardState, team: Team): number => {
 	let legalMovesCount = 0
-
 	for (let fromId = 0; fromId < board.length; fromId += 1) {
 		const cell = board[fromId]
 		if (!cell || cell.team !== team) continue
-
-		const candidateMoves = getAvailableMoves(board, fromId, direction)
-		for (const toId of candidateMoves) {
+		for (const toId of getAvailableMoves(board, fromId)) {
 			const nextBoard = applyMove(board, fromId, toId)
-			const stillChecked = findCheckingPieces(nextBoard, team, redFirst).length > 0
-			if (!stillChecked) {
+			if (findCheckingPieces(nextBoard, team).length === 0) {
 				legalMovesCount += 1
 			}
 		}
 	}
-
 	return legalMovesCount
 }
 
-export const evaluateTeamState = (fen: string, checkedTeam: Team, redFirst: boolean): TeamStateEvaluation => {
+/**
+ * Evaluate `checkedTeam`'s position: check + whether it has any legal move, yielding
+ * one of ongoing / check / checkmate / stalemate. `_redFirst` is accepted for signature
+ * stability but unused — chess pawn direction follows piece colour, not board seat.
+ */
+export const evaluateTeamState = (fen: string, checkedTeam: Team, _redFirst: boolean): TeamStateEvaluation => {
 	const board = fenToBoard(fen)
-	const inCheck = findCheckingPieces(board, checkedTeam, redFirst).length > 0
-	const legalMovesCount = countLegalMoves(board, checkedTeam, redFirst)
+	if (board.length !== TOTAL_CELLS) {
+		throw new Error(`Invalid board size: expected ${TOTAL_CELLS}, got ${board.length}`)
+	}
+	const inCheck = findCheckingPieces(board, checkedTeam).length > 0
+	const legalMovesCount = countLegalMoves(board, checkedTeam)
 
 	if (legalMovesCount === 0) {
 		return {

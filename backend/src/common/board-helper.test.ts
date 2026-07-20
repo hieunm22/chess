@@ -1,136 +1,106 @@
 import { describe, expect, it } from "vitest"
 import {
-	hasAttackingMaterial,
-	hasPieceAcrossRiver,
-	isSoldierAdvance,
+	hasMatingMaterial,
+	isPawnMove,
 	parseFenCounters,
 	toStandardFen
 } from "./board-helper"
 
-// Reminder: in this project's FEN convention lowercase = red, uppercase = black.
-describe("hasPieceAcrossRiver", () => {
-	it("returns false at the initial position (no piece has crossed)", () => {
-		const initial = "RHEAGAEHR/9/1C5C1/S1S1S1S1S/9/9/s1s1s1s1s/1c5c1/9/rheagaehr"
-		expect(hasPieceAcrossRiver(initial, "white")).toBe(false)
-		expect(hasPieceAcrossRiver(initial, "black")).toBe(false)
+// Standard chess FEN convention: uppercase = white, lowercase = black; row 0 (rank 8)
+// is the top of the board.
+const INITIAL = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+
+describe("hasMatingMaterial", () => {
+	it("returns true for both sides at the initial position", () => {
+		expect(hasMatingMaterial(INITIAL, "white")).toBe(true)
+		expect(hasMatingMaterial(INITIAL, "black")).toBe(true)
 	})
 
-	it("detects a red attacking piece that crossed into the top half", () => {
-		// Red general on the bottom (home), a red chariot parked on row 0 (enemy half).
-		const fen = "r8/9/9/9/9/9/9/9/9/4g4"
-		expect(hasPieceAcrossRiver(fen, "white")).toBe(true)
+	it("returns false for lone kings on both sides", () => {
+		const fen = "4k3/8/8/8/8/8/8/4K3"
+		expect(hasMatingMaterial(fen, "white")).toBe(false)
+		expect(hasMatingMaterial(fen, "black")).toBe(false)
 	})
 
-	it("detects a black attacking piece that crossed into the bottom half", () => {
-		// Black general on top (home), a black chariot parked on row 9 (enemy half).
-		const fen = "4G4/9/9/9/9/9/9/9/9/R8"
-		expect(hasPieceAcrossRiver(fen, "black")).toBe(true)
+	it("returns false for king + single minor piece (K+B, K+N)", () => {
+		expect(hasMatingMaterial("4k3/8/8/8/8/8/8/4KB2", "white")).toBe(false) // K + bishop
+		expect(hasMatingMaterial("4k3/8/8/8/8/8/8/4KN2", "white")).toBe(false) // K + knight
 	})
 
-	it("returns false when only defensive pieces remain in the home half", () => {
-		// Red general + advisor at the bottom, nothing across the river.
-		const fen = "9/9/9/9/9/9/9/9/9/3ag4"
-		expect(hasPieceAcrossRiver(fen, "white")).toBe(false)
+	it("returns false for king + two knights (cannot force mate)", () => {
+		expect(hasMatingMaterial("4k3/8/8/8/8/8/8/3NKN2", "white")).toBe(false)
 	})
 
-	it("falls back to winnable (true) when the team's general is missing", () => {
-		const fen = "9/9/9/9/9/9/9/9/9/4g4"
-		expect(hasPieceAcrossRiver(fen, "black")).toBe(true)
+	it("returns true for a pawn, rook or queen", () => {
+		expect(hasMatingMaterial("4k3/8/8/8/8/8/4P3/4K3", "white")).toBe(true) // pawn
+		expect(hasMatingMaterial("4k3/8/8/8/8/8/8/4KR2", "white")).toBe(true) // rook
+		expect(hasMatingMaterial("4k3/8/8/8/8/8/8/4KQ2", "white")).toBe(true) // queen
+	})
+
+	it("returns true for bishop+knight and the bishop pair", () => {
+		expect(hasMatingMaterial("4k3/8/8/8/8/8/8/3NKB2", "white")).toBe(true) // B + N
+		expect(hasMatingMaterial("4k3/8/8/8/8/8/8/2B1KB2", "white")).toBe(true) // two bishops
+	})
+
+	it("is per-team", () => {
+		// White has a pawn, black has only its king.
+		const fen = "4k3/8/8/8/8/8/4P3/4K3"
+		expect(hasMatingMaterial(fen, "white")).toBe(true)
+		expect(hasMatingMaterial(fen, "black")).toBe(false)
 	})
 
 	it("tolerates a full 6-field FEN by parsing the placement field only", () => {
-		const initial = "RHEAGAEHR/9/1C5C1/S1S1S1S1S/9/9/s1s1s1s1s/1c5c1/9/rheagaehr w - - 0 1"
-		expect(hasPieceAcrossRiver(initial, "white")).toBe(false)
-		expect(hasPieceAcrossRiver(initial, "black")).toBe(false)
+		expect(hasMatingMaterial(`${INITIAL} w KQkq - 0 1`, "white")).toBe(true)
 	})
 })
 
-// Reminder: in this project's FEN convention lowercase = red, uppercase = black.
-describe("hasAttackingMaterial", () => {
-	it("returns true at the initial position for both sides", () => {
-		const initial = "RHEAGAEHR/9/1C5C1/S1S1S1S1S/9/9/s1s1s1s1s/1c5c1/9/rheagaehr"
-		expect(hasAttackingMaterial(initial, "white")).toBe(true)
-		expect(hasAttackingMaterial(initial, "black")).toBe(true)
+describe("isPawnMove", () => {
+	it("detects a pawn advancing forward", () => {
+		const prev = "4k3/8/8/8/8/8/4P3/4K3"
+		const next = "4k3/8/8/8/4P3/8/8/4K3" // white pawn e2 -> e4
+		expect(isPawnMove(prev, next, "white")).toBe(true)
 	})
 
-	it("returns false for a side holding only general/advisor/elephant", () => {
-		// Red general + advisors + elephants at the bottom; no attacking piece.
-		const fen = "9/9/9/9/9/9/9/9/9/2eagae2"
-		expect(hasAttackingMaterial(fen, "white")).toBe(false)
+	it("detects a pawn capture", () => {
+		const prev = "4k3/8/8/3p4/4P3/8/8/4K3"
+		const next = "4k3/8/8/3P4/8/8/8/4K3" // white pawn e4 x d5
+		expect(isPawnMove(prev, next, "white")).toBe(true)
 	})
 
-	it("returns false for BOTH sides in a dead-material position (the draw trigger)", () => {
-		// Only generals + advisors remain on both sides -> nobody can ever checkmate.
-		const fen = "3AGA3/9/9/9/9/9/9/9/9/3aga3"
-		expect(hasAttackingMaterial(fen, "white")).toBe(false)
-		expect(hasAttackingMaterial(fen, "black")).toBe(false)
+	it("returns false when a non-pawn piece moves", () => {
+		const prev = "4k3/8/8/8/8/5N2/8/4K3"
+		const next = "4k3/8/8/8/8/8/5N2/4K3" // white knight f3 -> f2
+		expect(isPawnMove(prev, next, "white")).toBe(false)
 	})
 
-	it("detects each attacking piece type (chariot/horse/cannon/soldier)", () => {
-		expect(hasAttackingMaterial("9/9/9/9/9/9/9/9/9/r8", "white")).toBe(true) // chariot
-		expect(hasAttackingMaterial("9/9/9/9/9/9/9/9/9/h8", "white")).toBe(true) // horse
-		expect(hasAttackingMaterial("9/9/9/9/9/9/9/9/9/c8", "white")).toBe(true) // cannon
-		expect(hasAttackingMaterial("9/9/9/9/9/9/9/9/9/s8", "white")).toBe(true) // soldier
-	})
-
-	it("is per-team: a black attacker does not count as red material", () => {
-		// A lone black cannon (uppercase) on the board.
-		const fen = "9/9/2C6/9/9/9/9/9/9/9"
-		expect(hasAttackingMaterial(fen, "black")).toBe(true)
-		expect(hasAttackingMaterial(fen, "white")).toBe(false)
+	it("is per-team: a white pawn move is not a black pawn move", () => {
+		const prev = "4k3/8/8/8/8/8/4P3/4K3"
+		const next = "4k3/8/8/8/4P3/8/8/4K3"
+		expect(isPawnMove(prev, next, "black")).toBe(false)
 	})
 })
-
-// Reminder: lowercase = red, uppercase = black; row 0 is the top of the board.
-describe("isSoldierAdvance", () => {
-	it("detects a red soldier advancing forward (red home at the bottom)", () => {
-		const prev = "4G4/9/9/9/9/9/s8/9/9/4g4"
-		const next = "4G4/9/9/9/9/s8/9/9/9/4g4" // soldier row 6 -> row 5 (toward the enemy)
-		expect(isSoldierAdvance(prev, next, "white")).toBe(true)
-	})
-
-	it("detects a black soldier advancing forward (black home at the top)", () => {
-		const prev = "4G4/9/9/S8/9/9/9/9/9/4g4"
-		const next = "4G4/9/9/9/S8/9/9/9/9/4g4" // soldier row 3 -> row 4 (toward the enemy)
-		expect(isSoldierAdvance(prev, next, "black")).toBe(true)
-	})
-
-	it("returns false for a sideways soldier move (no forward progress)", () => {
-		const prev = "4G4/9/9/s8/9/9/9/9/9/4g4"
-		const next = "4G4/9/9/1s7/9/9/9/9/9/4g4" // soldier stays on row 3, shifts a column
-		expect(isSoldierAdvance(prev, next, "white")).toBe(false)
-	})
-
-	it("returns false when a non-soldier piece moves", () => {
-		const prev = "4G4/9/9/9/9/r8/9/9/9/4g4"
-		const next = "4G4/9/9/9/r8/9/9/9/9/4g4" // a chariot moved, not a soldier
-		expect(isSoldierAdvance(prev, next, "white")).toBe(false)
-	})
-})
-
-const PLACEMENT = "RHEAGAEHR/9/1C5C1/S1S1S1S1S/9/9/s1s1s1s1s/1c5c1/9/rheagaehr"
 
 describe("parseFenCounters", () => {
 	it("defaults a board-only FEN to half-move 0, full-move 1", () => {
-		expect(parseFenCounters(PLACEMENT)).toEqual({ halfmove: 0, fullmove: 1 })
+		expect(parseFenCounters(INITIAL)).toEqual({ halfmove: 0, fullmove: 1 })
 	})
 
 	it("reads the counters from a 6-field FEN", () => {
-		expect(parseFenCounters(`${PLACEMENT} b - - 7 12`)).toEqual({ halfmove: 7, fullmove: 12 })
+		expect(parseFenCounters(`${INITIAL} b - - 7 12`)).toEqual({ halfmove: 7, fullmove: 12 })
 	})
 
 	it("falls back to defaults when the counter fields are non-numeric", () => {
-		expect(parseFenCounters(`${PLACEMENT} b - - x y`)).toEqual({ halfmove: 0, fullmove: 1 })
+		expect(parseFenCounters(`${INITIAL} b - - x y`)).toEqual({ halfmove: 0, fullmove: 1 })
 	})
 })
 
 describe("toStandardFen", () => {
 	it("builds a 6-field FEN with the side to move and empty castling/en-passant", () => {
-		expect(toStandardFen(PLACEMENT, "white", 0, 1)).toBe(`${PLACEMENT} w - - 0 1`)
-		expect(toStandardFen(PLACEMENT, "black", 3, 5)).toBe(`${PLACEMENT} b - - 3 5`)
+		expect(toStandardFen(INITIAL, "white", 0, 1)).toBe(`${INITIAL} w - - 0 1`)
+		expect(toStandardFen(INITIAL, "black", 3, 5)).toBe(`${INITIAL} b - - 3 5`)
 	})
 
 	it("re-normalizes an already 6-field FEN using only its placement", () => {
-		expect(toStandardFen(`${PLACEMENT} w - - 9 9`, "black", 1, 2)).toBe(`${PLACEMENT} b - - 1 2`)
+		expect(toStandardFen(`${INITIAL} w - - 9 9`, "black", 1, 2)).toBe(`${INITIAL} b - - 1 2`)
 	})
 })

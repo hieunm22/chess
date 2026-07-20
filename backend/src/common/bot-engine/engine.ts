@@ -3,7 +3,7 @@ import { DifficultyConfig } from "./difficulty"
 import { DEFAULT_ENGINE_PATH, ENGINE_MOVE_TIMEOUT_MS } from "./constants"
 
 /**
- * Thin async wrapper around a fairy-stockfish UCI process for xiangqi.
+ * Thin async wrapper around a fairy-stockfish UCI process for chess.
  * Exposes `findBestMove(fen, config)`; not concurrent — one call at a time.
  */
 export class UciEngine {
@@ -31,7 +31,7 @@ export class UciEngine {
 		})
 
 		await this.send("uci", line => line === "uciok")
-		await this.send("setoption name UCI_Variant value xiangqi")
+		await this.send("setoption name UCI_Variant value chess")
 		await this.send("isready", line => line === "readyok")
 	}
 
@@ -56,7 +56,7 @@ export class UciEngine {
 
 	/**
 	 * Like `findBestMove` but returns up to `multipv` ranked alternatives (MultiPV).
-	 * Used to avoid losing moves (e.g. perpetual check). Returns [] if no legal moves.
+	 * Used with a rejectMove hook to skip unwanted moves. Returns [] if no legal moves.
 	 */
 	async findBestMoves(standardFen: string, config: DifficultyConfig, multipv: number): Promise<string[]> {
 		if (!this.process) {
