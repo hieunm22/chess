@@ -252,20 +252,6 @@ export function useSocket() {
 		}
 	}, [])
 
-	const onPerpetualCheckWarning = useCallback((callback: (data: any) => void) => {
-		if (socketRef.current) {
-			socketRef.current.on("perpetual-check-warning", callback)
-		} else {
-			logger.log("[Socket.io] Socket not initialized for perpetual-check-warning listener")
-		}
-	}, [])
-
-	const offPerpetualCheckWarning = useCallback((callback: (data: any) => void) => {
-		if (socketRef.current) {
-			socketRef.current.off("perpetual-check-warning", callback)
-		}
-	}, [])
-
 	const onGameUndo = useCallback((callback: (data: any) => void) => {
 		if (socketRef.current) {
 			socketRef.current.on("game-undo", callback)
@@ -385,7 +371,6 @@ export function useSocket() {
 		offGameStarted,
 		offGameUndo,
 		offMovePiece,
-		offPerpetualCheckWarning,
 		offPresenceChanged,
 		offPrivateMessageSent,
 		offRoomCreated,
@@ -403,7 +388,6 @@ export function useSocket() {
 		onGameStarted,
 		onGameUndo,
 		onMovePiece,
-		onPerpetualCheckWarning,
 		onPresenceChanged,
 		onPrivateMessageSent,
 		onRoomCreated,

@@ -96,12 +96,11 @@ export interface RoomWithUsers {
 	users: RoomUser[]
 }
 
-export type VerifyStatus = "ongoing" | "check" | "checkmate" | "stalemate" | "perpetual-check"
+export type VerifyStatus = "ongoing" | "check" | "checkmate" | "stalemate"
 
 export type GameEndReason =
 	| "checkmate"
 	| "stalemate"
-	| "perpetual-check"
 	| "timeout"
 	| "per-move-timeout"
 	| "surrender"

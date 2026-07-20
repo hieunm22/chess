@@ -38,7 +38,6 @@
 			"end-title": "Ván đấu kết thúc",
 			"reason-checkmate": "{{name}} thắng bằng chiếu bí",
 			"reason-stalemate": "Hết nước đi",
-			"reason-perpetual-check": "{{name}} thắng do đối thủ chiếu tướng liên tục",
 			"reason-surrender": "{{name}} đã đầu hàng",
 			"reason-leave": "{{name}} đã rời trận",
 			"reason-draw": "Hoà",
@@ -182,10 +181,6 @@
 			"captured": "Tướng đã bị bắt. Game kết thúc",
 			"in-check": "Tướng của bạn đang bị chiếu"
 		},
-		"perpetual-check": {
-			"warning-self": "Bạn đang chiếu quẩn, nếu thực hiện 1 nước nữa, bạn sẽ bị xử thua",
-			"warning-sent": "Đã gửi cảnh báo chiếu quẩn cho đối thủ"
-		},
 		"label": {
 			"win": "Thắng",
 			"draw": "Hoà",
@@ -232,15 +227,12 @@
 			"you-win": "Bạn đã chiến thắng",
 			"you-lose": "Bạn đã thua",
 			"you-draw": "Ván đấu hòa",
-			"you-win-perpetual-check": "Bạn thắng vì đối thủ chiếu quẩn",
-			"you-lose-perpetual-check": "Bạn thua do chiếu quẩn",
 			"you-win-per-move-timeout": "Bạn thắng vì đối thủ hết giờ đi một nước",
 			"you-lose-per-move-timeout": "Bạn thua do hết giờ đi một nước",
 			"spectator-win-checkmate": "{0} thắng do chiếu bí",
 			"spectator-win-stalemate": "{0} thắng do đối thủ hết nước đi",
 			"spectator-win-timeout": "{0} thắng do đối thủ hết giờ",
 			"spectator-win-per-move-timeout": "{0} thắng do đối thủ hết giờ đi một nước",
-			"spectator-win-perpetual-check": "{0} thắng do đối thủ chiếu quẩn",
 			"spectator-draw": "Ván đấu kết thúc với tỉ số hòa",
 			"back-to-room": "Quay lại phòng",
 			"auto-back-countdown": "{0}. Bấm nút quay lại để quay lại room. Bạn sẽ tự động quay lại trong {1}s"

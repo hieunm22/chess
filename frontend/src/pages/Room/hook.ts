@@ -109,7 +109,6 @@ const useRoomHook = () => {
 		offGameStarted,
 		offGameUndo,
 		offMovePiece,
-		offPerpetualCheckWarning,
 		offRoomMessageSent,
 		offRoomUsersUpdated,
 		offSurrender,
@@ -120,7 +119,6 @@ const useRoomHook = () => {
 		onGameStarted,
 		onGameUndo,
 		onMovePiece,
-		onPerpetualCheckWarning,
 		onRoomMessageSent,
 		onRoomUsersUpdated,
 		onSurrender,
@@ -242,11 +240,6 @@ const useRoomHook = () => {
 			let resultText = isWinner ? "room.messages.you-win" : "room.messages.you-lose"
 			if (isDraw) {
 				resultText = "room.messages.you-draw"
-			} else if (status === "perpetual-check") {
-				// show the reason to let both side to know the game ended on the 長將 rule.
-				resultText = isWinner
-					? "room.messages.you-win-perpetual-check"
-					: "room.messages.you-lose-perpetual-check"
 			} else if (status === "per-move-timeout") {
 				// Per-move timeout is an unconditional win/loss (never a draw).
 				resultText = isWinner
@@ -270,8 +263,7 @@ const useRoomHook = () => {
 				checkmate: "room.messages.spectator-win-checkmate",
 				stalemate: "room.messages.spectator-win-stalemate",
 				timeout: "room.messages.spectator-win-timeout",
-				"per-move-timeout": "room.messages.spectator-win-per-move-timeout",
-				"perpetual-check": "room.messages.spectator-win-perpetual-check"
+				"per-move-timeout": "room.messages.spectator-win-per-move-timeout"
 			}
 			const key = keyByStatus[status]
 			if (!winner || !key) {
@@ -957,47 +949,6 @@ const useRoomHook = () => {
 		}
 	}, [isConnected, roomId, game, onGameEnded, offGameEnded, handleGameEnded])
 
-	// Socket.io: perpetual check warning. Checked side is notified;
-	// checker (offender) is warned that one more repetition will forfeit the game.
-	useEffect(() => {
-		if (!isConnected || !roomId) {
-			return
-		}
-
-		const handlePerpetualCheckWarning = (data: {
-			roomId: string | number
-			gameId: string
-			offenderTeam: Team
-			checkedTeam: Team
-		}) => {
-			if (Number(data.roomId) !== roomId) {
-				return
-			}
-			if (game && data.gameId !== game.id) {
-				return
-			}
-			if (myTeam === data.checkedTeam) {
-				openSnackbar({
-					avatar: null,
-					message: translate("game.perpetual-check.warning-sent"),
-					severity: "warning",
-					duration: 4000
-				})
-			} else if (myTeam === data.offenderTeam) {
-				void openAlert({
-					title: "popup.alert.title",
-					message: "game.perpetual-check.warning-self"
-				})
-			}
-		}
-
-		onPerpetualCheckWarning(handlePerpetualCheckWarning)
-
-		return () => {
-			offPerpetualCheckWarning(handlePerpetualCheckWarning)
-		}
-	}, [isConnected, roomId, game, myTeam, onPerpetualCheckWarning, offPerpetualCheckWarning])
-
 	// Socket.io: Play the gong and initialize the board when a game starts in this room.
 	// Fires for everyone in the room (host, opponent, spectators)
 	useEffect(() => {
@@ -1582,15 +1533,13 @@ const useRoomHook = () => {
 					if (!verify?.success) {
 						logger.warn("[Room] verify-state failed", verify)
 					} else if (verify.data?.gameEnded) {
-						// Covers checkmate, stalemate and perpetual check (長將).
+						// Covers checkmate and stalemate.
 						await handleGameEnded({
 							gameId: game.id,
-							status: verify.data.status as "checkmate" | "stalemate" | "perpetual-check",
+							status: verify.data.status as "checkmate" | "stalemate",
 							winnerId: verify.data.winnerId
 						})
 					}
-					// Perpetual-check warning is handled via the "perpetual-check-warning" socket event;
-					// nothing more to do in the verify-state response.
 				}
 			} finally {
 				setIsMovePending(false)

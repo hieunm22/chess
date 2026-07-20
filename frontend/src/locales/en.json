@@ -38,7 +38,6 @@
 			"end-title": "Game over",
 			"reason-checkmate": "{{name}} won by checkmate",
 			"reason-stalemate": "Stalemate",
-			"reason-perpetual-check": "{{name}} won by opponent's perpetual check",
 			"reason-surrender": "{{name}} surrendered",
 			"reason-leave": "{{name}} left the game",
 			"reason-draw": "Draw",
@@ -182,10 +181,6 @@
 			"captured": "General has been captured. Room over",
 			"in-check": "Your general is under attack"
 		},
-		"perpetual-check": {
-			"warning-self": "You are perpetual checking. If you make one more repeated check, you will lose",
-			"warning-sent": "A perpetual-check warning has been sent to your opponent"
-		},
 		"label": {
 			"win": "Win",
 			"draw": "Draw",
@@ -232,15 +227,12 @@
 			"you-win": "You win",
 			"you-lose": "You lose",
 			"you-draw": "The game is a draw",
-			"you-win-perpetual-check": "You win — your opponent lost by perpetual check",
-			"you-lose-perpetual-check": "You lose by perpetual check",
 			"you-win-per-move-timeout": "You win — your opponent ran out of move time",
 			"you-lose-per-move-timeout": "You lose — you ran out of move time",
 			"spectator-win-checkmate": "{0} won by checkmate",
 			"spectator-win-stalemate": "{0} won — opponent had no legal moves",
 			"spectator-win-timeout": "{0} won on time",
 			"spectator-win-per-move-timeout": "{0} won — opponent ran out of move time",
-			"spectator-win-perpetual-check": "{0} won — opponent lost by perpetual check",
 			"spectator-draw": "The game ended in a draw",
 			"back-to-room": "Back to room",
 			"auto-back-countdown": "{0}. Press the back button to return to the room. You will be automatically returned in {1}s"

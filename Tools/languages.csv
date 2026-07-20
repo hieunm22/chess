@@ -24,7 +24,6 @@ page.replay.pause;Pause;Tạm dừng
 page.replay.end-title;Game over;Ván đấu kết thúc
 page.replay.reason-checkmate;{{name}} won by checkmate;{{name}} thắng bằng chiếu bí
 page.replay.reason-stalemate;Stalemate;Hết nước đi
-page.replay.reason-perpetual-check;{{name}} won by opponent's perpetual check;{{name}} thắng do đối thủ chiếu tướng liên tục
 page.replay.reason-surrender;{{name}} surrendered;{{name}} đã đầu hàng
 page.replay.reason-leave;{{name}} left the game;{{name}} đã rời trận
 page.replay.reason-draw;Draw;Hoà
@@ -116,8 +115,6 @@ popup.confirm.ok;Ok;Ok
 popup.confirm.cancel;Cancel;Huỷ
 game.general.captured;General has been captured. Room over;Tướng đã bị bắt. Game kết thúc
 game.general.in-check;Your general is under attack;Tướng của bạn đang bị chiếu
-game.perpetual-check.warning-self;You are perpetual checking. If you make one more repeated check, you will lose;Bạn đang chiếu quẩn, nếu thực hiện 1 nước nữa, bạn sẽ bị xử thua
-game.perpetual-check.warning-sent;A perpetual-check warning has been sent to your opponent;Đã gửi cảnh báo chiếu quẩn cho đối thủ
 game.label.win;Win;Thắng
 game.label.draw;Draw;Hoà
 game.label.lose;Lose;Thua
@@ -301,15 +298,12 @@ room.messages.game-ended;Game ended;Ván đấu đã kết thúc
 room.messages.you-win;You win;Bạn đã chiến thắng
 room.messages.you-lose;You lose;Bạn đã thua
 room.messages.you-draw;The game is a draw;Ván đấu hòa
-room.messages.you-win-perpetual-check;You win — your opponent lost by perpetual check;Bạn thắng vì đối thủ chiếu quẩn
-room.messages.you-lose-perpetual-check;You lose by perpetual check;Bạn thua do chiếu quẩn
 room.messages.you-win-per-move-timeout;You win — your opponent ran out of move time;Bạn thắng vì đối thủ hết giờ đi một nước
 room.messages.you-lose-per-move-timeout;You lose — you ran out of move time;Bạn thua do hết giờ đi một nước
 room.messages.spectator-win-checkmate;{0} won by checkmate;{0} thắng do chiếu bí
 room.messages.spectator-win-stalemate;{0} won — opponent had no legal moves;{0} thắng do đối thủ hết nước đi
 room.messages.spectator-win-timeout;{0} won on time;{0} thắng do đối thủ hết giờ
 room.messages.spectator-win-per-move-timeout;{0} won — opponent ran out of move time;{0} thắng do đối thủ hết giờ đi một nước
-room.messages.spectator-win-perpetual-check;{0} won — opponent lost by perpetual check;{0} thắng do đối thủ chiếu quẩn
 room.messages.spectator-draw;The game ended in a draw;Ván đấu kết thúc với tỉ số hòa
 room.messages.back-to-room;Back to room;Quay lại phòng
 room.messages.auto-back-countdown;{0}. Press the back button to return to the room. You will be automatically returned in {1}s;{0}. Bấm nút quay lại để quay lại room. Bạn sẽ tự động quay lại trong {1}s
