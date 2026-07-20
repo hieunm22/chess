@@ -35,6 +35,7 @@ import {
 	getMoveDirection,
 	getPieceFromCharacter,
 	getTeamFromPieceChar,
+	markEnPassantTarget,
 	markerClass,
 	playSound,
 	resolveSideUsers,
@@ -586,7 +587,10 @@ const useRoomHook = () => {
 
 		// teamTurn already applied above via setCurrentTurn(latest.team)
 		setAvailableMoves([])
-		setBoard(nextBoard)
+		// Re-derive en passant eligibility from the latest move (FEN doesn't carry it).
+		setBoard(nextPreviousMove
+			? markEnPassantTarget(nextBoard, nextPreviousMove.from, nextPreviousMove.to)
+			: nextBoard)
 		setSelected(null)
 		setPreviousMove(nextPreviousMove)
 		setCheckingPieces(nextCheckingPieces)
@@ -1460,13 +1464,27 @@ const useRoomHook = () => {
 		const targetId = board[selectedId]!.animateTo
 		if (targetId === undefined) return
 		const oldTarget = board[targetId]
-		const movedTeam = getTeamFromPieceChar(board[selectedId]!.piece)
+		const movingPiece = board[selectedId]!.piece
+		const movedTeam = getTeamFromPieceChar(movingPiece)
 		if (!movedTeam) {
 			return
 		}
 
+		const colDelta = (targetId % 8) - (selectedId % 8)
+		const isEnPassant =
+			movingPiece?.toLowerCase() === "p" &&
+			Math.abs(colDelta) === 1 &&
+			!oldTarget?.piece
+		const enPassantCapturedIndex = isEnPassant ? selectedId + colDelta : -1
+		const enPassantCapturedPiece = isEnPassant
+			? board[enPassantCapturedIndex]?.piece ?? null
+			: null
+
 		// Create new board state with the move applied
 		const gameStateClone = applyMove(board, selectedId, targetId)
+		if (isEnPassant && enPassantCapturedIndex >= 0) {
+			gameStateClone[enPassantCapturedIndex] = null
+		}
 
 		// Board orientation drives soldier attack direction in check detection.
 		const redFirst = room?.red_first ?? true
@@ -1499,10 +1517,14 @@ const useRoomHook = () => {
 		const oldTargetTeam = getTeamFromPieceChar(oldTarget?.piece)
 		if (oldTarget?.piece && oldTargetTeam !== movedTeam) {
 			capturedPieceCharacter = oldTarget.piece
-			const normalizedCapture = (movedTeam === "white"
-				? capturedPieceCharacter.toUpperCase()
-				: capturedPieceCharacter.toLowerCase()) as PieceCharacter
-			capturedPiecesClone[movedTeam].push(normalizedCapture)
+		} else if (isEnPassant && enPassantCapturedPiece) {
+			capturedPieceCharacter = enPassantCapturedPiece
+		}
+		if (capturedPieceCharacter) {
+			const capturedColor = getTeamFromPieceChar(capturedPieceCharacter)
+			if (capturedColor) {
+				capturedPiecesClone[capturedColor].push(capturedPieceCharacter)
+			}
 		}
 
 		const enemyTeam = movedTeam === "white" ? "black" : "white"
@@ -1517,9 +1539,12 @@ const useRoomHook = () => {
 		} else {
 			playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + MOVE_SOUND_URL)
 		}
+		// Flag a two-square pawn advance so the opponent can answer with en passant next move.
+		const committedBoard = markEnPassantTarget(gameStateClone, selectedId, targetId)
+
 		setAvailableMoves([])
 		setCapturedPieces(capturedPiecesClone)
-		setBoard(gameStateClone)
+		setBoard(committedBoard)
 		setSelected(null)
 		// Mark from/to right away so local moves get the same previous-move highlight
 		setPreviousMove({ from: selectedId, to: targetId })

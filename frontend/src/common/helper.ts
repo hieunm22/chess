@@ -68,6 +68,37 @@ function slide(offset: number, current: number, occupied: CellProps[]): number[]
 	return moves
 }
 
+function convertPieceCharToFullName(pieceChar: PieceCharacter) {
+	switch (pieceChar) {
+		case "k":
+			return { piece: "king", team: "black" }
+		case "q":
+			return { piece: "queen", team: "black" }
+		case "r":
+			return { piece: "rook", team: "black" }
+		case "b":
+			return { piece: "bishop", team: "black" }
+		case "n":
+			return { piece: "knight", team: "black" }
+		case "p":
+			return { piece: "pawn", team: "black" }
+		case "K":
+			return { piece: "king", team: "white" }
+		case "Q":
+			return { piece: "queen", team: "white" }
+		case "R":
+			return { piece: "rook", team: "white" }
+		case "B":
+			return { piece: "bishop", team: "white" }
+		case "N":
+			return { piece: "knight", team: "white" }
+		case "P":
+			return { piece: "pawn", team: "white" }
+		default:
+			throw new Error(`Invalid piece character: ${pieceChar}`)
+	}
+}
+
 export function getAvailableMoves(
 	gameState: NullableCellProps[],
 	selectedIndex: number,
@@ -80,53 +111,58 @@ export function getAvailableMoves(
 
 	const moves: number[] = []
 	const occupiedIndexes = gameState.filter(tile => tile !== null)
-	switch (selectedTile.piece) {
-		case "p":
-		case "P":
-			const forwardTile = gameState[selectedIndex + direction * 8]
-			if (forwardTile === null) {
-				// If there isn't a piece directly in front, the pawn can move forward
-				moves.push(selectedIndex + direction * 8)
-			}
-			const captureOffsets = [direction * 7, direction * 9]
-			for (const offset of captureOffsets) {
-				const captureIndex = selectedIndex + offset
-				if (captureIndex >= 0 && captureIndex < 64) {
-					const captureTile = gameState[captureIndex]
-					if (captureTile && isDifferentTeam(captureTile, selectedTile)) {
-						moves.push(captureIndex)
+	const pieceInfo = convertPieceCharToFullName(selectedTile.piece)
+	switch (pieceInfo.piece) {
+		case "pawn": {
+			const row = Math.floor(selectedIndex / 8)
+			const col = selectedIndex % 8
+
+			// Forward one square (only onto an empty square).
+			const oneStep = selectedIndex + direction * 8
+			if (oneStep >= 0 && oneStep < 64 && gameState[oneStep] === null) {
+				moves.push(oneStep)
+
+				// Forward two squares from the home rank (both squares must be empty).
+				const homeRow = direction === -1 ? 6 : 1
+				if (row === homeRow) {
+					const twoStep = selectedIndex + direction * 16
+					if (gameState[twoStep] === null) {
+						moves.push(twoStep)
 					}
 				}
 			}
 
-			if (
-				(direction === -1 && selectedIndex >= 48) ||
-				(direction === 1 && selectedIndex < 16)
-			) {
-				const move1CellsId = selectedIndex + direction * 8
-				const move2CellsId = selectedIndex + direction * 16
-				// Check if the pawn is in its initial position and can move two squares
-				if (gameState[move2CellsId] === null && gameState[move1CellsId] === null) {
-					moves.push(move2CellsId) // Move forward two squares from initial position
-				}
-			}
+			// Diagonal captures + en passant. Guard the column so edge pawns don't wrap.
+			for (const colDelta of [-1, 1]) {
+				const targetCol = col + colDelta
+				if (targetCol < 0 || targetCol > 7) continue
 
-			// check for en passant
-			const enPassantOffsets = [direction * 7, direction * 9]
-			for (const offset of enPassantOffsets) {
-				const adjacentIndex = selectedIndex + offset - direction * 8
-				const captureIndex = selectedIndex + offset
-				if (captureIndex < 0 || captureIndex >= 64) {
+				const captureIndex = selectedIndex + direction * 8 + colDelta
+				if (captureIndex < 0 || captureIndex >= 64) continue
+
+				const captureTile = gameState[captureIndex]
+				if (captureTile && captureTile.piece) {
+					const captureInfo = convertPieceCharToFullName(captureTile.piece)
+					// Normal diagonal capture of an enemy piece.
+					if (pieceInfo.team !== captureInfo.team) {
+						moves.push(captureIndex)
+					}
 					continue
 				}
-				const adjacentTile = gameState[adjacentIndex]
-				if (adjacentTile?.canBeEnPassant === true) {
-					moves.push(captureIndex) // Add en passant capture move
+
+				// En passant: the landing square is empty and an enemy pawn that just
+				// double-stepped sits beside us on the target file.
+				const adjacentTile = gameState[selectedIndex + colDelta]
+				if (
+					adjacentTile?.canBeEnPassant === true &&
+					isDifferentTeam(adjacentTile, selectedTile)
+				) {
+					moves.push(captureIndex)
 				}
 			}
 			break
-		case "n":
-		case "N":
+		}
+		case "knight":
 			const offsets = [-17, -15, -10, -6, 6, 10, 15, 17] // L-shaped moves
 
 			for (const offset of offsets) {
@@ -142,32 +178,28 @@ export function getAvailableMoves(
 			}
 
 			break
-		case "b":
-		case "B":
+		case "bishop":
 			const bishopOffsets = [7, -7, 9, -9]
 			for (const offset of bishopOffsets) {
 				const slideMove = slide(offset, selectedIndex, occupiedIndexes)
 				moves.push(...slideMove)
 			}
 			break
-		case "r":
-		case "R":
+		case "rook":
 			const rookOffsets = [1, -1, 8, -8]
 			for (const offset of rookOffsets) {
 				const slideMove = slide(offset, selectedIndex, occupiedIndexes)
 				moves.push(...slideMove)
 			}
 			break
-		case "q":
-		case "Q":
+		case "queen":
 			const queenOffsets = [1, -1, 8, -8, 7, -7, 9, -9]
 			for (const offset of queenOffsets) {
 				const slideMove = slide(offset, selectedIndex, occupiedIndexes)
 				moves.push(...slideMove)
 			}
 			break
-		case "k":
-		case "K":
+		case "king":
 			const kingOffsets = [1, -1, 8, -8, 7, -7, 9, -9]
 			for (const offset of kingOffsets) {
 				const target = selectedIndex + offset
@@ -183,7 +215,7 @@ export function getAvailableMoves(
 			// check if castling is possible
 			const castlingOffsets = [2, -2]
 			for (const offset of castlingOffsets) {
-				if ((selectedTile.piece !== "k" && selectedTile.piece !== "K") || ![4, 60].includes(selectedIndex))
+				if (pieceInfo.piece !== "king" || ![4, 60].includes(selectedIndex))
 					continue
 				const rookIndex = offset === 2 ? selectedIndex + 3 : selectedIndex - 4
 				const rookTile = gameState[rookIndex]
@@ -196,7 +228,9 @@ export function getAvailableMoves(
 					!isDifferentTeam(rookTile, selectedTile) &&
 					!gameState[selectedIndex + offset] &&
 					!gameState[selectedIndex + offset / 2] &&
-					(queenCastlingOffset === null || queenCastlingOffset.piece === "r" || queenCastlingOffset.piece === "R")
+					(queenCastlingOffset === null
+						|| queenCastlingOffset.piece === null
+						|| queenCastlingOffset.piece.toLowerCase() === "r")
 				) {
 					moves.push(selectedIndex + offset) // add castling move
 				}

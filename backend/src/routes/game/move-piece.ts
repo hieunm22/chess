@@ -232,10 +232,8 @@ router.post("/game/move-piece", requireAuth(), async (req: AuthenticatedRequest,
 			time_stamp: getUTCTimestamp()
 		}
 
-		// Add capture piece if provided
-		// White team captures black pieces (uppercase), black team captures white pieces (lowercase)
 		if (capturePiece) {
-			newRecord.capture = team === "white" ? capturePiece.toUpperCase() : capturePiece.toLowerCase()
+			newRecord.capture = capturePiece
 		}
 
 		const insertResult = await collection.insertOne(newRecord)

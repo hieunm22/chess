@@ -307,6 +307,31 @@ export function applyMove(board: NullableCellProps[], fromId: number, toId: numb
 	return next
 }
 
+export function markEnPassantTarget(
+	board: NullableCellProps[],
+	from: number,
+	to: number
+): NullableCellProps[] {
+	const target = board[to]
+	const isDoubleStep =
+		!!target?.piece &&
+		target.piece.toLowerCase() === "p" &&
+		Math.abs(to - from) === 16
+
+	return board.map(cell => {
+		if (!cell) return cell
+		if (isDoubleStep && cell.id === to) {
+			return cell.canBeEnPassant ? cell : { ...cell, canBeEnPassant: true }
+		}
+		if (cell.canBeEnPassant) {
+			const cleared = { ...cell }
+			delete cleared.canBeEnPassant
+			return cleared
+		}
+		return cell
+	})
+}
+
 export function countLegalMoves(board: NullableCellProps[], team: Team, redFirst: boolean): number {
 	const direction = getMoveDirection(redFirst, team)
 	let legalMovesCount = 0

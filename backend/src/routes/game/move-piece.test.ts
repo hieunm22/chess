@@ -304,7 +304,7 @@ describe("POST /api/game/move-piece", () => {
 		expect(res.body.data).not.toHaveProperty("capture")
 	})
 
-	it("returns 201 and inserts a new history record with capture as uppercase for red team", async () => {
+	it("returns 201 and stores the captured piece char as-is (white captures a black rook)", async () => {
 		const accessToken = buildAccessToken(91, "session-move-piece-6-capture")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 91 }))
 		toArrayMock.mockResolvedValue([
@@ -330,7 +330,7 @@ describe("POST /api/game/move-piece", () => {
 				game_id: "game-1",
 				fen: `${INITIAL_FEN} b - - 0 1`,
 				team: "black",
-				capture: "R",
+				capture: "r",
 				time_stamp: expect.any(Number)
 			})
 		)
@@ -343,12 +343,12 @@ describe("POST /api/game/move-piece", () => {
 				game_id: "game-1",
 				fen: `${INITIAL_FEN} b - - 0 1`,
 				team: "black",
-				capture: "R"
+				capture: "r"
 			}
 		})
 	})
 
-	it("returns 201 and inserts a new history record with capture as lowercase for black team", async () => {
+	it("returns 201 and stores the captured piece char as-is (black captures a white rook)", async () => {
 		const accessToken = buildAccessToken(91, "session-move-piece-6-capture-black")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 91 }))
 		toArrayMock.mockResolvedValue([
@@ -374,7 +374,7 @@ describe("POST /api/game/move-piece", () => {
 				game_id: "game-1",
 				fen: `${INITIAL_FEN} w - - 0 2`,
 				team: "white",
-				capture: "r",
+				capture: "R",
 				time_stamp: expect.any(Number)
 			})
 		)
@@ -387,7 +387,7 @@ describe("POST /api/game/move-piece", () => {
 				game_id: "game-1",
 				fen: `${INITIAL_FEN} w - - 0 2`,
 				team: "white",
-				capture: "r"
+				capture: "R"
 			}
 		})
 	})
