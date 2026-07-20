@@ -150,8 +150,8 @@
 	left: calc(var(--piece-size) / 2);
 	transition: transform 250ms ease;
 
-	&.red {
-		color: red;
+	&.white {
+		color: white;
 	}
 
 	&.black {
@@ -271,13 +271,14 @@
 	position: relative;
 	border-radius: 10px;
 	border: 2px solid green;
-	background: linear-gradient(135deg, rgba(255, 245, 219, 1), rgba(232, 197, 132, 1));
+	// background: linear-gradient(135deg, rgba(255, 245, 219, 1), rgba(232, 197, 132, 1));
+	background: linear-gradient(135deg, #f0d9b5, #b58863);
 	box-shadow: 0 6px 12px rgba(52, 24, 8, 0.16);
 	box-sizing: border-box;
 	transition: box-shadow 180ms ease, transform 180ms ease;
 
-	&.team-red {
-		color: red;
+	&.team-white {
+		color: white;
 	}
 
 	&.team-black {
@@ -517,8 +518,8 @@
 	min-height: 20px;
 	flex-wrap: wrap;
 
-	&.team-red {
-		color: red;
+	&.team-white {
+		color: white;
 	}
 
 	&.team-black {

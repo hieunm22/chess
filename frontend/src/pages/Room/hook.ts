@@ -164,6 +164,9 @@ const useRoomHook = () => {
 	// Opponent's last move (from/to), keyed to the FEN it produces; captured in handleMovePiece.
 	// History-based diff is unreliable in real time since local moves are never in history.
 	const remoteMoveRef = useRef<RemoteMoveProps | null>(null)
+	// Castling animates two pieces (king + rook) → two transitionend events for one move;
+	// this latch makes onAnimateEnd commit exactly once.
+	const moveCommitRef = useRef(false)
 	// Mirror the chat-open state into a ref so the room-message-sent listener can
 	// decide whether to bump the unread badge without re-subscribing on toggle.
 	const previousJoinedUsersRef = useRef<RoomUser[]>([])
@@ -318,8 +321,12 @@ const useRoomHook = () => {
 			await submitBackToRoom(data.gameId)
 		} else {
 			// Spectator: no win/lose alert, just a neutral snackbar naming the result.
+			// Show the winner's avatar (null on a draw) instead of the not-found fallback.
+			const winner = data.winnerId !== null
+				? joinedUsers.find(user => user.id === data.winnerId)
+				: null
 			openSnackbar({
-				avatar: null,
+				avatar: winner?.avatar_url ?? null,
 				message: buildSpectatorEndMessage(data.status, data.winnerId),
 				severity: "info",
 				duration: 5000
@@ -329,21 +336,24 @@ const useRoomHook = () => {
 		resetToWaitingRoom()
 		setShowConfetti(false)
 		await enforcePostGameBalance()
-	}, [buildPostGameAlertMessage, buildSpectatorEndMessage, currentUserId, myTeam, submitBackToRoom])
+	}, [
+		buildPostGameAlertMessage,
+		buildSpectatorEndMessage,
+		currentUserId,
+		joinedUsers,
+		myTeam,
+		submitBackToRoom
+	])
 
-	// Reset client state to the post-game "waiting" view (room.status === 1, no active game)
+	// Reset to the post-game "waiting" view but keep the final board, highlights and captured
+	// pieces on screen. They are replaced when the next game starts (see handleGameStarted).
 	const resetToWaitingRoom = () => {
 		setRoom(prev => prev ? { ...prev, status: 1 } : prev)
 		setGame(null)
 		setClock(null)
 		setHistory([])
 		setAvailableMoves([])
-		const emptyBoard = fenToBoard(EMPTY_BOARD_FEN)
-		setBoard(emptyBoard)
 		setSelected(null)
-		setPreviousMove(null)
-		setCheckingPieces([])
-		setCapturedPieces({ white: [], black: [] })
 	}
 
 	// After a game ends, re-check the seated player's balance against the room's bet
@@ -983,6 +993,9 @@ const useRoomHook = () => {
 
 			playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + GAME_START_SOUND_URL)
 
+			// Clear the previous game's captured pieces, which are kept on screen after it ends.
+			setCapturedPieces({ white: [], black: [] })
+
 			if (data.gameId) {
 				const game = {
 					id: data.gameId,
@@ -1391,10 +1404,22 @@ const useRoomHook = () => {
 		if (isAvailableMove) {
 			const gameStateClone = [...board]
 			const oldIndex = selected!
+			const movingPiece = gameStateClone[oldIndex]!.piece
 			gameStateClone[oldIndex] = {
 				id: oldIndex,
-				piece: gameStateClone[oldIndex]!.piece,
+				piece: movingPiece,
 				animateTo: id
+			}
+
+			// Castling: slide the rook alongside the king so both pieces animate together.
+			const colDelta = (id % 8) - (oldIndex % 8)
+			if (movingPiece?.toLowerCase() === "k" && Math.abs(colDelta) === 2) {
+				const rookFrom = colDelta > 0 ? oldIndex + 3 : oldIndex - 4
+				const rookTo = colDelta > 0 ? oldIndex + 1 : oldIndex - 1
+				const rookPiece = gameStateClone[rookFrom]?.piece
+				if (rookPiece) {
+					gameStateClone[rookFrom] = { id: rookFrom, piece: rookPiece, animateTo: rookTo }
+				}
 			}
 
 			setAvailableMoves([])
@@ -1543,6 +1568,10 @@ const useRoomHook = () => {
 		const selectedId = selected
 		const targetId = board[selectedId]!.animateTo
 		if (targetId === undefined) return
+		// Castling animates the king and the rook, firing two transitionend events for one
+		// move; this latch makes the commit below run exactly once.
+		if (moveCommitRef.current) return
+		moveCommitRef.current = true
 		const oldTarget = board[targetId]
 		const movingPiece = board[selectedId]!.piece
 		const movedTeam = getTeamFromPieceChar(movingPiece)
@@ -1585,12 +1614,11 @@ const useRoomHook = () => {
 		const isMovedTeamGeneralInCheck = checkingPieces.length > 0
 
 		if (isMovedTeamGeneralInCheck) {
-			// Revert the move if it puts general in check - restore original board state
-			const revertedBoard = [...board]
-			revertedBoard[selectedId] = {
-				id: selectedId,
-				piece: revertedBoard[selectedId]!.piece,
-			}
+			// Revert an illegal move by stripping every pending animateTo (king + rook for
+			// castling), restoring the exact pre-move position.
+			const revertedBoard = board.map(cell =>
+				cell && cell.animateTo !== undefined ? { id: cell.id, piece: cell.piece } : cell
+			)
 
 			await openAlert({
 				title: "popup.alert.title",
@@ -1599,6 +1627,7 @@ const useRoomHook = () => {
 
 			setSelected(null)
 			setBoard(revertedBoard)
+			moveCommitRef.current = false
 			return
 		}
 
@@ -1618,18 +1647,23 @@ const useRoomHook = () => {
 				enPassantCapturedPiece
 			})
 			dispatch(setPopup(PopupState.PROMOTION))
+			moveCommitRef.current = false
 			return
 		}
 
-		await finalizeMove({
-			from: selectedId,
-			to: targetId,
-			finalBoard: gameStateClone,
-			movedTeam,
-			oldTarget: oldTarget ?? null,
-			isEnPassant,
-			enPassantCapturedPiece
-		})
+		try {
+			await finalizeMove({
+				from: selectedId,
+				to: targetId,
+				finalBoard: gameStateClone,
+				movedTeam,
+				oldTarget: oldTarget ?? null,
+				isEnPassant,
+				enPassantCapturedPiece
+			})
+		} finally {
+			moveCommitRef.current = false
+		}
 	}
 
 	// The player picked a promotion piece: swap the pawn on the landing square for the

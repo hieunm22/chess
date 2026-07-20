@@ -82,7 +82,7 @@ export const SettingsPopup = () => {
 		const debugMode = localStorage.getItem(LS_DEBUG) === "on"
 		dispatch(setDebug(debugMode))
 
-		const soundEnabled = localStorage.getItem(LS_SOUND) === "on"
+		const soundEnabled = localStorage.getItem(LS_SOUND) !== "off"
 		dispatch(setSoundEnabled(soundEnabled))
 	}, [])
 
@@ -169,7 +169,7 @@ export const SettingsPopup = () => {
 
 	const toogleSound = (e: ChangeEvent<HTMLElement>) => {
 		e.stopPropagation()
-		const soundEnabled = localStorage.getItem(LS_SOUND) === "on"
+		const soundEnabled = localStorage.getItem(LS_SOUND) !== "off"
 		dispatch(setSoundEnabled(!soundEnabled))
 		localStorage.setItem(LS_SOUND, soundEnabled ? "off" : "on")
 	}
