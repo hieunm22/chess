@@ -1,0 +1,50 @@
+.replay-players {
+	margin-bottom: 12px;
+}
+
+.replay-avatar {
+	border: 2px solid transparent;
+
+	&.white {
+		border-color: #f0d9b5;
+	}
+
+	&.black {
+		border-color: #333333;
+	}
+}
+
+.replay-board {
+	--tile-size: 40px;
+	--piece-font-size: 28px;
+
+	display: grid;
+	grid-template-columns: repeat(8, var(--tile-size));
+	grid-template-rows: repeat(8, var(--tile-size));
+	width: calc(8 * var(--tile-size));
+	max-width: 100%;
+	margin: 0 auto;
+	border: 2px solid #b58863;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.replay-no-moves {
+	text-align: center;
+	opacity: 0.7;
+	margin-top: 12px;
+}
+
+.replay-end {
+	text-align: center;
+	margin-top: 12px;
+}
+
+.replay-controls {
+	margin-top: 12px;
+}
+
+.replay-counter {
+	opacity: 0.7;
+	margin-top: 4px;
+}

@@ -9,14 +9,13 @@ import {
 } from "@mui/material"
 import { PopupState } from "common/enums"
 import { openAlert } from "components/AlertProvider/helper"
-// import { GameReplayPopup } from "components/GameReplay"
+import { GameReplayPopup } from "components/GameReplay"
 import { ResponsiveDialog } from "components/ResponsiveDialog"
 import { TButton, TTab } from "components/TranslationTag"
 import { HistoryTab, ProfileAchievement, ProfileTab } from "./ProfileTabs"
 import {
 	getCurrentUserId,
 	getToken,
-	logger,
 	tabIconClassBuilder,
 } from "common/helper"
 import { useAPI } from "hooks/useAPI"
@@ -47,7 +46,6 @@ export const ProfilePopup = () => {
 		setGameStats,
 		setProfileUser
 	} = useProfilePopup()
-	logger.log('replayGame :>> ', replayGame);
 
 	const handleCloseProfilePopup = (_: unknown, reason: "backdropClick" | "escapeKeyDown") => {
 		if (reason === "backdropClick") return
@@ -283,7 +281,7 @@ export const ProfilePopup = () => {
 					startIcon={<i className="fas fa-xmark" />}
 				/>
 			</Grid>
-			{/* <GameReplayPopup game={replayGame} onClose={() => setReplayGame(null)} /> */}
+			<GameReplayPopup game={replayGame} onClose={() => setReplayGame(null)} />
 		</ResponsiveDialog>
 	)
 }
