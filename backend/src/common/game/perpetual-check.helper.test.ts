@@ -33,7 +33,7 @@ const pos = (fen: string, team: Team) => ({ fen, team })
 const continuousChecks = (count: number): Array<{ fen: string; team: Team }> => {
 	const positions: Array<{ fen: string; team: Team }> = []
 	for (let i = 0; i < count; i += 1) {
-		if (i > 0) positions.push(pos("O", "red"))
+		if (i > 0) positions.push(pos("O", "white"))
 		positions.push(pos("C", "black"))
 	}
 	return positions
@@ -44,7 +44,7 @@ const continuousChecks = (count: number): Array<{ fen: string; team: Team }> => 
 const alternatingChecks = (p1Count: number): Array<{ fen: string; team: Team }> => {
 	const positions: Array<{ fen: string; team: Team }> = []
 	for (let i = 0; i < p1Count; i += 1) {
-		if (i > 0) positions.push(pos("O1", "red"), pos("P2", "black"), pos("O2", "red"))
+		if (i > 0) positions.push(pos("O1", "white"), pos("P2", "black"), pos("O2", "white"))
 		positions.push(pos("P1", "black"))
 	}
 	return positions

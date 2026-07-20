@@ -37,7 +37,7 @@ export const playBotMove = async (params: PlayBotMoveParams): Promise<any | null
 	const { gameId, roomId, projectFen, redFirst, botTeam, difficulty } = params
 
 	// The side to move after the bot — i.e. the human in a PvE game.
-	const nextTeam: Team = botTeam === "red" ? "black" : "red"
+	const nextTeam: Team = botTeam === "white" ? "black" : "white"
 
 	const result = await requestBotMove(
 		{
@@ -80,7 +80,7 @@ export const playBotMove = async (params: PlayBotMoveParams): Promise<any | null
 				where: { room_id: BigInt(roomId) },
 				select: { user_id: true, team: true }
 			})
-			const winnerTeam = botTeam === "red" ? "black" : "red"
+			const winnerTeam = botTeam === "white" ? "black" : "white"
 			const winner = roomUsers.find(u => u.team === winnerTeam)
 
 			await collection.insertOne({
@@ -178,7 +178,7 @@ export const playBotMove = async (params: PlayBotMoveParams): Promise<any | null
 	}
 
 	// Dead draw: neither side has any attacking piece left.
-	if (!hasAttackingMaterial(newFen, "red") && !hasAttackingMaterial(newFen, "black")) {
+	if (!hasAttackingMaterial(newFen, "white") && !hasAttackingMaterial(newFen, "black")) {
 		try {
 			const room = await prisma.room.findUnique({
 				where: { id: BigInt(roomId) },

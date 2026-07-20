@@ -40,7 +40,7 @@ export interface BackfillResult {
  * Red moves first (plays the "white" role), so red -> "w", black -> "b".
  */
 export function teamToSide(team: string): "w" | "b" | null {
-	if (team === "red") return "w"
+	if (team === "white") return "w"
 	if (team === "black") return "b"
 	return null
 }

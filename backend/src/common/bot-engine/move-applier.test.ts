@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { INITIAL_FEN_BLACK_TOP } from "../constant"
+import { INITIAL_FEN } from "../constant"
 import { applyMoveToProjectFen } from "./move-applier"
 import { projectFenToFlatArray } from "./fen-converter"
 
@@ -7,7 +7,7 @@ describe("applyMoveToProjectFen", () => {
 	it("moves a piece to an empty square (no capture)", () => {
 		// BLACK_TOP starting pos. Red soldier at row 6, col 0 → idx 54.
 		// Move it forward one row → idx 45.
-		const { newFen, capturePiece } = applyMoveToProjectFen(INITIAL_FEN_BLACK_TOP, 54, 45)
+		const { newFen, capturePiece } = applyMoveToProjectFen(INITIAL_FEN, 54, 45)
 		expect(capturePiece).toBeNull()
 		const cells = projectFenToFlatArray(newFen)
 		expect(cells[54]).toBeNull()
@@ -24,6 +24,6 @@ describe("applyMoveToProjectFen", () => {
 	})
 
 	it("throws when fromIdx is empty", () => {
-		expect(() => applyMoveToProjectFen(INITIAL_FEN_BLACK_TOP, 40, 39)).toThrow()
+		expect(() => applyMoveToProjectFen(INITIAL_FEN, 40, 39)).toThrow()
 	})
 })

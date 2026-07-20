@@ -273,7 +273,7 @@ describe("POST /api/room/kick", () => {
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				users: {
 					id: BigInt(11),
 					display_name: "Host",
@@ -311,7 +311,7 @@ describe("POST /api/room/kick", () => {
 				display_name: "Host",
 				avatar_seq: 0,
 				avatar_url: "/images/11.jpg",
-				team: "red",
+				team: "white",
 				is_bot: false,
 				joined_at: new Date("2026-05-26T00:00:00.000Z")
 			}

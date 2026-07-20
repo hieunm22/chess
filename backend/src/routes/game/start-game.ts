@@ -3,7 +3,7 @@ import prisma from "prisma"
 import { toStandardFen } from "common/board-helper"
 import { BOT_USER_ID, isValidDifficulty } from "common/bot-engine"
 import { playBotMove } from "common/bot-engine/play-bot-move"
-import { INITIAL_FEN_BLACK_BOTTOM, INITIAL_FEN_BLACK_TOP } from "common/constant"
+import { INITIAL_FEN } from "common/constant"
 import { armClock } from "common/game/game-clock"
 import { clearPostGameLock, isPostGameStartBlocked } from "common/game/post-game.helper"
 import { getAvatarUrl, getUTCNow, getUTCTimestamp } from "common/helper"
@@ -206,7 +206,7 @@ router.post("/room/start", requireAuth(), async (req: AuthenticatedRequest, res:
 				})
 				return
 			}
-			botTeam = requester.team === "red" ? "black" : "red"
+			botTeam = requester.team === "white" ? "black" : "white"
 		}
 
 		const { game, room } = await prisma.$transaction(async tx => {
@@ -263,8 +263,8 @@ router.post("/room/start", requireAuth(), async (req: AuthenticatedRequest, res:
 		clearPostGameLock(Number(room.id))
 
 		const collection = await getGameHistoryCollection()
-		const initialFen = room.red_first ? INITIAL_FEN_BLACK_TOP : INITIAL_FEN_BLACK_BOTTOM
-		const firstTeam: Team = room.red_first ? "red" : "black"
+		const initialFen = INITIAL_FEN
+		const firstTeam: Team = "white"
 		const startRecord = {
 			game_id: game.id,
 			team: firstTeam,

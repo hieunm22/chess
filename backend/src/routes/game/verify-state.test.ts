@@ -9,7 +9,7 @@ import {
 	it,
 	vi
 } from "vitest"
-import { INITIAL_FEN_BLACK_TOP } from "common/constant"
+import { INITIAL_FEN } from "common/constant"
 import {
 	PERPETUAL_CHECK_LOSS_REPETITION,
 	PERPETUAL_CHECK_WARNING_REPETITION
@@ -141,7 +141,7 @@ describe("POST /api/game/verify-state", () => {
 	it("returns 401 when authorization token is missing", async () => {
 		const res = await request(app).post(PATH).send({
 			gameId: "game-1",
-			newFen: INITIAL_FEN_BLACK_TOP,
+			newFen: INITIAL_FEN,
 			checkedTeam: "black"
 		})
 
@@ -163,7 +163,7 @@ describe("POST /api/game/verify-state", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: 123,
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				checkedTeam: "black"
 			})
 
@@ -209,7 +209,7 @@ describe("POST /api/game/verify-state", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				checkedTeam: "blue"
 			})
 
@@ -233,7 +233,7 @@ describe("POST /api/game/verify-state", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				checkedTeam: "black"
 			})
 
@@ -327,7 +327,7 @@ describe("POST /api/game/verify-state", () => {
 			}
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: 201n, team: "red" },
+			{ user_id: 201n, team: "white" },
 			{ user_id: 202n, team: "black" }
 		])
 
@@ -402,7 +402,7 @@ describe("POST /api/game/verify-state", () => {
 		// Offender is the checker (red); the checked side is black.
 		expect(emitPerpetualCheckWarningMock).toHaveBeenCalledWith(15, {
 			gameId: "game-5",
-			offenderTeam: "red",
+			offenderTeam: "white",
 			checkedTeam: "black"
 		})
 		expect(runEndGameTransactionMock).not.toHaveBeenCalled()
@@ -463,7 +463,7 @@ describe("POST /api/game/verify-state", () => {
 			}
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: 91n, team: "red" },
+			{ user_id: 91n, team: "white" },
 			{ user_id: 92n, team: "black" }
 		])
 
@@ -472,7 +472,7 @@ describe("POST /api/game/verify-state", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				checkedTeam: "black"
 			})
 
@@ -526,7 +526,7 @@ describe("POST /api/game/verify-state", () => {
 			}
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: 101n, team: "red" },
+			{ user_id: 101n, team: "white" },
 			{ user_id: 102n, team: "black" }
 		])
 
@@ -535,8 +535,8 @@ describe("POST /api/game/verify-state", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-2",
-				newFen: INITIAL_FEN_BLACK_TOP,
-				checkedTeam: "red"
+				newFen: INITIAL_FEN,
+				checkedTeam: "white"
 			})
 
 		expect(res.status).toBe(200)
@@ -562,7 +562,7 @@ describe("POST /api/game/verify-state", () => {
 			gameEnded: true,
 			status: "stalemate",
 			winnerId: 102,
-			checkedTeam: "red"
+			checkedTeam: "white"
 		})
 	})
 
@@ -584,7 +584,7 @@ describe("POST /api/game/verify-state", () => {
 			room: { bet_amount: 100, pve_mode: false, red_first: true }
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: 301n, team: "red" },
+			{ user_id: 301n, team: "white" },
 			{ user_id: 302n, team: "black" }
 		])
 
@@ -635,7 +635,7 @@ describe("POST /api/game/verify-state", () => {
 			status: "ongoing"
 		})
 		toArrayGameHistoryMock.mockResolvedValue([
-			{ _id: "mongo-last-id-nml", fen: `${INITIAL_FEN_BLACK_TOP} b - - 100 50` }
+			{ _id: "mongo-last-id-nml", fen: `${INITIAL_FEN} b - - 100 50` }
 		])
 
 		const accessToken = buildAccessToken(91, "session-verify-state-nml")
@@ -646,7 +646,7 @@ describe("POST /api/game/verify-state", () => {
 			room: { bet_amount: 100, pve_mode: false, red_first: true }
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: 401n, team: "red" },
+			{ user_id: 401n, team: "white" },
 			{ user_id: 402n, team: "black" }
 		])
 
@@ -655,7 +655,7 @@ describe("POST /api/game/verify-state", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-7",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				checkedTeam: "black"
 			})
 
@@ -692,7 +692,7 @@ describe("POST /api/game/verify-state", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				checkedTeam: "black"
 			})
 

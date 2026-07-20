@@ -121,7 +121,7 @@ const router = Router()
  *                           type: integer
  *                         activeTeam:
  *                           type: string
- *                           enum: [red, black]
+ *                           enum: [white, black]
  *                         perMoveRemainingMs:
  *                           type: integer
  *                           description: Active team's remaining time for the current move; 0 when per-move is off.

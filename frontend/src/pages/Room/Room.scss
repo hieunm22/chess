@@ -545,17 +545,10 @@
 	padding: 8px;
 	width: 100%;
 	max-height: 145px;
-	max-width: calc((var(--board-width) + 2 * var(--board-padding) - 12px) / 2);
+	max-width: calc((var(--tile-size) * 8 + 2 * var(--board-padding) - 12px) / 2);
 	gap: 2px;
 	direction: rtl;
-
-	&.team-red {
-		color: red;
-	}
-	
-	&.team-black {
-		color: black;
-	}
+	font-size: 30px;
 }
 
 .captured-piece {
@@ -565,18 +558,15 @@
 	// border: 1px solid #6b3d20;
 	// background: radial-gradient(circle at 35% 30%, #fff8e4 0, #f4dfb2 64%, #e0be84 100%);
 	display: flex;
-	// align-items: center;
-	// justify-content: center;
-	// font-family: "Noto Serif SC", "Songti SC", serif;
-	// font-size: 18px;
-	// font-weight: 700;
-	// line-height: 1;
-	// box-shadow: 0 2px 0 rgba(82, 42, 18, 0.45), 0 6px 10px rgba(70, 32, 13, 0.2);
-	// z-index: 3;
-	// user-select: none;
 
-	&::before {
-		content: attr(data-content);
+	// color by the captured piece's own team
+	&.team-white {
+		color: #f8f8f8;
+		-webkit-text-stroke: 1px #333;
+	}
+
+	&.team-black {
+		color: #2b2b2b;
 	}
 }
 

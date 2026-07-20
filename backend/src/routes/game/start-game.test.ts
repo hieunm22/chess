@@ -2,7 +2,7 @@ import express from "express"
 import jwt from "jsonwebtoken"
 import request from "supertest"
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest"
-import { INITIAL_FEN_BLACK_TOP, INITIAL_FEN_BLACK_BOTTOM } from "common/constant"
+import { INITIAL_FEN, INITIAL_FEN_BLACK_BOTTOM } from "common/constant"
 import { BOT_USER_ID } from "common/bot-engine"
 
 const redisGetMock = vi.fn()
@@ -174,7 +174,7 @@ describe("POST /api/room/start", () => {
 			bot_difficulty: null
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 		gameUserCreateMock.mockResolvedValue({})
@@ -243,8 +243,8 @@ describe("POST /api/room/start", () => {
 		})
 		expect(gameHistoryInsertOneMock).toHaveBeenCalledWith({
 			game_id: "c5afe4a6-48fd-47de-ac7e-1f635f859919",
-			team: "red",
-			fen: `${INITIAL_FEN_BLACK_TOP} w - - 0 1`,
+			team: "white",
+			fen: `${INITIAL_FEN} w - - 0 1`,
 			time_stamp: expect.any(Number)
 		})
 
@@ -253,7 +253,7 @@ describe("POST /api/room/start", () => {
 			data: {
 				game_id: "c5afe4a6-48fd-47de-ac7e-1f635f859919",
 				user_id: BigInt(11),
-				team: "red"
+				team: "white"
 			}
 		})
 		expect(roomUserFindManyMock).toHaveBeenCalledWith({
@@ -270,7 +270,7 @@ describe("POST /api/room/start", () => {
 		getGameHistoryCollectionMock.mockResolvedValue({ insertOne: gameHistoryInsertOneMock })
 
 		// Requester is seated on red, so the bot takes black and the human moves first.
-		roomUserFindUniqueMock.mockResolvedValue({ team: "red" })
+		roomUserFindUniqueMock.mockResolvedValue({ team: "white" })
 
 		const roomUserUpsertMock = vi.fn().mockResolvedValue({})
 		roomUpdateMock.mockResolvedValue({ id: BigInt(101), status: 2, red_first: true })
@@ -281,7 +281,7 @@ describe("POST /api/room/start", () => {
 			bot_difficulty: 3
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(61), team: "red" },
+			{ user_id: BigInt(61), team: "white" },
 			{ user_id: BOT_USER_ID, team: "black" }
 		])
 		gameUserCreateMock.mockResolvedValue({})
@@ -298,7 +298,7 @@ describe("POST /api/room/start", () => {
 		roomUserFindManyTopMock.mockResolvedValue([
 			{
 				user_id: BigInt(61),
-				team: "red",
+				team: "white",
 				users: { id: BigInt(61), display_name: "Host", avatar_seq: 0, total_amount: 200, is_bot: false }
 			},
 			{
@@ -326,7 +326,7 @@ describe("POST /api/room/start", () => {
 		// The broadcast carries is_bot so the client can tell the bot from the human,
 		// and total_amount so the human's balance renders on the player info card.
 		expect(emitRoomUsersUpdatedMock).toHaveBeenCalledWith(101, [
-			expect.objectContaining({ id: 61, display_name: "Host", team: "red", total_amount: 200, is_bot: false }),
+			expect.objectContaining({ id: 61, display_name: "Host", team: "white", total_amount: 200, is_bot: false }),
 			expect.objectContaining({ id: Number(BOT_USER_ID), display_name: "Bot", team: "black", total_amount: null, is_bot: true })
 		])
 
@@ -357,7 +357,7 @@ describe("POST /api/room/start", () => {
 		})
 		roomUserFindManyMock.mockResolvedValue([
 			{ user_id: BigInt(13), team: "black" },
-			{ user_id: BigInt(14), team: "red" }
+			{ user_id: BigInt(14), team: "white" }
 		])
 		gameUserCreateMock.mockResolvedValue({})
 		transactionMock.mockImplementation(async callback =>
@@ -402,7 +402,7 @@ describe("POST /api/room/start", () => {
 			data: {
 				game_id: "d8d18f53-95f8-4e30-b834-f4b5adce4f22",
 				user_id: BigInt(14),
-				team: "red"
+				team: "white"
 			}
 		})
 
@@ -436,14 +436,14 @@ describe("POST /api/room/start", () => {
 			bot_difficulty: null
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 		gameUserCreateMock.mockResolvedValue({})
 		armClockMock.mockResolvedValue({
 			redMs: 600000,
 			blackMs: 600000,
-			activeTeam: "red",
+			activeTeam: "white",
 			serverNow: 1700000000000,
 			timeLimit: 600,
 			timeIncrement: 0

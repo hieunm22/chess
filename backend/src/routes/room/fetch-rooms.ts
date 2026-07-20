@@ -112,7 +112,7 @@ router.get("/room/fetch-rooms", requireAuth(), async (req: AuthenticatedRequest,
 		const rooms = await prisma.room.findMany({
 			where: {
 				is_active: true,
-				game_type: "chess",
+				// game_type: "chess",
 				...(status !== undefined && { status })
 			},
 			orderBy: { created_at: "asc" },

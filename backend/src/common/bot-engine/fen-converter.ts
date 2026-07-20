@@ -89,6 +89,6 @@ export const projectFenToStandardFen = (
 	// Translate each piece (case + letter) to standard.
 	const translated = cells.map(cell => (cell === null ? null : projectPieceToStandard(cell)))
 	const positionPart = flatArrayToProjectFen(translated)
-	const side = sideToMove === "red" ? "w" : "b"
+	const side = sideToMove === "white" ? "w" : "b"
 	return `${positionPart} ${side} - - 0 1`
 }

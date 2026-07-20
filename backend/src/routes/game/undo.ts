@@ -74,7 +74,7 @@ const router = Router()
  *                       type: integer
  *                     activeTeam:
  *                       type: string
- *                       enum: [red, black]
+ *                       enum: [white, black]
  *                     perMoveRemainingMs:
  *                       type: integer
  *                     serverNow:

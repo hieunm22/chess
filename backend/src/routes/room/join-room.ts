@@ -34,7 +34,7 @@ const router = Router()
  *                 format: int64
  *               team:
  *                 type: string
- *                 enum: [red, black]
+ *                 enum: [white, black]
  *                 nullable: true
  *                 description: Optional preferred team. Use null for spectator and omit for auto-assign.
  *     responses:
@@ -106,7 +106,7 @@ router.post("/room/join", requireAuth(), async (req: AuthenticatedRequest, res: 
 		return
 	}
 
-	if (team !== undefined && team !== null && team !== "red" && team !== "black") {
+	if (team !== undefined && team !== null && team !== "white" && team !== "black") {
 		res.status(400).json({
 			success: false,
 			message: "join-room.messages.invalid-team",
@@ -134,7 +134,7 @@ router.post("/room/join", requireAuth(), async (req: AuthenticatedRequest, res: 
 
 		const userIdBigInt = BigInt(userId)
 
-		// Check balance if joining as player (team is 'red' or 'black', not null)
+		// Check balance if joining as player (team is 'white' or 'black', not null)
 		if (team !== null && team !== undefined) {
 			const user = await prisma.user.findUnique({
 				where: { id: userIdBigInt },
@@ -212,8 +212,8 @@ router.post("/room/join", requireAuth(), async (req: AuthenticatedRequest, res: 
 						.filter(existingTeam => existingTeam !== null)
 				)
 
-				if (!assignedTeams.has("red")) {
-					assignedTeam = "red"
+				if (!assignedTeams.has("white")) {
+					assignedTeam = "white"
 				} else if (!assignedTeams.has("black")) {
 					assignedTeam = "black"
 				}

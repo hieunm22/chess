@@ -1,26 +1,22 @@
+import { BOARD_COLUMNS, BOARD_ROWS } from "./bot-engine/constants"
 import { Team } from "types/game.type"
 
-const BOARD_ROWS = 10
-const BOARD_COLUMNS = 9
-
 const fenPieceMap: Record<string, string> = {
-	g: "general",
-	a: "advisor",
-	e: "elephant",
-	h: "horse",
-	r: "chariot",
-	c: "cannon",
-	s: "soldier",
+	k: "king",
+	q: "queen",
+	b: "bishop",
+	n: "knight",
+	r: "rook",
+	p: "pawn",
 }
 
 const pieceFenMap: Record<string, string> = {
-	general: "g",
-	advisor: "a",
-	elephant: "e",
-	horse: "h",
-	chariot: "r",
-	cannon: "c",
-	soldier: "s"
+	king: "k",
+	queen: "q",
+	bishop: "b",
+	knight: "n",
+	rook: "r",
+	pawn: "p"
 }
 
 interface CellProps {
@@ -51,7 +47,7 @@ export const toStandardFen = (
 	fullmove: number
 ): string => {
 	const placement = fen.trim().split(/\s+/)[0]
-	const side = sideToMove === "red" ? "w" : "b"
+	const side = sideToMove === "white" ? "w" : "b"
 	return `${placement} ${side} - - ${halfmove} ${fullmove}`
 }
 
@@ -84,12 +80,12 @@ export const fenToBoard = (fen: string): (CellProps | null)[] => {
 			board.push({
 				id,
 				piece,
-				team: isLowerCase ? "red" : "black"
+				team: isLowerCase ? "white" : "black"
 			})
 		}
 
 		if (board.length % BOARD_COLUMNS !== 0) {
-			throw new Error("Invalid FEN: a row does not have exactly 9 cells")
+			throw new Error("Invalid FEN: a row does not have exactly 8 cells")
 		}
 	}
 
@@ -111,7 +107,7 @@ export const hasPieceAcrossRiver = (fen: string, team: Team): boolean => {
 
 	let generalRow: number | null = null
 	for (const cell of board) {
-		if (cell && cell.team === team && cell.piece === "general") {
+		if (cell && cell.team === team && cell.piece === "king") {
 			generalRow = Math.floor(cell.id / BOARD_COLUMNS)
 			break
 		}
@@ -141,7 +137,7 @@ export const hasPieceAcrossRiver = (fen: string, team: Team): boolean => {
 /**
  * Check if the specified team has any attacking pieces (can cross river) on the board.
  * @param fen the FEN string representing the board state
- * @param team the team to check for attacking pieces ("red" or "black")
+ * @param team the team to check for attacking pieces ("white" or "black")
  * @returns true if the team has at least one attacking piece, false otherwise
  */
 export const hasAttackingMaterial = (fen: string, team: Team): boolean => {
@@ -162,10 +158,10 @@ export const isSoldierAdvance = (prevFen: string, newFen: string, team: Team): b
 	const prev = fenToBoard(prevFen)
 	const next = fenToBoard(newFen)
 
-	// Orientation: the side whose general sits in the top half advances toward higher rows.
+	// Orientation: the side whose king sits in the top half advances toward higher rows.
 	let generalRow: number | null = null
 	for (const cell of next) {
-		if (cell && cell.team === team && cell.piece === "general") {
+		if (cell && cell.team === team && cell.piece === "king") {
 			generalRow = Math.floor(cell.id / BOARD_COLUMNS)
 			break
 		}
@@ -173,7 +169,7 @@ export const isSoldierAdvance = (prevFen: string, newFen: string, team: Team): b
 	if (generalRow === null) {
 		return false
 	}
-	const forwardSign = generalRow <= 4 ? 1 : -1
+	const forwardSign = generalRow <= 3 ? 1 : -1
 
 	const isTeamSoldier = (cell: CellProps | null): boolean =>
 		cell !== null && cell.team === team && cell.piece === "soldier"
@@ -220,7 +216,7 @@ export const boardToFen = (board: (CellProps | null)[]): string => {
 			}
 
 			const token = pieceFenMap[cell.piece]
-			rowFen += cell.team === "red" ? token : token.toUpperCase()
+			rowFen += cell.team === "white" ? token : token.toUpperCase()
 		}
 
 		if (emptyCount > 0) {

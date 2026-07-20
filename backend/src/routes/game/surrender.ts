@@ -132,7 +132,7 @@ router.post("/game/surrender", requireAuth(), async (req: AuthenticatedRequest, 
 
 		const userIdBigInt = BigInt(userId)
 		const surrenderingPlayer = roomUsers.find(
-			roomUser => roomUser.user_id === userIdBigInt && (roomUser.team === "red" || roomUser.team === "black")
+			roomUser => roomUser.user_id === userIdBigInt && (roomUser.team === "white" || roomUser.team === "black")
 		)
 
 		if (!surrenderingPlayer || !surrenderingPlayer.team) {
@@ -144,7 +144,7 @@ router.post("/game/surrender", requireAuth(), async (req: AuthenticatedRequest, 
 			return
 		}
 
-		const winnerTeam = surrenderingPlayer.team === "red" ? "black" : "red"
+		const winnerTeam = surrenderingPlayer.team === "white" ? "black" : "white"
 		const winner = roomUsers.find(roomUser => roomUser.team === winnerTeam)
 
 		if (!winner) {
@@ -177,7 +177,7 @@ router.post("/game/surrender", requireAuth(), async (req: AuthenticatedRequest, 
 		await collection.insertOne({
 			game_id: normalizedGameId,
 			fen: latestRecord[0].fen,
-			team: surrenderingPlayer.team === "red" ? "black" : "red",
+			team: surrenderingPlayer.team === "white" ? "black" : "white",
 			time_stamp: getUTCTimestamp(),
 			surrender_id: Number(userId),
 			winner_id: Number(winner.user_id),

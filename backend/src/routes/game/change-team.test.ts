@@ -158,7 +158,7 @@ describe("POST /api/game/change-team", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				user_id: BigInt(10),
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200 }
 			},
@@ -192,7 +192,7 @@ describe("POST /api/game/change-team", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				user_id: BigInt(11),
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(11), display_name: "Caller", avatar_seq: 0, total_amount: 150 }
 			},
@@ -259,7 +259,7 @@ describe("POST /api/game/change-team", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				user_id: BigInt(10),
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200 }
 			},
@@ -295,7 +295,7 @@ describe("POST /api/game/change-team", () => {
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
 				user_id: BigInt(10),
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200 }
 			},
@@ -312,7 +312,7 @@ describe("POST /api/game/change-team", () => {
 
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200, is_bot: false }
 			},
@@ -345,7 +345,7 @@ describe("POST /api/game/change-team", () => {
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
 				user_id: BigInt(10),
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200 }
 			},
@@ -361,7 +361,7 @@ describe("POST /api/game/change-team", () => {
 
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200, is_bot: false }
 			},
@@ -392,11 +392,11 @@ describe("POST /api/game/change-team", () => {
 		const accessToken = buildAccessToken(11, "session-challenge-7")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 11 }))
 		roomFindUniqueMock.mockResolvedValue({ id: BigInt(100), status: 1, host_id: BigInt(10) })
-		// host=10 has "red", user 12 has "black" → opposite seat occupied
+		// host=10 has "white", user 12 has "black" → opposite seat occupied
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				user_id: BigInt(10),
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200 }
 			},
@@ -437,7 +437,7 @@ describe("POST /api/game/change-team", () => {
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
 				user_id: BigInt(10),
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200 }
 			},
@@ -457,7 +457,7 @@ describe("POST /api/game/change-team", () => {
 		// Second findMany: updated users — caller now has "black"
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200, is_bot: false }
 			},
@@ -494,7 +494,7 @@ describe("POST /api/game/change-team", () => {
 				display_name: "Host",
 				avatar_seq: 0,
 				avatar_url: "/images/10.jpg",
-				team: "red",
+				team: "white",
 				total_amount: 200,
 				is_bot: false,
 				joined_at: HOST_JOINED_AT
@@ -511,7 +511,7 @@ describe("POST /api/game/change-team", () => {
 			}
 		])
 		expect(res.body.data).toEqual([
-			expect.objectContaining({ id: 10, team: "red", is_bot: false, back_ready: null }),
+			expect.objectContaining({ id: 10, team: "white", is_bot: false, back_ready: null }),
 			expect.objectContaining({ id: 11, team: "black", is_bot: false, back_ready: null })
 		])
 	})
@@ -525,7 +525,7 @@ describe("POST /api/game/change-team", () => {
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
 				user_id: BigInt(10),
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200 }
 			},
@@ -542,7 +542,7 @@ describe("POST /api/game/change-team", () => {
 		// Second findMany: caller now has null team
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
-				team: "red",
+				team: "white",
 				joined_at: HOST_JOINED_AT,
 				users: { id: BigInt(10), display_name: "Host", avatar_seq: 0, total_amount: 200, is_bot: false }
 			},
@@ -574,7 +574,7 @@ describe("POST /api/game/change-team", () => {
 			data: { team: null }
 		})
 		expect(res.body.data).toEqual([
-			expect.objectContaining({ id: 10, team: "red", is_bot: false, back_ready: null }),
+			expect.objectContaining({ id: 10, team: "white", is_bot: false, back_ready: null }),
 			expect.objectContaining({ id: 11, team: null, is_bot: false, back_ready: null })
 		])
 	})

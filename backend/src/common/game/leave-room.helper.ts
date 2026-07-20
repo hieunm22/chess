@@ -111,7 +111,7 @@ export async function leaveRoomEffect(
 				.limit(1)
 				.toArray()
 
-			const winnerTeam = currentRoomUser.team === "red" ? "black" : "red"
+			const winnerTeam = currentRoomUser.team === "white" ? "black" : "white"
 			if (latestRecord?.length > 0 && latestRecord[0]?.fen) {
 				await collection.insertOne({
 					game_id: activeGame.id,

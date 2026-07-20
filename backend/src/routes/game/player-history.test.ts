@@ -176,7 +176,7 @@ describe("GET /api/game/player-history", () => {
 				game_id: "game-1",
 				user_id: BigInt(1),
 				amount: 10,
-				team: "red",
+				team: "white",
 				games: { ends_at: new Date("2025-01-10T10:00:00Z"), winner_id: BigInt(1) },
 				users: { id: BigInt(1), display_name: "Player One", avatar_seq: BigInt(0), is_bot: false }
 			},
@@ -208,7 +208,7 @@ describe("GET /api/game/player-history", () => {
 					},
 					amount: 10,
 					users: expect.arrayContaining([
-						{ id: 1, display_name: "Player One", avatar_url: "/images/1.jpg", team: "red" },
+						{ id: 1, display_name: "Player One", avatar_url: "/images/1.jpg", team: "white" },
 						{ id: 2, display_name: "Player Two", avatar_url: "/images/2_1.jpg", team: "black" }
 					])
 				}
@@ -396,7 +396,7 @@ describe("GET /api/game/player-history", () => {
 			game_id: "bot-game-1",
 			user_id: BigInt(1),
 			amount: null,
-			team: "red",
+			team: "white",
 			games: { ends_at: new Date("2025-02-01T10:00:00Z"), winner_id: BigInt(1) },
 			users: { id: BigInt(1), display_name: "Player One", avatar_seq: BigInt(0), is_bot: false }
 		},
@@ -460,7 +460,7 @@ describe("GET /api/game/player-history", () => {
 				game_id: "game-1",
 				user_id: BigInt(1),
 				amount: 10,
-				team: "red",
+				team: "white",
 				games: { ends_at: new Date("2025-01-10T10:00:00Z"), winner_id: BigInt(1) },
 				users: { id: BigInt(1), display_name: "Player One", avatar_seq: BigInt(0), is_bot: false }
 			},

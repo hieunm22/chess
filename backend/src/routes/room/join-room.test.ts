@@ -153,14 +153,14 @@ describe("POST /api/room/join", () => {
 		roomUserFindManyMock
 			.mockResolvedValueOnce([
 				{
-					team: "red",
+					team: "white",
 					user_id: BigInt(41)
 				}
 			])
 			.mockResolvedValueOnce([
 				{
 					joined_at: new Date("2026-05-12T00:00:00.000Z"),
-					team: "red",
+					team: "white",
 					users: {
 						id: BigInt(41),
 						display_name: "Alice",
@@ -187,7 +187,7 @@ describe("POST /api/room/join", () => {
 			display_name: "Alice",
 			avatar_seq: 0,
 			avatar_url: "/images/41.jpg",
-			team: "red",
+			team: "white",
 			is_bot: false
 		})
 
@@ -201,7 +201,7 @@ describe("POST /api/room/join", () => {
 				},
 				data: {
 					joined_at: expect.any(Date),
-					team: "red"
+					team: "white"
 				}
 			})
 		)
@@ -228,7 +228,7 @@ describe("POST /api/room/join", () => {
 				},
 				{
 					joined_at: new Date("2026-05-12T00:01:00.000Z"),
-					team: "red",
+					team: "white",
 					users: {
 						id: BigInt(44),
 						display_name: "Daisy",
@@ -241,17 +241,17 @@ describe("POST /api/room/join", () => {
 		const res = await request(app)
 			.post(PATH)
 			.set("Authorization", `Bearer ${accessToken}`)
-			.send({ id: 101, team: "red" })
+			.send({ id: 101, team: "white" })
 
 		expect(res.status).toBe(201)
 		expect(res.body.data[1]).toMatchObject({
 			id: 44,
-			team: "red"
+			team: "white"
 		})
 		expect(roomUserCreateMock).toHaveBeenCalledWith(
 			expect.objectContaining({
 				data: expect.objectContaining({
-					team: "red"
+					team: "white"
 				})
 			})
 		)
@@ -265,13 +265,13 @@ describe("POST /api/room/join", () => {
 		roomUserFindUniqueMock.mockResolvedValue(null)
 		roomUserFindManyMock
 			.mockResolvedValueOnce([
-				{ team: "red", user_id: BigInt(41) },
+				{ team: "white", user_id: BigInt(41) },
 				{ team: "black", user_id: BigInt(42) }
 			])
 			.mockResolvedValueOnce([
 				{
 					joined_at: new Date("2026-05-12T00:00:00.000Z"),
-					team: "red",
+					team: "white",
 					users: {
 						id: BigInt(41),
 						display_name: "Alice",
@@ -325,12 +325,12 @@ describe("POST /api/room/join", () => {
 		roomFindUniqueMock.mockResolvedValue({ id: BigInt(101), pve_mode: false })
 		roomUserDeleteManyMock.mockResolvedValue({ count: 0 })
 		roomUserFindUniqueMock.mockResolvedValue(null)
-		roomUserFindManyMock.mockResolvedValueOnce([{ team: "red", user_id: BigInt(41) }])
+		roomUserFindManyMock.mockResolvedValueOnce([{ team: "white", user_id: BigInt(41) }])
 
 		const res = await request(app)
 			.post(PATH)
 			.set("Authorization", `Bearer ${accessToken}`)
-			.send({ id: 101, team: "red" })
+			.send({ id: 101, team: "white" })
 
 		expect(res.status).toBe(409)
 		expect(res.body).toMatchObject({
@@ -353,7 +353,7 @@ describe("POST /api/room/join", () => {
 			.mockResolvedValueOnce([
 				{
 					joined_at: new Date("2026-05-12T00:01:00.000Z"),
-					team: "red",
+					team: "white",
 					users: {
 						id: BigInt(42),
 						display_name: "Bob",
@@ -372,13 +372,13 @@ describe("POST /api/room/join", () => {
 		expect(res.body.data[0]).toMatchObject({
 			id: 42,
 			display_name: "Bob",
-			team: "red"
+			team: "white"
 		})
 
 		expect(roomUserCreateMock).toHaveBeenCalledWith(
 			expect.objectContaining({
 				data: expect.objectContaining({
-					team: "red"
+					team: "white"
 				})
 			})
 		)
@@ -391,11 +391,11 @@ describe("POST /api/room/join", () => {
 		roomUserDeleteManyMock.mockResolvedValue({ count: 1 })
 		roomUserFindUniqueMock.mockResolvedValue(null)
 		roomUserFindManyMock
-			.mockResolvedValueOnce([{ team: "red" }])
+			.mockResolvedValueOnce([{ team: "white" }])
 			.mockResolvedValueOnce([
 				{
 					joined_at: new Date("2026-05-12T00:00:00.000Z"),
-					team: "red",
+					team: "white",
 					users: {
 						id: BigInt(41),
 						display_name: "Alice",
@@ -443,13 +443,13 @@ describe("POST /api/room/join", () => {
 		roomUserFindUniqueMock.mockResolvedValue(null)
 		roomUserFindManyMock
 			.mockResolvedValueOnce([
-				{ team: "red" },
+				{ team: "white" },
 				{ team: "black" }
 			])
 			.mockResolvedValueOnce([
 				{
 					joined_at: new Date("2026-05-12T00:00:00.000Z"),
-					team: "red",
+					team: "white",
 					users: {
 						id: BigInt(41),
 						display_name: "Alice",
@@ -594,7 +594,7 @@ describe("POST /api/room/join", () => {
 		const res = await request(app)
 			.post(PATH)
 			.set("Authorization", `Bearer ${accessToken}`)
-			.send({ id: 101, team: "red" })
+			.send({ id: 101, team: "white" })
 
 		expect(res.status).toBe(400)
 		expect(res.body).toMatchObject({
@@ -626,7 +626,7 @@ describe("POST /api/room/join", () => {
 		roomUserCreateMock.mockResolvedValue({
 			room_id: BigInt(102),
 			user_id: BigInt(52),
-			team: "red",
+			team: "white",
 			joined_at: new Date("2026-06-29T00:00:00Z")
 		})
 		// After creation, fetch all users
@@ -634,7 +634,7 @@ describe("POST /api/room/join", () => {
 		roomUserFindManyMock.mockResolvedValueOnce([
 			{
 				joined_at: new Date("2026-06-29T00:00:00Z"),
-				team: "red",
+				team: "white",
 				users: {
 					id: BigInt(52),
 					display_name: "Rich Player",
@@ -647,7 +647,7 @@ describe("POST /api/room/join", () => {
 		const res = await request(app)
 			.post(PATH)
 			.set("Authorization", `Bearer ${accessToken}`)
-			.send({ id: 102, team: "red" })
+			.send({ id: 102, team: "white" })
 
 		expect(res.status).toBe(201)
 		expect(res.body).toMatchObject({
@@ -658,7 +658,7 @@ describe("POST /api/room/join", () => {
 		expect(res.body.data).toHaveLength(1)
 		expect(res.body.data[0]).toMatchObject({
 			id: 52,
-			team: "red",
+			team: "white",
 			total_amount: 200
 		})
 	})

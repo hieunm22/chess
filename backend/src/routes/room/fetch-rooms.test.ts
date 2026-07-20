@@ -95,7 +95,7 @@ describe("GET /api/room/fetch-rooms", () => {
 				updated_at: new Date("2026-05-12T00:00:00.000Z"),
 				room_users: [
 					{
-						team: "red",
+						team: "white",
 						users: {
 							id: BigInt(11),
 							display_name: "Alice",
@@ -141,7 +141,7 @@ describe("GET /api/room/fetch-rooms", () => {
 			display_name: "Alice",
 			avatar_seq: 0,
 			avatar_url: "/images/11.jpg",
-			team: "red"
+			team: "white"
 		})
 		expect(res.body.data[0].users[1]).toMatchObject({
 			id: 12,

@@ -157,7 +157,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(88),
 				users: {
 					id: BigInt(88),
@@ -191,7 +191,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(88),
 				users: {
 					id: BigInt(88),
@@ -236,7 +236,7 @@ describe("DELETE /api/room/leave", () => {
 				display_name: "Room owner",
 				avatar_seq: 0,
 				avatar_url: "/images/88.jpg",
-				team: "red",
+				team: "white",
 				total_amount: undefined,
 				is_bot: false,
 				joined_at: new Date("2026-05-26T00:00:00.000Z")
@@ -251,7 +251,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: {
 					id: BigInt(51),
@@ -318,7 +318,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: { id: BigInt(51), display_name: "Host", avatar_seq: 0, total_amount: undefined, is_bot: false }
 			},
@@ -378,7 +378,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: { id: BigInt(51), display_name: "Host", avatar_seq: 0, total_amount: undefined, is_bot: false }
 			},
@@ -491,7 +491,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: {
 					id: BigInt(51),
@@ -546,7 +546,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: {
 					id: BigInt(51),
@@ -581,7 +581,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: {
 					id: BigInt(51),
@@ -662,7 +662,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: { id: BigInt(51), display_name: "Player A", avatar_seq: 0 }
 			},
@@ -711,7 +711,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: { id: BigInt(51), display_name: "Player A", avatar_seq: 0, is_bot: false }
 			},
@@ -751,7 +751,7 @@ describe("DELETE /api/room/leave", () => {
 				display_name: "Player A",
 				avatar_seq: 0,
 				avatar_url: "/images/51.jpg",
-				team: "red",
+				team: "white",
 				total_amount: undefined,
 				is_bot: false,
 				joined_at: new Date("2026-05-26T00:00:00.000Z")
@@ -776,7 +776,7 @@ describe("DELETE /api/room/leave", () => {
 		roomUserFindManyMock.mockResolvedValue([
 			{
 				joined_at: new Date("2026-05-26T00:00:00.000Z"),
-				team: "red",
+				team: "white",
 				user_id: BigInt(51),
 				users: {
 					id: BigInt(51),

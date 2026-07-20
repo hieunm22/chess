@@ -157,7 +157,7 @@ describe("POST /api/game/surrender", () => {
 			status: 0
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 		toArrayMock.mockResolvedValue([])
@@ -194,7 +194,7 @@ describe("POST /api/game/surrender", () => {
 			bet_amount: 50
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 		toArrayMock.mockResolvedValue([
@@ -253,7 +253,7 @@ describe("POST /api/game/surrender", () => {
 			bet_amount: 50
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 		toArrayMock.mockResolvedValue([

@@ -1499,7 +1499,10 @@ const useRoomHook = () => {
 		const oldTargetTeam = getTeamFromPieceChar(oldTarget?.piece)
 		if (oldTarget?.piece && oldTargetTeam !== movedTeam) {
 			capturedPieceCharacter = oldTarget.piece
-			capturedPiecesClone[movedTeam].push(capturedPieceCharacter)
+			const normalizedCapture = (movedTeam === "white"
+				? capturedPieceCharacter.toUpperCase()
+				: capturedPieceCharacter.toLowerCase()) as PieceCharacter
+			capturedPiecesClone[movedTeam].push(normalizedCapture)
 		}
 
 		const enemyTeam = movedTeam === "white" ? "black" : "white"

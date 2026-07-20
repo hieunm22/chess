@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { INITIAL_FEN_BLACK_BOTTOM, INITIAL_FEN_BLACK_TOP } from "../constant"
+import { INITIAL_FEN_BLACK_BOTTOM, INITIAL_FEN } from "../constant"
 import {
 	flatArrayToProjectFen,
 	projectFenToFlatArray,
@@ -9,9 +9,9 @@ import {
 describe("fen-converter", () => {
 	describe("projectFenToFlatArray ↔ flatArrayToProjectFen roundtrip", () => {
 		it("survives BLACK_TOP starting position", () => {
-			const cells = projectFenToFlatArray(INITIAL_FEN_BLACK_TOP)
+			const cells = projectFenToFlatArray(INITIAL_FEN)
 			expect(cells).toHaveLength(90)
-			expect(flatArrayToProjectFen(cells)).toBe(INITIAL_FEN_BLACK_TOP)
+			expect(flatArrayToProjectFen(cells)).toBe(INITIAL_FEN)
 		})
 
 		it("survives BLACK_BOTTOM starting position", () => {
@@ -20,9 +20,9 @@ describe("fen-converter", () => {
 		})
 
 		it("tolerates a full 6-field FEN by parsing the placement field only", () => {
-			const cells = projectFenToFlatArray(`${INITIAL_FEN_BLACK_TOP} w - - 0 1`)
+			const cells = projectFenToFlatArray(`${INITIAL_FEN} w - - 0 1`)
 			expect(cells).toHaveLength(90)
-			expect(flatArrayToProjectFen(cells)).toBe(INITIAL_FEN_BLACK_TOP)
+			expect(flatArrayToProjectFen(cells)).toBe(INITIAL_FEN)
 		})
 
 		it("rejects FEN with wrong row count", () => {
@@ -40,21 +40,21 @@ describe("fen-converter", () => {
 		// In INITIAL_FEN_BLACK_TOP, project lowercase=red sits at the bottom of the FEN
 		// (already canonical layout). Conversion only swaps case + maps letters.
 		it("converts BLACK_TOP starting position with red to move", () => {
-			const standard = projectFenToStandardFen(INITIAL_FEN_BLACK_TOP, true, "red")
+			const standard = projectFenToStandardFen(INITIAL_FEN, true, "white")
 			expect(standard).toBe(
 				"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1"
 			)
 		})
 
 		it("converts BLACK_TOP starting position with black to move", () => {
-			const standard = projectFenToStandardFen(INITIAL_FEN_BLACK_TOP, true, "black")
+			const standard = projectFenToStandardFen(INITIAL_FEN, true, "black")
 			expect(standard.endsWith(" b - - 0 1")).toBe(true)
 		})
 
 		// BLACK_BOTTOM has red lowercase at the top of the FEN string; the function must
 		// rotate 180° before translating so red ends up at the bottom in standard FEN.
 		it("rotates BLACK_BOTTOM starting position so red ends up at the bottom of standard FEN", () => {
-			const standard = projectFenToStandardFen(INITIAL_FEN_BLACK_BOTTOM, false, "red")
+			const standard = projectFenToStandardFen(INITIAL_FEN_BLACK_BOTTOM, false, "white")
 			expect(standard).toBe(
 				"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1"
 			)

@@ -81,7 +81,7 @@ describe("POST /api/room/create-room", () => {
 	it("returns 401 when authorization token is missing", async () => {
 		const res = await request(app).post(PATH).send({
 			tableName: "Table 1",
-			teamName: "red",
+			teamName: "white",
 			redFirst: true,
 			betAmount: 10
 		})
@@ -103,7 +103,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: 10
 			})
@@ -235,7 +235,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: 50,
 				timeLimit: 123
@@ -265,7 +265,7 @@ describe("POST /api/room/create-room", () => {
 			host_id: BigInt(11),
 			created_at: new Date("2026-05-12T00:00:00.000Z"),
 			updated_at: new Date("2026-05-12T00:00:00.000Z"),
-			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "red" }]
+			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "white" }]
 		})
 
 		const res = await request(app)
@@ -273,7 +273,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: 50,
 				timeLimit: 600
@@ -295,7 +295,7 @@ describe("POST /api/room/create-room", () => {
 		const res = await request(app)
 			.post(PATH)
 			.set("Authorization", `Bearer ${accessToken}`)
-			.send({ tableName: "T", teamName: "red", betAmount: 50, timeLimit: 600, timeIncrement: 7 })
+			.send({ tableName: "T", teamName: "white", betAmount: 50, timeLimit: 600, timeIncrement: 7 })
 
 		expect(res.status).toBe(400)
 		expect(res.body.message).toBe("create-room.messages.invalid-time-increment")
@@ -309,7 +309,7 @@ describe("POST /api/room/create-room", () => {
 		const res = await request(app)
 			.post(PATH)
 			.set("Authorization", `Bearer ${accessToken}`)
-			.send({ tableName: "T", teamName: "red", betAmount: 50, timeLimit: 600, timePerMove: 45 })
+			.send({ tableName: "T", teamName: "white", betAmount: 50, timeLimit: 600, timePerMove: 45 })
 
 		expect(res.status).toBe(400)
 		expect(res.body.message).toBe("create-room.messages.invalid-time-per-move")
@@ -324,13 +324,13 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(9), name: "T", status: 1, red_first: true, pve_mode: false,
 			bet_amount: 50, time_limit: 600, time_increment: 5, time_per_move: 60,
 			host_id: BigInt(11), created_at: new Date(), updated_at: new Date(),
-			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "red" }]
+			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "white" }]
 		})
 
 		const res = await request(app)
 			.post(PATH)
 			.set("Authorization", `Bearer ${accessToken}`)
-			.send({ tableName: "T", teamName: "red", betAmount: 50, timeLimit: 600, timeIncrement: 5, timePerMove: 60 })
+			.send({ tableName: "T", teamName: "white", betAmount: 50, timeLimit: 600, timeIncrement: 5, timePerMove: 60 })
 
 		expect(res.status).toBe(201)
 		expect(roomCreateMock).toHaveBeenCalledWith(
@@ -348,14 +348,14 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(9), name: "T", status: 1, red_first: true, pve_mode: false,
 			bet_amount: 50, time_limit: null, time_increment: 0, time_per_move: 0,
 			host_id: BigInt(11), created_at: new Date(), updated_at: new Date(),
-			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "red" }]
+			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "white" }]
 		})
 
 		const res = await request(app)
 			.post(PATH)
 			.set("Authorization", `Bearer ${accessToken}`)
 			// No timeLimit (unlimited) but add-ons sent -> coerced to 0.
-			.send({ tableName: "T", teamName: "red", betAmount: 50, timeIncrement: 5, timePerMove: 60 })
+			.send({ tableName: "T", teamName: "white", betAmount: 50, timeIncrement: 5, timePerMove: 60 })
 
 		expect(res.status).toBe(201)
 		expect(roomCreateMock).toHaveBeenCalledWith(
@@ -379,7 +379,7 @@ describe("POST /api/room/create-room", () => {
 			host_id: BigInt(11),
 			created_at: new Date("2026-05-12T00:00:00.000Z"),
 			updated_at: new Date("2026-05-12T00:00:00.000Z"),
-			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "red" }]
+			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "white" }]
 		})
 
 		const res = await request(app)
@@ -387,7 +387,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Bot Table",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				pveMode: true,
 				betAmount: 0,
@@ -411,7 +411,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: "true",
 				betAmount: 10
 			})
@@ -433,7 +433,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: 15
 			})
@@ -455,7 +455,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: "fifty"
 			})
@@ -477,7 +477,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: "5x"
 			})
@@ -501,7 +501,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: 100
 			})
@@ -536,7 +536,7 @@ describe("POST /api/room/create-room", () => {
 						display_name: "Alice",
 						avatar_seq: 0
 					},
-					team: "red"
+					team: "white"
 				}
 			]
 		})
@@ -546,7 +546,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: 50
 			})
@@ -573,7 +573,7 @@ describe("POST /api/room/create-room", () => {
 		expect(res.body.data.users[0]).toMatchObject({
 			id: "11",
 			display_name: "Alice",
-			team: "red",
+			team: "white",
 			avatar_url: "/images/11.jpg"
 		})
 
@@ -594,7 +594,7 @@ describe("POST /api/room/create-room", () => {
 						create: [
 							expect.objectContaining({
 								user_id: BigInt(11),
-								team: "red",
+								team: "white",
 								joined_at: expect.any(Date)
 							})
 						]
@@ -634,7 +634,7 @@ describe("POST /api/room/create-room", () => {
 						avatar_seq: 0,
 						is_bot: true
 					},
-					team: "red"
+					team: "white"
 				}
 			]
 		})
@@ -679,7 +679,7 @@ describe("POST /api/room/create-room", () => {
 		expect(res.body.data.users[1]).toMatchObject({
 			id: "0",
 			display_name: "Bot",
-			team: "red",
+			team: "white",
 			is_bot: true
 		})
 
@@ -700,7 +700,7 @@ describe("POST /api/room/create-room", () => {
 							}),
 							expect.objectContaining({
 								user_id: BOT_USER_ID,
-								team: "red",
+								team: "white",
 								joined_at: expect.any(Date)
 							})
 						]
@@ -719,7 +719,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "PvE Table Invalid",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				pveMode: true,
 				betAmount: 50
@@ -752,7 +752,7 @@ describe("POST /api/room/create-room", () => {
 						display_name: "Alice",
 						avatar_seq: 1
 					},
-					team: "red"
+					team: "white"
 				}
 			]
 		})
@@ -762,7 +762,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "PvP Table Zero",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				pveMode: false,
 				betAmount: 0
@@ -788,7 +788,7 @@ describe("POST /api/room/create-room", () => {
 		expect(res.body.data.users[0]).toMatchObject({
 			id: "11",
 			display_name: "Alice",
-			team: "red"
+			team: "white"
 		})
 
 		expect(roomCreateMock).toHaveBeenCalledWith(
@@ -802,7 +802,7 @@ describe("POST /api/room/create-room", () => {
 						create: [
 							expect.objectContaining({
 								user_id: BigInt(11),
-								team: "red",
+								team: "white",
 								joined_at: expect.any(Date)
 							})
 						]
@@ -824,7 +824,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: 50
 			})
@@ -856,7 +856,7 @@ describe("POST /api/room/create-room", () => {
 			room_users: [
 				{
 					users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0 },
-					team: "red"
+					team: "white"
 				}
 			]
 		})
@@ -866,7 +866,7 @@ describe("POST /api/room/create-room", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				tableName: "Table 1",
-				teamName: "red",
+				teamName: "white",
 				redFirst: true,
 				betAmount: 50
 			})

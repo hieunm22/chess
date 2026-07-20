@@ -1,6 +1,6 @@
 import { PresenceStatus } from "common/presence"
 
-export type Team = "red" | "black"
+export type Team = "white" | "black"
 
 export interface ChangeTeamRequest {
 	roomId: number
@@ -101,8 +101,8 @@ export interface ClockConfig {
 // Clock baseline: accumulated time (ms) and move counts at a fixed point.
 // Stamped on the record an undo rewinds to, so the resumed turn doesn't re-charge undone time.
 export interface ClockBaseline {
-	spentMs: { red: number; black: number }
-	moves: { red: number; black: number }
+	spentMs: { white: number; black: number }
+	moves: { white: number; black: number }
 }
 
 // Move-history record fields used by the clock.

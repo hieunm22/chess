@@ -85,8 +85,8 @@ describe("POST /api/game/undo", () => {
 		})
 		// Defaults for the clock helpers; clocked tests override armClock.
 		computeUndoBaselineMock.mockReturnValue({
-			spentMs: { red: 0, black: 0 },
-			moves: { red: 0, black: 0 }
+			spentMs: { white: 0, black: 0 },
+			moves: { white: 0, black: 0 }
 		})
 		armClockMock.mockResolvedValue(null)
 	})
@@ -278,7 +278,7 @@ describe("POST /api/game/undo", () => {
 			game_users: [{ user_id: BigInt(1) }]
 		})
 		roomUserFindUniqueMock.mockResolvedValue({
-			team: "red"
+			team: "white"
 		})
 		toArrayMock.mockResolvedValue([])
 
@@ -310,7 +310,7 @@ describe("POST /api/game/undo", () => {
 			game_users: [{ user_id: BigInt(1) }]
 		})
 		roomUserFindUniqueMock.mockResolvedValue({
-			team: "red"
+			team: "white"
 		})
 		// Mock: get all game histories (API fetches all histories once)
 		toArrayMock.mockResolvedValueOnce([
@@ -318,13 +318,13 @@ describe("POST /api/game/undo", () => {
 				_id: mockId,
 				game_id: gameId,
 				fen: "new-fen",
-				team: "red"
+				team: "white"
 			},
 			{
 				_id: oldMockId,
 				game_id: gameId,
 				fen: "old-fen",
-				team: "red"
+				team: "white"
 			}
 		])
 		deleteManyMock.mockResolvedValue({ deletedCount: 2 })
@@ -346,13 +346,13 @@ describe("POST /api/game/undo", () => {
 					_id: mockId.toHexString(),
 					game_id: gameId,
 					fen: "new-fen",
-					team: "red"
+					team: "white"
 				},
 				{
 					_id: oldMockId.toHexString(),
 					game_id: gameId,
 					fen: "old-fen",
-					team: "red"
+					team: "white"
 				}
 			]
 		})
@@ -376,7 +376,7 @@ describe("POST /api/game/undo", () => {
 			game_users: [{ user_id: BigInt(1) }]
 		})
 		roomUserFindUniqueMock.mockResolvedValue({
-			team: "red"
+			team: "white"
 		})
 		// Mock: get all game histories
 		toArrayMock.mockResolvedValueOnce([
@@ -390,7 +390,7 @@ describe("POST /api/game/undo", () => {
 				_id: mockId2,
 				game_id: gameId,
 				fen: "opponent-move-fen",
-				team: "red"
+				team: "white"
 			},
 			{
 				_id: oldMockId,
@@ -437,7 +437,7 @@ describe("POST /api/game/undo", () => {
 			game_users: [{ user_id: BigInt(1) }]
 		})
 		roomUserFindUniqueMock.mockResolvedValue({
-			team: "red"
+			team: "white"
 		})
 		// Mock: get all game histories
 		toArrayMock.mockResolvedValueOnce([
@@ -480,7 +480,7 @@ describe("POST /api/game/undo", () => {
 			game_users: [{ user_id: BigInt(1) }]
 		})
 		roomUserFindUniqueMock.mockResolvedValue({
-			team: "red"
+			team: "white"
 		})
 		// Mock: get all game histories with 3 undo records for user 1
 		toArrayMock.mockResolvedValueOnce([
@@ -488,7 +488,7 @@ describe("POST /api/game/undo", () => {
 				_id: mockId1,
 				game_id: gameId,
 				fen: "fen-1",
-				team: "red",
+				team: "white",
 				undo: 1
 			},
 			{
@@ -502,7 +502,7 @@ describe("POST /api/game/undo", () => {
 				_id: mockId3,
 				game_id: gameId,
 				fen: "fen-3",
-				team: "red",
+				team: "white",
 				undo: 1
 			},
 			{
@@ -541,7 +541,7 @@ describe("POST /api/game/undo", () => {
 			game_users: [{ user_id: BigInt(1) }]
 		})
 		roomUserFindUniqueMock.mockResolvedValue({
-			team: "red"
+			team: "white"
 		})
 		// Mock: get all game histories with 1 existing undo for user 1
 		toArrayMock.mockResolvedValueOnce([
@@ -549,7 +549,7 @@ describe("POST /api/game/undo", () => {
 				_id: mockId,
 				game_id: gameId,
 				fen: "new-fen",
-				team: "red"
+				team: "white"
 			},
 			{
 				_id: oldMockId,
@@ -585,22 +585,22 @@ describe("POST /api/game/undo", () => {
 			time_limit: 600,
 			game_users: [{ user_id: BigInt(1) }]
 		})
-		roomUserFindUniqueMock.mockResolvedValue({ team: "red" })
+		roomUserFindUniqueMock.mockResolvedValue({ team: "white" })
 		// Red is on the move (latest.team === red) -> 2 records deleted, remaining = A.
 		toArrayMock.mockResolvedValueOnce([
-			{ _id: idA, game_id: gameId, fen: "fen-a", team: "red", time_stamp: 100 },
+			{ _id: idA, game_id: gameId, fen: "fen-a", team: "white", time_stamp: 100 },
 			{ _id: idB, game_id: gameId, fen: "fen-b", team: "black", time_stamp: 110 },
-			{ _id: idC, game_id: gameId, fen: "fen-c", team: "red", time_stamp: 125 }
+			{ _id: idC, game_id: gameId, fen: "fen-c", team: "white", time_stamp: 125 }
 		])
 		deleteManyMock.mockResolvedValue({ deletedCount: 2 })
 		computeUndoBaselineMock.mockReturnValue({
-			spentMs: { red: 10000, black: 0 },
-			moves: { red: 1, black: 0 }
+			spentMs: { white: 10000, black: 0 },
+			moves: { white: 1, black: 0 }
 		})
 		const clockSnapshot = {
 			redMs: 590000,
 			blackMs: 600000,
-			activeTeam: "red",
+			activeTeam: "white",
 			serverNow: 1700000000000,
 			timeLimit: 600,
 			timeIncrement: 0
@@ -624,8 +624,8 @@ describe("POST /api/game/undo", () => {
 					undo: 1,
 					time_stamp: expect.any(Number),
 					clock_baseline: {
-						spentMs: { red: 10000, black: 0 },
-						moves: { red: 1, black: 0 }
+						spentMs: { white: 10000, black: 0 },
+						moves: { white: 1, black: 0 }
 					}
 				})
 			}

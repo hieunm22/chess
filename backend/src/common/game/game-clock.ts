@@ -88,16 +88,16 @@ function deriveSpent(records: ClockHistoryRecord[]): {
 	completedMoves: Record<Team, number>
 } {
 	let anchorIdx = 0
-	const spentMs: Record<Team, number> = { red: 0, black: 0 }
-	const completedMoves: Record<Team, number> = { red: 0, black: 0 }
+	const spentMs: Record<Team, number> = { white: 0, black: 0 }
+	const completedMoves: Record<Team, number> = { white: 0, black: 0 }
 
 	for (let i = records.length - 1; i >= 0; i -= 1) {
 		const baseline = records[i].baseline
 		if (baseline) {
 			anchorIdx = i
-			spentMs.red = baseline.spentMs.red
+			spentMs.white = baseline.spentMs.white
 			spentMs.black = baseline.spentMs.black
-			completedMoves.red = baseline.moves.red
+			completedMoves.white = baseline.moves.white
 			completedMoves.black = baseline.moves.black
 			break
 		}
@@ -162,7 +162,7 @@ export function computeClockState(
 	const deadlineMs = Math.min(totalDeadlineMs, perMoveDeadlineMs)
 
 	return {
-		redMs: remainingMs("red"),
+		redMs: remainingMs("white"),
 		blackMs: remainingMs("black"),
 		activeTeam,
 		perMoveRemainingMs: perMoveMs > 0 ? Math.max(0, perMoveMs - inProgressMs) : 0,
@@ -284,7 +284,7 @@ async function handleFlag(gameId: string, expectedTeam: Team): Promise<void> {
 		}
 
 		const loserTeam = state.activeTeam
-		const winnerTeam: Team = loserTeam === "red" ? "black" : "red"
+		const winnerTeam: Team = loserTeam === "white" ? "black" : "white"
 		const latestFen = records[records.length - 1].fen
 
 		const endReason = state.perMoveBinding ? "per-move-timeout" : "timeout"

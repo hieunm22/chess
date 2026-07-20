@@ -170,7 +170,7 @@ router.post("/game/draw-game", requireAuth(), async (req: AuthenticatedRequest, 
 		await collection.insertOne({
 			game_id: normalizedGameId,
 			fen: latestRecord[0].fen,
-			team: currentRoomUser.team === "red" ? "black" : "red",
+			team: currentRoomUser.team === "white" ? "black" : "white",
 			draw: Number(userId),
 			time_stamp: getUTCTimestamp(),
 			end_reason: "draw"

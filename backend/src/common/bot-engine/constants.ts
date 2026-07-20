@@ -11,6 +11,6 @@ export const ENGINE_IDLE_TIMEOUT_MS = 10 * 60 * 1000
 // Max time to wait for a bestmove response (ms). Safety net per move.
 export const ENGINE_MOVE_TIMEOUT_MS = 30 * 1000
 
-export const BOARD_COLUMNS = 9
-export const BOARD_ROWS = 10
+export const BOARD_COLUMNS = 8
+export const BOARD_ROWS = 8
 export const BOARD_SIZE = BOARD_COLUMNS * BOARD_ROWS

@@ -158,7 +158,7 @@ describe("POST /api/game/draw-game", () => {
 			status: 1
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(12), team: "red" },
+			{ user_id: BigInt(12), team: "white" },
 			{ user_id: BigInt(13), team: "black" }
 		])
 
@@ -198,7 +198,7 @@ describe("POST /api/game/draw-game", () => {
 		})
 		roomUserFindManyMock.mockResolvedValue([
 			{ user_id: BigInt(11), team: null },
-			{ user_id: BigInt(12), team: "red" }
+			{ user_id: BigInt(12), team: "white" }
 		])
 
 		const res = await request(app)
@@ -224,9 +224,9 @@ describe("POST /api/game/draw-game", () => {
 			status: 1
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(12), team: "red" },
+			{ user_id: BigInt(12), team: "white" },
 			{ user_id: BigInt(13), team: "black" },
-			{ user_id: BigInt(11), team: "red" }
+			{ user_id: BigInt(11), team: "white" }
 		])
 
 		const res = await request(app)
@@ -252,7 +252,7 @@ describe("POST /api/game/draw-game", () => {
 			status: 1
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 		toArrayMock.mockResolvedValue([])
@@ -281,7 +281,7 @@ describe("POST /api/game/draw-game", () => {
 			status: 2
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 
@@ -308,7 +308,7 @@ describe("POST /api/game/draw-game", () => {
 			status: 1
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 		toArrayMock.mockResolvedValue([
@@ -362,7 +362,7 @@ describe("POST /api/game/draw-game", () => {
 			status: 1
 		})
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		])
 		toArrayMock.mockResolvedValue([

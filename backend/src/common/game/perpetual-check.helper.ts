@@ -51,7 +51,7 @@ async function loadPositions(gameId: string): Promise<Position[]> {
 		.toArray()
 
 	return records
-		.filter(record => typeof record.fen === "string" && (record.team === "red" || record.team === "black"))
+		.filter(record => typeof record.fen === "string" && (record.team === "white" || record.team === "black"))
 		.map(record => ({ fen: record.fen as string, team: record.team as Team }))
 }
 

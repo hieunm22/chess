@@ -16,7 +16,7 @@ interface TeamStateEvaluation {
 const toIndex = (row: number, col: number) => row * BOARD_COLUMNS + col
 
 const getMoveDirection = (redFirst: boolean, team: Team): -1 | 1 => {
-	const bottomTeam: Team = redFirst ? "red" : "black"
+	const bottomTeam: Team = redFirst ? "white" : "black"
 	return team === bottomTeam ? -1 : 1
 }
 
@@ -275,7 +275,7 @@ const findCheckingPieces = (board: BoardState, team: Team, redFirst: boolean): n
 	const generalIndex = board.findIndex(cell => cell?.piece === "general" && cell.team === team)
 	if (generalIndex < 0) return []
 
-	const enemyTeam: Team = team === "red" ? "black" : "red"
+	const enemyTeam: Team = team === "white" ? "black" : "white"
 	const enemyDirection = getMoveDirection(redFirst, enemyTeam)
 	const checkers: number[] = []
 

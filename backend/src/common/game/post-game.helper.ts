@@ -14,7 +14,7 @@ export const POST_GAME_BACK_TIMEOUT_MS = 15_000
 const roomPostGameLocks = new Map<number, PostGameLockState>()
 
 const isTeam = (team: string | null): team is Team => {
-	return team === "red" || team === "black"
+	return team === "white" || team === "black"
 }
 
 function mapRoomUsersForRealtime(roomUsers: RoomUserSnapshot[]) {

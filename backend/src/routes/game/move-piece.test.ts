@@ -10,7 +10,7 @@ import {
 	it,
 	vi
 } from "vitest"
-import { INITIAL_FEN_BLACK_TOP } from "common/constant"
+import { INITIAL_FEN } from "common/constant"
 
 const redisGetMock = vi.fn()
 const toArrayMock = vi.fn()
@@ -93,9 +93,9 @@ describe("POST /api/game/move-piece", () => {
 	it("returns 401 when authorization token is missing", async () => {
 		const res = await request(app).post(PATH).send({
 			gameId: "game-1",
-			newFen: INITIAL_FEN_BLACK_TOP,
+			newFen: INITIAL_FEN,
 			capturePiece: null,
-			team: "red"
+			team: "white"
 		})
 
 		expect(res.status).toBe(401)
@@ -115,9 +115,9 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: 123,
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(400)
@@ -139,7 +139,7 @@ describe("POST /api/game/move-piece", () => {
 			.send({
 				gameId: "game-1",
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(400)
@@ -162,7 +162,7 @@ describe("POST /api/game/move-piece", () => {
 				gameId: "game-1",
 				newFen: "invalid-fen",
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(400)
@@ -183,7 +183,7 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: null,
 				team: "blue"
 			})
@@ -207,9 +207,9 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(400)
@@ -228,13 +228,13 @@ describe("POST /api/game/move-piece", () => {
 		const accessToken = buildAccessToken(91, "session-move-piece-timeout")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 91 }))
 		toArrayMock.mockResolvedValue([
-			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN_BLACK_TOP, team: "red" }
+			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN, team: "white" }
 		])
 		// Red is on the move but has 0ms left -> the move is rejected.
 		computeClockMock.mockResolvedValue({
 			redMs: 0,
 			blackMs: 30000,
-			activeTeam: "red",
+			activeTeam: "white",
 			serverNow: 1700000000000,
 			timeLimit: 600,
 			timeIncrement: 0
@@ -245,9 +245,9 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(400)
@@ -264,7 +264,7 @@ describe("POST /api/game/move-piece", () => {
 		const accessToken = buildAccessToken(91, "session-move-piece-6")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 91 }))
 		toArrayMock.mockResolvedValue([
-			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN_BLACK_TOP, team: "red" }
+			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN, team: "white" }
 		])
 		insertOneMock.mockResolvedValue({
 			insertedId: { toString: () => "mongo-id-new" }
@@ -275,16 +275,16 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(201)
 		expect(insertOneMock).toHaveBeenCalledWith(
 			expect.objectContaining({
 				game_id: "game-1",
-				fen: `${INITIAL_FEN_BLACK_TOP} b - - 1 1`,
+				fen: `${INITIAL_FEN} b - - 1 1`,
 				team: "black",
 				time_stamp: expect.any(Number)
 			})
@@ -296,7 +296,7 @@ describe("POST /api/game/move-piece", () => {
 			data: {
 				_id: "mongo-id-new",
 				game_id: "game-1",
-				fen: `${INITIAL_FEN_BLACK_TOP} b - - 1 1`,
+				fen: `${INITIAL_FEN} b - - 1 1`,
 				team: "black"
 			}
 		})
@@ -308,7 +308,7 @@ describe("POST /api/game/move-piece", () => {
 		const accessToken = buildAccessToken(91, "session-move-piece-6-capture")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 91 }))
 		toArrayMock.mockResolvedValue([
-			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN_BLACK_TOP, team: "red" }
+			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN, team: "white" }
 		])
 		insertOneMock.mockResolvedValue({
 			insertedId: { toString: () => "mongo-id-new" }
@@ -319,16 +319,16 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: "r",
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(201)
 		expect(insertOneMock).toHaveBeenCalledWith(
 			expect.objectContaining({
 				game_id: "game-1",
-				fen: `${INITIAL_FEN_BLACK_TOP} b - - 0 1`,
+				fen: `${INITIAL_FEN} b - - 0 1`,
 				team: "black",
 				capture: "R",
 				time_stamp: expect.any(Number)
@@ -341,7 +341,7 @@ describe("POST /api/game/move-piece", () => {
 			data: {
 				_id: "mongo-id-new",
 				game_id: "game-1",
-				fen: `${INITIAL_FEN_BLACK_TOP} b - - 0 1`,
+				fen: `${INITIAL_FEN} b - - 0 1`,
 				team: "black",
 				capture: "R"
 			}
@@ -352,7 +352,7 @@ describe("POST /api/game/move-piece", () => {
 		const accessToken = buildAccessToken(91, "session-move-piece-6-capture-black")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 91 }))
 		toArrayMock.mockResolvedValue([
-			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN_BLACK_TOP, team: "black" }
+			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN, team: "black" }
 		])
 		insertOneMock.mockResolvedValue({
 			insertedId: { toString: () => "mongo-id-new" }
@@ -363,7 +363,7 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: "R",
 				team: "black"
 			})
@@ -372,8 +372,8 @@ describe("POST /api/game/move-piece", () => {
 		expect(insertOneMock).toHaveBeenCalledWith(
 			expect.objectContaining({
 				game_id: "game-1",
-				fen: `${INITIAL_FEN_BLACK_TOP} w - - 0 2`,
-				team: "red",
+				fen: `${INITIAL_FEN} w - - 0 2`,
+				team: "white",
 				capture: "r",
 				time_stamp: expect.any(Number)
 			})
@@ -385,8 +385,8 @@ describe("POST /api/game/move-piece", () => {
 			data: {
 				_id: "mongo-id-new",
 				game_id: "game-1",
-				fen: `${INITIAL_FEN_BLACK_TOP} w - - 0 2`,
-				team: "red",
+				fen: `${INITIAL_FEN} w - - 0 2`,
+				team: "white",
 				capture: "r"
 			}
 		})
@@ -401,7 +401,7 @@ describe("POST /api/game/move-piece", () => {
 				_id: { toString: () => "mongo-id-prev" },
 				game_id: "game-1",
 				fen: "4G4/9/9/9/9/9/s8/9/9/4g4 w - - 5 3",
-				team: "red"
+				team: "white"
 			}
 		])
 		insertOneMock.mockResolvedValue({ insertedId: { toString: () => "mongo-id-new" } })
@@ -413,7 +413,7 @@ describe("POST /api/game/move-piece", () => {
 				gameId: "game-1",
 				newFen: "4G4/9/9/9/9/s8/9/9/9/4g4",
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(201)
@@ -435,7 +435,7 @@ describe("POST /api/game/move-piece", () => {
 				_id: { toString: () => "mongo-id-prev" },
 				game_id: "game-1",
 				fen: "4G4/9/9/s8/9/9/9/9/9/4g4 w - - 5 3",
-				team: "red"
+				team: "white"
 			}
 		])
 		insertOneMock.mockResolvedValue({ insertedId: { toString: () => "mongo-id-new" } })
@@ -447,7 +447,7 @@ describe("POST /api/game/move-piece", () => {
 				gameId: "game-1",
 				newFen: "4G4/9/9/1s7/9/9/9/9/9/4g4",
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(201)
@@ -465,7 +465,7 @@ describe("POST /api/game/move-piece", () => {
 		const accessToken = buildAccessToken(91, "session-move-piece-invalid-team")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 91 }))
 		toArrayMock.mockResolvedValue([
-			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN_BLACK_TOP, team: "red" }
+			{ _id: { toString: () => "mongo-id-prev" }, game_id: "game-1", fen: INITIAL_FEN, team: "white" }
 		])
 
 		const res = await request(app)
@@ -473,7 +473,7 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: null,
 				team: "black"
 			})
@@ -498,9 +498,9 @@ describe("POST /api/game/move-piece", () => {
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				gameId: "game-1",
-				newFen: INITIAL_FEN_BLACK_TOP,
+				newFen: INITIAL_FEN,
 				capturePiece: null,
-				team: "red"
+				team: "white"
 			})
 
 		expect(res.status).toBe(500)

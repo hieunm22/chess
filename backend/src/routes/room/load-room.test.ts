@@ -118,7 +118,7 @@ describe("GET /api/room/info?id=:id", () => {
 		computeClockMock.mockResolvedValue({
 			redMs: 300000,
 			blackMs: 250000,
-			activeTeam: "red",
+			activeTeam: "white",
 			serverNow: 1700000000000,
 			timeLimit: 600,
 			timeIncrement: 0
@@ -152,7 +152,7 @@ describe("GET /api/room/info?id=:id", () => {
 						avatar_seq: 0,
 						is_bot: false
 					},
-					team: "red"
+					team: "white"
 				},
 				{
 					users: {
@@ -201,7 +201,7 @@ describe("GET /api/room/info?id=:id", () => {
 				clock: {
 					redMs: 300000,
 					blackMs: 250000,
-					activeTeam: "red",
+					activeTeam: "white",
 					timeLimit: 600
 				}
 			}
@@ -216,7 +216,7 @@ describe("GET /api/room/info?id=:id", () => {
 		expect(res.body.data.users[0]).toMatchObject({
 			id: 11,
 			display_name: "Alice",
-			team: "red",
+			team: "white",
 			avatar_url: "/images/11.jpg",
 			is_bot: false
 		})

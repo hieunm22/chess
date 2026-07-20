@@ -40,7 +40,7 @@ const router = Router()
  *                 description: Project FEN board string after the latest move.
  *               checkedTeam:
  *                 type: string
- *                 enum: ["red", "black"]
+ *                 enum: ["white", "black"]
  *                 description: Team whose general piece safety is being evaluated.
  *     responses:
  *       200:
@@ -73,7 +73,7 @@ const router = Router()
  *                       enum: ["ongoing", "check", "checkmate", "stalemate"]
  *                     checkedTeam:
  *                       type: string
- *                       enum: ["red", "black"]
+ *                       enum: ["white", "black"]
  *                     winnerId:
  *                       type: integer
  *                       nullable: true
@@ -114,7 +114,7 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 		return
 	}
 
-	if (checkedTeam !== "red" && checkedTeam !== "black") {
+	if (checkedTeam !== "white" && checkedTeam !== "black") {
 		res.status(400).json({
 			success: false,
 			message: "verify-state.messages.invalid-team",
@@ -202,10 +202,10 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 
 		if (evaluation.status === "checkmate" || evaluation.status === "stalemate") {
 			// The checked/stalemated side loses; its opponent wins.
-			const winnerTeam = checkedTeam === "red" ? "black" : "red"
+			const winnerTeam = checkedTeam === "white" ? "black" : "white"
 			await finalizeGameEnd(winnerTeam, evaluation.status)
 		} else if (
-			!hasAttackingMaterial(newFen, "red") &&
+			!hasAttackingMaterial(newFen, "white") &&
 			!hasAttackingMaterial(newFen, "black")
 		) {
 			// Neither side has any attacking piece left
@@ -221,7 +221,7 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 			if (perpetual.status === "loss") {
 				await finalizeGameEnd(checkedTeam, "perpetual-check")
 			} else if (perpetual.status === "warning") {
-				const offenderTeam = checkedTeam === "red" ? "black" : "red"
+				const offenderTeam = checkedTeam === "white" ? "black" : "white"
 				emitPerpetualCheckWarning(Number(game.room_id), { gameId, offenderTeam, checkedTeam })
 			}
 		}

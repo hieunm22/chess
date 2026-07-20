@@ -84,7 +84,7 @@ const PARAMS = {
 	roomId: 5n,
 	projectFen: "prev-fen",
 	redFirst: true,
-	botTeam: "red" as const,
+	botTeam: "white" as const,
 	difficulty: 1
 }
 
@@ -116,7 +116,7 @@ describe("playBotMove perpetual check enforcement", () => {
 		requestBotMoveMock.mockResolvedValue(null)
 		roomUserFindManyMock.mockResolvedValue([
 			{ user_id: 22n, team: "black" },
-			{ user_id: 999n, team: "red" }
+			{ user_id: 999n, team: "white" }
 		])
 
 		const result = await playBotMove(PARAMS)
@@ -208,7 +208,7 @@ describe("playBotMove perpetual check enforcement", () => {
 
 		expect(emitPerpetualCheckWarningMock).toHaveBeenCalledWith(5, {
 			gameId: "game-1",
-			offenderTeam: "red",
+			offenderTeam: "white",
 			checkedTeam: "black"
 		})
 		expect(concludeGameMock).not.toHaveBeenCalled()
@@ -232,7 +232,7 @@ describe("playBotMove perpetual check enforcement", () => {
 		expect(concludeGameMock).toHaveBeenCalledWith({
 			gameId: "game-1",
 			roomId: 5n,
-			winnerTeam: "red",
+			winnerTeam: "white",
 			isBotGame: true,
 			betAmount: 50,
 			statusForEvent: "checkmate"

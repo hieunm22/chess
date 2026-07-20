@@ -121,7 +121,7 @@ describe("POST /api/game/back-to-room", () => {
 	it("returns 200 and broadcasts updated room users when back confirmation succeeds", async () => {
 		const accessToken = buildAccessToken(11, "session-back-room-4")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 11 }))
-		roomUserFindUniqueMock.mockResolvedValue({ team: "red" })
+		roomUserFindUniqueMock.mockResolvedValue({ team: "white" })
 		markPostGameReadyMock.mockReturnValue(true)
 		emitRoomUsersSnapshotMock.mockResolvedValue(undefined)
 

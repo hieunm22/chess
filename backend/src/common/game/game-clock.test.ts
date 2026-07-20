@@ -75,7 +75,7 @@ const setConfig = (overrides: Record<string, unknown> = {}) => {
 		time_per_move: 0,
 		room: { bet_amount: 50, pve_mode: false },
 		game_users: [
-			{ user_id: BigInt(11), team: "red" },
+			{ user_id: BigInt(11), team: "white" },
 			{ user_id: BigInt(12), team: "black" }
 		],
 		...overrides
@@ -84,7 +84,7 @@ const setConfig = (overrides: Record<string, unknown> = {}) => {
 
 describe("computeClockState", () => {
 	it("returns null when there is no time limit", () => {
-		const records: ClockHistoryRecord[] = [{ team: "red", timeStamp: T0, fen: "x" }]
+		const records: ClockHistoryRecord[] = [{ team: "white", timeStamp: T0, fen: "x" }]
 		expect(
 			computeClockState(records, { timeLimit: null, timeIncrement: 0 }, BASE_MS)
 		).toBeNull()
@@ -95,13 +95,13 @@ describe("computeClockState", () => {
 	})
 
 	it("treats a zero (or negative) time limit as unlimited, not an instant flag", () => {
-		const records: ClockHistoryRecord[] = [{ team: "red", timeStamp: T0, fen: "x" }]
+		const records: ClockHistoryRecord[] = [{ team: "white", timeStamp: T0, fen: "x" }]
 		expect(computeClockState(records, { timeLimit: 0, timeIncrement: 0 }, BASE_MS)).toBeNull()
 		expect(computeClockState(records, { timeLimit: -5, timeIncrement: 0 }, BASE_MS)).toBeNull()
 	})
 
 	it("exposes the active team's per-move remaining and caps the deadline by it", () => {
-		const records: ClockHistoryRecord[] = [{ team: "red", timeStamp: T0, fen: "x" }]
+		const records: ClockHistoryRecord[] = [{ team: "white", timeStamp: T0, fen: "x" }]
 		// 15min total, 60s per move: 20s into the move -> 40s left on the move cap,
 		// and the flag deadline is the per-move cap (T0+60s), not the far-off total.
 		const state = computeClockState(
@@ -118,7 +118,7 @@ describe("computeClockState", () => {
 
 	it("keeps the total-time deadline when it is sooner than the per-move cap", () => {
 		// Only 5s of total left but a 60s per-move cap -> total wins the deadline.
-		const records: ClockHistoryRecord[] = [{ team: "red", timeStamp: T0, fen: "x" }]
+		const records: ClockHistoryRecord[] = [{ team: "white", timeStamp: T0, fen: "x" }]
 		const state = computeClockState(
 			records,
 			{ timeLimit: 5, timeIncrement: 0, timePerMove: 60 },
@@ -130,7 +130,7 @@ describe("computeClockState", () => {
 	})
 
 	it("counts down the active team's clock from the last move timestamp", () => {
-		const records: ClockHistoryRecord[] = [{ team: "red", timeStamp: T0, fen: "x" }]
+		const records: ClockHistoryRecord[] = [{ team: "white", timeStamp: T0, fen: "x" }]
 		const state = computeClockState(
 			records,
 			{ timeLimit: 60, timeIncrement: 0 },
@@ -138,7 +138,7 @@ describe("computeClockState", () => {
 		)
 
 		expect(state).not.toBeNull()
-		expect(state?.activeTeam).toBe("red")
+		expect(state?.activeTeam).toBe("white")
 		expect(state?.redMs).toBe(50_000) // 60s budget - 10s elapsed this turn
 		expect(state?.blackMs).toBe(60_000) // black has not started ticking
 		expect(state?.deadlineMs).toBe(T0 * 1000 + 60_000)
@@ -147,7 +147,7 @@ describe("computeClockState", () => {
 	it("charges each completed move to the team that made it", () => {
 		// red moved after 15s (t0->t0+15), black now on the move for 5s.
 		const records: ClockHistoryRecord[] = [
-			{ team: "red", timeStamp: T0, fen: "x" },
+			{ team: "white", timeStamp: T0, fen: "x" },
 			{ team: "black", timeStamp: T0 + 15, fen: "y" }
 		]
 		const state = computeClockState(
@@ -163,7 +163,7 @@ describe("computeClockState", () => {
 
 	it("adds Fischer increment for each completed move", () => {
 		const records: ClockHistoryRecord[] = [
-			{ team: "red", timeStamp: T0, fen: "x" },
+			{ team: "white", timeStamp: T0, fen: "x" },
 			{ team: "black", timeStamp: T0 + 10, fen: "y" }
 		]
 		// red: 60s - 10s + 1 move * 5s increment = 55s
@@ -180,10 +180,10 @@ describe("computeClockState", () => {
 		// `now` is 5s after the resume timestamp — the long gap before it is NOT charged.
 		const records: ClockHistoryRecord[] = [
 			{
-				team: "red",
+				team: "white",
 				timeStamp: T0,
 				fen: "x",
-				baseline: { spentMs: { red: 15_000, black: 0 }, moves: { red: 1, black: 0 } }
+				baseline: { spentMs: { white: 15_000, black: 0 }, moves: { white: 1, black: 0 } }
 			}
 		]
 		const state = computeClockState(
@@ -192,7 +192,7 @@ describe("computeClockState", () => {
 			(T0 + 5) * 1000
 		)
 
-		expect(state?.activeTeam).toBe("red")
+		expect(state?.activeTeam).toBe("white")
 		expect(state?.redMs).toBe(40_000) // 60 - 15 baseline - 5 in-progress
 		expect(state?.blackMs).toBe(60_000) // black untouched
 	})
@@ -200,10 +200,10 @@ describe("computeClockState", () => {
 	it("adds only post-anchor gaps on top of the baseline", () => {
 		const records: ClockHistoryRecord[] = [
 			{
-				team: "red",
+				team: "white",
 				timeStamp: T0,
 				fen: "x",
-				baseline: { spentMs: { red: 15_000, black: 0 }, moves: { red: 1, black: 0 } }
+				baseline: { spentMs: { white: 15_000, black: 0 }, moves: { white: 1, black: 0 } }
 			},
 			{ team: "black", timeStamp: T0 + 8, fen: "y" } // red spent 8s after resuming
 		]
@@ -222,28 +222,28 @@ describe("computeClockState", () => {
 describe("computeUndoBaseline", () => {
 	it("captures spent time and move counts from the remaining history", () => {
 		const remaining: ClockHistoryRecord[] = [
-			{ team: "red", timeStamp: T0, fen: "x" },
+			{ team: "white", timeStamp: T0, fen: "x" },
 			{ team: "black", timeStamp: T0 + 15, fen: "y" }
 		]
 		expect(computeUndoBaseline(remaining)).toEqual({
-			spentMs: { red: 15_000, black: 0 },
-			moves: { red: 1, black: 0 }
+			spentMs: { white: 15_000, black: 0 },
+			moves: { white: 1, black: 0 }
 		})
 	})
 
 	it("composes on top of an existing baseline anchor", () => {
 		const remaining: ClockHistoryRecord[] = [
 			{
-				team: "red",
+				team: "white",
 				timeStamp: T0,
 				fen: "x",
-				baseline: { spentMs: { red: 15_000, black: 0 }, moves: { red: 1, black: 0 } }
+				baseline: { spentMs: { white: 15_000, black: 0 }, moves: { white: 1, black: 0 } }
 			},
 			{ team: "black", timeStamp: T0 + 8, fen: "y" }
 		]
 		expect(computeUndoBaseline(remaining)).toEqual({
-			spentMs: { red: 23_000, black: 0 },
-			moves: { red: 2, black: 0 }
+			spentMs: { white: 23_000, black: 0 },
+			moves: { white: 2, black: 0 }
 		})
 	})
 })
@@ -264,7 +264,7 @@ describe("game-clock flag timer", () => {
 
 	it("does not schedule a timer for an unclocked game", async () => {
 		setConfig({ time_limit: null })
-		setHistory([{ team: "red", time_stamp: T0, fen: "x" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "x" }])
 
 		const snapshot = await armClock(GAME_ID)
 		expect(snapshot).toBeNull()
@@ -272,7 +272,7 @@ describe("game-clock flag timer", () => {
 
 	it("does not flag a zero-limit game (treated as unlimited, no instant draw)", async () => {
 		setConfig({ time_limit: 0 })
-		setHistory([{ team: "red", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
 
 		const snapshot = await armClock(GAME_ID)
 		expect(snapshot).toBeNull()
@@ -287,11 +287,11 @@ describe("game-clock flag timer", () => {
 		// Red has no crossing material, but a per-move timeout is an unconditional loss:
 		// black wins outright, NOT the river-crossing draw.
 		setConfig({ time_limit: 900, time_per_move: 30 })
-		setHistory([{ team: "red", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
 
 		const snapshot = await armClock(GAME_ID)
 		expect(snapshot).toMatchObject({
-			activeTeam: "red",
+			activeTeam: "white",
 			perMoveRemainingMs: 30_000,
 			timePerMove: 30,
 			redMs: 900_000
@@ -327,9 +327,9 @@ describe("game-clock flag timer", () => {
 		setConfig({ time_limit: 1800, time_increment: 5, time_per_move: 30 })
 		const fen = "4G4/9/9/9/9/9/9/9/9/4g4"
 		setHistory([
-			{ team: "red", time_stamp: T0 - 60, fen },
+			{ team: "white", time_stamp: T0 - 60, fen },
 			{ team: "black", time_stamp: T0 - 50, fen },
-			{ team: "red", time_stamp: T0 - 40, fen },
+			{ team: "white", time_stamp: T0 - 40, fen },
 			{ team: "black", time_stamp: T0, fen }
 		])
 
@@ -354,7 +354,7 @@ describe("game-clock flag timer", () => {
 		// Per-move cap (60s) is looser than the 30s of total left, so the total budget
 		// flags first at 30s -> a whole-game timeout, which draws without crossing material.
 		setConfig({ time_limit: 30, time_per_move: 60 })
-		setHistory([{ team: "red", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
 
 		await armClock(GAME_ID)
 		await vi.advanceTimersByTimeAsync(30_000)
@@ -371,11 +371,11 @@ describe("game-clock flag timer", () => {
 	it("returns a snapshot and flags the active team when time runs out", async () => {
 		setConfig()
 		// Black wins on time and has a chariot across the river -> real win.
-		setHistory([{ team: "red", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/R8" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/R8" }])
 
 		const snapshot = await armClock(GAME_ID)
 		expect(snapshot).toMatchObject({
-			activeTeam: "red",
+			activeTeam: "white",
 			redMs: 60_000,
 			blackMs: 60_000,
 			timeLimit: 60
@@ -403,7 +403,7 @@ describe("game-clock flag timer", () => {
 	it("declares a draw when the player with time left has no crossing material", async () => {
 		setConfig()
 		// Black wins on time but only has a bare general -> draw (vi.json p4).
-		setHistory([{ team: "red", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "4G4/9/9/9/9/9/9/9/9/4g4" }])
 
 		await armClock(GAME_ID)
 		await vi.advanceTimersByTimeAsync(60_000)
@@ -419,12 +419,12 @@ describe("game-clock flag timer", () => {
 
 	it("does not end the game if a move landed before the deadline (turn changed)", async () => {
 		setConfig()
-		setHistory([{ team: "red", time_stamp: T0, fen: "x" }])
+		setHistory([{ team: "white", time_stamp: T0, fen: "x" }])
 		await armClock(GAME_ID)
 
 		// Red moved just in time: black is now on the move, so the old red-flag must no-op.
 		setHistory([
-			{ team: "red", time_stamp: T0, fen: "x" },
+			{ team: "white", time_stamp: T0, fen: "x" },
 			{ team: "black", time_stamp: T0 + 59, fen: "y" }
 		])
 

@@ -42,7 +42,7 @@ const router = Router()
  *                 description: The captured piece (if any)
  *               team:
  *                 type: string
- *                 enum: ["red", "black"]
+ *                 enum: ["white", "black"]
  *                 description: The team who just moved (the active team)
  *     responses:
  *       201:
@@ -90,7 +90,7 @@ const router = Router()
  *                           type: integer
  *                         activeTeam:
  *                           type: string
- *                           enum: [red, black]
+ *                           enum: [white, black]
  *                         perMoveRemainingMs:
  *                           type: integer
  *                         serverNow:
@@ -150,7 +150,7 @@ router.post("/game/move-piece", requireAuth(), async (req: AuthenticatedRequest,
 		return
 	}
 
-	if (team !== "red" && team !== "black") {
+	if (team !== "white" && team !== "black") {
 		res.status(400).json({
 			success: false,
 			message: "move-piece.messages.invalid-team",
@@ -202,7 +202,7 @@ router.post("/game/move-piece", requireAuth(), async (req: AuthenticatedRequest,
 		// Reject a move from a player who has already run out of time
 		const preClock = await computeClock(gameId)
 		if (preClock) {
-			const movingRemaining = team === "red" ? preClock.redMs : preClock.blackMs
+			const movingRemaining = team === "white" ? preClock.redMs : preClock.blackMs
 			if (movingRemaining <= 0) {
 				await armClock(gameId)
 				res.status(400).json({
@@ -215,7 +215,7 @@ router.post("/game/move-piece", requireAuth(), async (req: AuthenticatedRequest,
 		}
 
 		// Calculate next team (toggle)
-		const nextTeam = team === "red" ? "black" : "red"
+		const nextTeam = team === "white" ? "black" : "white"
 
 		// Persist the standard 6-field FEN
 		const prevCounters = parseFenCounters(latestRecord[0].fen)
@@ -233,9 +233,9 @@ router.post("/game/move-piece", requireAuth(), async (req: AuthenticatedRequest,
 		}
 
 		// Add capture piece if provided
-		// Red team captures black pieces (uppercase), black team captures red pieces (lowercase)
+		// White team captures black pieces (uppercase), black team captures white pieces (lowercase)
 		if (capturePiece) {
-			newRecord.capture = team === "red" ? capturePiece.toUpperCase() : capturePiece.toLowerCase()
+			newRecord.capture = team === "white" ? capturePiece.toUpperCase() : capturePiece.toLowerCase()
 		}
 
 		const insertResult = await collection.insertOne(newRecord)

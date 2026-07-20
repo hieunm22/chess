@@ -212,7 +212,7 @@ router.post("/game/change-team", requireAuth(), async (req: AuthenticatedRequest
 				}
 			}
 
-			const oppositeTeam: Team = host.team === "red" ? "black" : "red"
+			const oppositeTeam: Team = host.team === "white" ? "black" : "white"
 
 				// Return 400 if the opposite seat is already taken by another user.
 				// (Covers both "opposite taken" and "both taken" since host occupies one seat.)

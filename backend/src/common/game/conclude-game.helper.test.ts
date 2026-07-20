@@ -48,7 +48,7 @@ describe("concludeGame", () => {
 
 	it("settles the winner and runs post-game side effects when it claims the game", async () => {
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: 11n, team: "red" },
+			{ user_id: 11n, team: "white" },
 			{ user_id: 22n, team: "black" }
 		])
 		runEndGameTransactionMock.mockResolvedValue(true)
@@ -87,7 +87,7 @@ describe("concludeGame", () => {
 
 	it("skips side effects when another request already ended the game", async () => {
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: 11n, team: "red" },
+			{ user_id: 11n, team: "white" },
 			{ user_id: 22n, team: "black" }
 		])
 		runEndGameTransactionMock.mockResolvedValue(false)
@@ -95,7 +95,7 @@ describe("concludeGame", () => {
 		const result = await concludeGame({
 			gameId: "game-1",
 			roomId: 5n,
-			winnerTeam: "red",
+			winnerTeam: "white",
 			isBotGame: false,
 			betAmount: 100,
 			statusForEvent: "checkmate"
@@ -108,7 +108,7 @@ describe("concludeGame", () => {
 
 	it("passes a null winner through for a draw", async () => {
 		roomUserFindManyMock.mockResolvedValue([
-			{ user_id: 11n, team: "red" },
+			{ user_id: 11n, team: "white" },
 			{ user_id: 22n, team: "black" }
 		])
 		runEndGameTransactionMock.mockResolvedValue(true)

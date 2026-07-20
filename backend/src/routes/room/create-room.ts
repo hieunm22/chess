@@ -172,7 +172,7 @@ router.post(
 		// Validate team name
 		if (
 			teamName !== null &&
-			(typeof teamName !== "string" || (teamName !== "red" && teamName !== "black"))
+			(typeof teamName !== "string" || (teamName !== "white" && teamName !== "black"))
 		) {
 			res.status(400).json({
 				success: false,
@@ -290,8 +290,8 @@ router.post(
 			]
 			if (pveMode) {
 				// Determine bot team (opposite of user's team)
-				let botTeam: Team = "red"
-				if (teamName === "red") {
+				let botTeam: Team = "white"
+				if (teamName === "white") {
 					botTeam = "black"
 				}
 				roomUserSeed.push({ user_id: BOT_USER_ID, team: botTeam, joined_at: getUTCNow() })
