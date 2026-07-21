@@ -50,6 +50,32 @@
 	&.animating {
 		z-index: 5;
 	}
+
+	// keep the morphing piece painted above the other cells during promotion
+	&.promoting {
+		z-index: 6;
+	}
+}
+
+// Promotion phase 2: the pawn scales away while the promoted piece pops in (scale-pop).
+// Both glyphs are stacked; the wrapper owns any board-flip rotation.
+.tile-morph {
+	position: absolute;
+	inset: 0;
+
+	.tile-piece {
+		position: absolute;
+		inset: 0;
+		transition: none;
+	}
+
+	.morph-out {
+		animation: promo-out 150ms ease-in forwards;
+	}
+
+	.morph-in {
+		animation: promo-in 320ms cubic-bezier(0.34, 1.56, 0.64, 1) 120ms both;
+	}
 }
 
 .tile-piece {

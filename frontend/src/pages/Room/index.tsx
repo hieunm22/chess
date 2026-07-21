@@ -39,6 +39,7 @@ export default function RoomPage() {
 		onAnimateEnd,
 		onCancelPromotion,
 		onPieceClick,
+		onPromoteEnd,
 		onSelectPromotion,
 		startGame
 	} = useRoomHook()
@@ -146,6 +147,7 @@ export default function RoomPage() {
 								isChecking={checkingPieces.includes(index)}
 								onClick={onPieceClick(index)}
 								onAnimateEnd={onAnimateEnd}
+								onPromoteEnd={onPromoteEnd}
 							/>
 						)
 					})}

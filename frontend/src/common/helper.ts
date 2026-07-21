@@ -374,6 +374,13 @@ export function diffFenMove(oldFen: string, newFen: string): FenMoveDiffResult |
 	let newIndex = -1
 	let movedToken: PieceCharacter | null = null
 	let capturedToken: PieceCharacter | null = null
+	let promoteTo: PieceCharacter | null = null
+
+	const isPawn = (token: PieceCharacter | null) => token === "p" || token === "P"
+	const sameColor = (a: PieceCharacter, b: PieceCharacter) =>
+		(a === a.toUpperCase()) === (b === b.toUpperCase())
+	// Top row (white promotes) or bottom row (black promotes).
+	const isLastRank = (index: number) => index < 8 || index >= 56
 
 	if (beforeA && !afterA && afterB === beforeA) {
 		oldIndex = indexA
@@ -385,6 +392,26 @@ export function diffFenMove(oldFen: string, newFen: string): FenMoveDiffResult |
 		newIndex = indexA
 		movedToken = beforeB
 		capturedToken = beforeA
+	} else if (
+		isPawn(beforeA) && !afterA && afterB && !isPawn(afterB) &&
+		sameColor(beforeA as PieceCharacter, afterB) && isLastRank(indexB)
+	) {
+		// Pawn promotion A -> B (the landing token differs from the pawn).
+		oldIndex = indexA
+		newIndex = indexB
+		movedToken = beforeA
+		capturedToken = beforeB
+		promoteTo = afterB
+	} else if (
+		isPawn(beforeB) && !afterB && afterA && !isPawn(afterA) &&
+		sameColor(beforeB as PieceCharacter, afterA) && isLastRank(indexA)
+	) {
+		// Pawn promotion B -> A.
+		oldIndex = indexB
+		newIndex = indexA
+		movedToken = beforeB
+		capturedToken = beforeA
+		promoteTo = afterA
 	}
 
 	if (oldIndex < 0 || newIndex < 0 || !movedToken) {
@@ -396,6 +423,7 @@ export function diffFenMove(oldFen: string, newFen: string): FenMoveDiffResult |
 		newIndex,
 		movedCell: { id: newIndex, piece: movedToken },
 		capturedCell: capturedToken ? { id: newIndex, piece: capturedToken } : null,
+		promoteTo,
 	}
 }
 

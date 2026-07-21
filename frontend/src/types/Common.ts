@@ -1,4 +1,4 @@
-import type { CellProps } from "./GameState"
+import type { CellProps, PieceCharacter } from "./GameState"
 import type { GameState, ReduxState } from "./ReduxState"
 
 export interface ReduxStore {
@@ -65,6 +65,8 @@ export interface FenMoveDiffResult {
 	newIndex: number
 	movedCell: CellProps
 	capturedCell: CellProps | null
+	// The promoted piece character when the move is a pawn promotion; null otherwise.
+	promoteTo: PieceCharacter | null
 }
 
 export type UserAvatarType = {

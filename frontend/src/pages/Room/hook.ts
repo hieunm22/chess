@@ -58,12 +58,14 @@ import {
 import {
 	ClockSnapshot,
 	DrawRequest,
+	FinalizeMoveParams,
 	GameEndReason,
 	GameMovements,
 	HistoryData,
 	MovePieceRequest,
 	MoveProps,
 	PendingPromotion,
+	PromotionMorph,
 	PromotionPiece,
 	RemoteMoveProps,
 	RoomActionButton,
@@ -79,6 +81,8 @@ import {
 
 const useRoomHook = () => {
 	const POST_GAME_BACK_COUNTDOWN_SECONDS = 15
+	// Fallback delay to finish a promotion morph if its animationend never arrives.
+	const PROMOTION_MORPH_TIMEOUT_MS = 700
 
 	useAutoTitle("page.home.title")
 	const { state, dispatch } = useToolkit()
@@ -146,10 +150,12 @@ const useRoomHook = () => {
 	const [availableMoves, setAvailableMoves] = useState<number[]>([])
 	const [previousMove, setPreviousMove] = useState<MoveProps | null>(null)
 	const [showConfetti, setShowConfetti] = useState(false)
-	// Indices of pieces currently giving check to the side that is checked.
-	const [checkingPieces, setCheckingPieces] = useState<number[]>([])
 	const [capturedPieces, setCapturedPieces] = useState<CapturedPieces>({ white: [], black: [] })
 	const [currentTurn, setCurrentTurn] = useState<Team>("white")
+	const checkingPieces = useMemo(
+		() => findCheckingPieces(board, currentTurn, room?.red_first ?? true),
+		[board, currentTurn, room?.red_first]
+	)
 	const [isMovePending, setIsMovePending] = useState(false)
 	const [topSideUser, setTopSideUser] = useState<RoomUser | null>(null)
 	const [bottomSideUser, setBottomSideUser] = useState<RoomUser | null>(null)
@@ -167,6 +173,10 @@ const useRoomHook = () => {
 	// Castling animates two pieces (king + rook) → two transitionend events for one move;
 	// this latch makes onAnimateEnd commit exactly once.
 	const moveCommitRef = useRef(false)
+	// A promotion's phase-2 morph in flight, plus a safety timer that finishes it if the
+	// morph animation's animationend never fires (e.g. the tile unmounts mid-animation).
+	const promotionMorphRef = useRef<PromotionMorph | null>(null)
+	const promotionMorphTimerRef = useRef<number | null>(null)
 	// Mirror the chat-open state into a ref so the room-message-sent listener can
 	// decide whether to bump the unread badge without re-subscribing on toggle.
 	const previousJoinedUsersRef = useRef<RoomUser[]>([])
@@ -439,7 +449,6 @@ const useRoomHook = () => {
 				setSelected(null)
 				setCurrentTurn(roomData.room.red_first ? "white" : "black")
 				setPreviousMove(null)
-				setCheckingPieces([])
 				setCapturedPieces({ white: [], black: [] })
 			}
 		} finally {
@@ -584,13 +593,6 @@ const useRoomHook = () => {
 			nextPreviousMove = { from: diff.oldIndex, to: diff.newIndex }
 		}
 
-		// The side to move is the side that must answer a check.
-		const nextCheckingPieces = findCheckingPieces(
-			nextBoard,
-			latest.team as Team,
-			room?.red_first ?? true
-		)
-
 		// teamTurn already applied above via setCurrentTurn(latest.team)
 		setAvailableMoves([])
 		// Re-derive en passant eligibility from the latest move (FEN doesn't carry it).
@@ -599,7 +601,6 @@ const useRoomHook = () => {
 			: nextBoard)
 		setSelected(null)
 		setPreviousMove(nextPreviousMove)
-		setCheckingPieces(nextCheckingPieces)
 		// Merge new captures from history instead of replacing entirely
 		setCapturedPieces(prev => ({
 			white: nextCaptured.white.length > prev.white.length ? nextCaptured.white : prev.white,
@@ -767,7 +768,8 @@ const useRoomHook = () => {
 					fen: newFen,
 					from: diff.oldIndex,
 					to: diff.newIndex,
-					isCapture: diff.capturedCell !== null
+					isCapture: diff.capturedCell !== null,
+					promotion: diff.promoteTo
 				} : null
 			const boardClone = boardRef.current.map(cell => {
 				if (cell && diff && cell.id === diff.oldIndex) {
@@ -1436,16 +1438,16 @@ const useRoomHook = () => {
 
 	// Commit a fully-resolved move (piece at its final square, promotion applied): update
 	// state, persist to the server, evaluate end-of-game. Shared by normal + promotion paths.
-	const finalizeMove = async (params: {
-		from: number
-		to: number
-		finalBoard: NullableCellProps[]
-		movedTeam: Team
-		oldTarget: NullableCellProps
-		isEnPassant: boolean
-		enPassantCapturedPiece: PieceCharacter | null
-	}) => {
-		const { from, to, finalBoard, movedTeam, oldTarget, isEnPassant, enPassantCapturedPiece } = params
+	const finalizeMove = async (params: FinalizeMoveParams) => {
+		const {
+			enPassantCapturedPiece,
+			finalBoard,
+			from,
+			isEnPassant,
+			movedTeam,
+			oldTarget,
+			to
+		} = params
 		// Board orientation drives soldier attack direction in check detection.
 		const redFirst = room?.red_first ?? true
 
@@ -1485,8 +1487,6 @@ const useRoomHook = () => {
 		setSelected(null)
 		// Mark from/to right away so local moves get the same previous-move highlight
 		setPreviousMove({ from, to })
-		// After a legal move, if the opponent is in check, highlight the checking piece(s).
-		setCheckingPieces(enemyCheckingPieces)
 		setCurrentTurn(enemyTeam)
 
 		if (room?.status === 2 && game) {
@@ -1541,19 +1541,93 @@ const useRoomHook = () => {
 		}
 	}
 
+	// The promotion morph finished (or its safety timer fired): commit the remote move to
+	// history (observers) or finalize the mover's own move.
+	const onPromoteEnd = async () => {
+		const ctx = promotionMorphRef.current
+		if (!ctx) {
+			return
+		}
+		promotionMorphRef.current = null
+		if (promotionMorphTimerRef.current !== null) {
+			clearTimeout(promotionMorphTimerRef.current)
+			promotionMorphTimerRef.current = null
+		}
+
+		if (ctx.remoteMove) {
+			const moveRecord = ctx.remoteMove
+			setHistory(prev => prev.some(h => h._id === moveRecord._id)
+				? prev
+				: [...prev, moveRecord])
+			return
+		}
+
+		if (ctx.finalizeParams) {
+			await finalizeMove(ctx.finalizeParams)
+		}
+	}
+
+	// Kick off a promotion's phase-2 morph: swap in a board where the pawn sits on its
+	// landing square with `promoteTo` set (the tile plays the scale-pop), and remember how
+	// to finish once the morph completes.
+	const startPromotionMorph = (params: {
+		morphBoard: NullableCellProps[]
+		to: number
+		remoteMove: HistoryData | null
+		finalizeParams: FinalizeMoveParams | null
+	}) => {
+		promotionMorphRef.current = {
+			to: params.to,
+			remoteMove: params.remoteMove,
+			finalizeParams: params.finalizeParams
+		}
+		setBoard(params.morphBoard)
+
+		if (promotionMorphTimerRef.current !== null) {
+			clearTimeout(promotionMorphTimerRef.current)
+		}
+		promotionMorphTimerRef.current = window.setTimeout(() => {
+			onPromoteEnd()
+		}, PROMOTION_MORPH_TIMEOUT_MS)
+	}
+
 	const onAnimateEnd = async () => {
 		// Animation finished - commit remote move to history.
 		// updateToState rebuilds from FEN; seamless since piece is already at its final position.
 		if (pendingRemoteMove) {
 			const moveRecord = pendingRemoteMove
+			const remote = remoteMoveRef.current
+			const remoteForMove = remote && remote.fen === moveRecord.fen ? remote : null
+			const remoteWasCapture = remoteForMove?.isCapture === true
+			const promoted = remoteForMove?.promotion ?? null
 			setPendingRemoteMove(null)
-			const remoteWasCapture = remoteMoveRef.current?.fen === moveRecord.fen
-				&& remoteMoveRef.current.isCapture
+
 			if (remoteWasCapture) {
 				playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + CAPTURE_SOUND_URL)
 			} else {
 				playSound(import.meta.env.VITE_PUBLIC_DISTRIBUTION + MOVE_SOUND_URL)
 			}
+
+			// A pawn just slid to the last rank: play phase 2 (morph) before committing.
+			if (promoted !== null && remoteForMove) {
+				const pawnChar: PieceCharacter = promoted === promoted.toUpperCase() ? "P" : "p"
+				const morphBoard = boardRef.current.map(cell =>
+					cell && cell.id === remoteForMove.from ? null : cell
+				)
+				morphBoard[remoteForMove.to] = {
+					id: remoteForMove.to,
+					piece: pawnChar,
+					promoteTo: promoted
+				}
+				startPromotionMorph({
+					morphBoard,
+					to: remoteForMove.to,
+					remoteMove: moveRecord,
+					finalizeParams: null
+				})
+				return
+			}
+
 			setHistory(prev => prev.some(h => h._id === moveRecord._id)
 				? prev
 				: [...prev, moveRecord])
@@ -1666,27 +1740,44 @@ const useRoomHook = () => {
 		}
 	}
 
-	// The player picked a promotion piece: swap the pawn on the landing square for the
-	// chosen piece (in the mover's colour) and complete the move.
-	const onSelectPromotion = async (piece: PromotionPiece) => {
+	// The player picked a promotion piece: play the phase-2 morph (pawn -> chosen piece) on
+	// the landing square, then finalize the move once the morph animation completes.
+	const onSelectPromotion = (piece: PromotionPiece) => {
 		const ctx = pendingPromotion
 		if (!ctx) {
 			return
 		}
 		const pieceChar = (ctx.team === "white" ? piece.toUpperCase() : piece) as PieceCharacter
-		const promotedBoard = [...ctx.board]
-		promotedBoard[ctx.to] = { id: ctx.to, piece: pieceChar }
+		const pawnChar: PieceCharacter = ctx.team === "white" ? "P" : "p"
 
 		dispatch(setPopup(PopupState.NONE))
 		setPendingPromotion(null)
-		await finalizeMove({
-			from: ctx.from,
+		// Drop the origin-square selection so it doesn't linger while the morph plays.
+		setSelected(null)
+		setAvailableMoves([])
+
+		// Board showing the pawn on the landing square, morphing into the chosen piece.
+		const morphBoard = ctx.board.map(cell =>
+			cell && cell.id === ctx.to
+				? { id: ctx.to, piece: pawnChar, promoteTo: pieceChar }
+				: cell
+		)
+		const promotedBoard = [...ctx.board]
+		promotedBoard[ctx.to] = { id: ctx.to, piece: pieceChar }
+
+		startPromotionMorph({
+			morphBoard,
 			to: ctx.to,
-			finalBoard: promotedBoard,
-			movedTeam: ctx.team,
-			oldTarget: ctx.oldTarget,
-			isEnPassant: ctx.isEnPassant,
-			enPassantCapturedPiece: ctx.enPassantCapturedPiece
+			remoteMove: null,
+			finalizeParams: {
+				from: ctx.from,
+				to: ctx.to,
+				finalBoard: promotedBoard,
+				movedTeam: ctx.team,
+				oldTarget: ctx.oldTarget,
+				isEnPassant: ctx.isEnPassant,
+				enPassantCapturedPiece: ctx.enPassantCapturedPiece
+			}
 		})
 	}
 
@@ -1771,6 +1862,7 @@ const useRoomHook = () => {
 		onAnimateEnd,
 		onCancelPromotion,
 		onPieceClick,
+		onPromoteEnd,
 		onSelectPromotion,
 		startGame
 	}
