@@ -3,7 +3,7 @@
  * the API server) so the docs page can call the API.
  */
 export function getAllowedOrigins(): string[] {
-	const rawOrigins = process.env.CORS_ORIGINS ?? "http://localhost:3004"
+	const rawOrigins = process.env.CORS_ORIGINS ?? "http://localhost:3003"
 	const allowedOrigins = rawOrigins.split(",").map(o => o.trim()).filter(Boolean)
 
 	const port = process.env.PORT ?? "8000"

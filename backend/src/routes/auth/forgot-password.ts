@@ -83,7 +83,7 @@ const normalizeBaseUrl = () => {
 		.map(origin => origin.trim())
 		.filter(Boolean)[0]
 
-	return (firstCorsOrigin || "http://localhost:3004").replace(/\/$/, "")
+	return (firstCorsOrigin || "http://localhost:3003").replace(/\/$/, "")
 }
 
 /**
