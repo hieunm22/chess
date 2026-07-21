@@ -9,7 +9,6 @@ export type DashboardRoom = {
 	name: string
 	status: number
 	bet_amount: number
-	red_first: boolean
 	host_id: number | null
 	created_at: string
 	updated_at: string

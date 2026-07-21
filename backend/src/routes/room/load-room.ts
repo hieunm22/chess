@@ -54,8 +54,6 @@ const router = Router()
  *                           type: string
  *                         status:
  *                           type: integer
- *                         red_first:
- *                           type: boolean
  *                         pve_mode:
  *                           type: boolean
  *                         bet_amount:
@@ -166,7 +164,6 @@ router.get("/room/info", requireAuth(), async (req: AuthenticatedRequest, res: R
 				id: true,
 				name: true,
 				status: true,
-				red_first: true,
 				pve_mode: true,
 				bet_amount: true,
 				time_limit: true,
@@ -299,7 +296,6 @@ router.get("/room/info", requireAuth(), async (req: AuthenticatedRequest, res: R
 					id: Number(room.id),
 					name: room.name,
 					status: room.status,
-					red_first: room.red_first,
 					pve_mode: room.pve_mode,
 					bet_amount: room.bet_amount,
 					time_limit: room.time_limit,

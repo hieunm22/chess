@@ -72,7 +72,6 @@ export interface RoomInfo {
 	game_type: string
 	bet_amount: number
 	team: Team | null
-	red_first: boolean
 	pve_mode: boolean
 	host_id: number | null
 	time_limit: number | null

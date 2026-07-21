@@ -139,7 +139,6 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 					select: {
 						bet_amount: true,
 						pve_mode: true,
-						red_first: true
 					}
 				}
 			}
@@ -154,7 +153,7 @@ router.post("/game/verify-state", requireAuth(), async (req: AuthenticatedReques
 			return
 		}
 
-		const evaluation = evaluateTeamState(newFen, checkedTeam, game.room.red_first)
+		const evaluation = evaluateTeamState(newFen, checkedTeam)
 		let gameEnded = false
 		let winnerId: number | null = null
 		let endStatus: string = evaluation.status

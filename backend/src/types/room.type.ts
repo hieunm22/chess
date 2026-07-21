@@ -3,7 +3,6 @@ import { Team } from "./game.type"
 export interface CreateRoomRequest {
 	tableName: string
 	teamName: string | null
-	redFirst: boolean
 	pveMode: boolean
 	betAmount: number
 	timeLimit?: number | null

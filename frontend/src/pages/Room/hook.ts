@@ -153,8 +153,8 @@ const useRoomHook = () => {
 	const [capturedPieces, setCapturedPieces] = useState<CapturedPieces>({ white: [], black: [] })
 	const [currentTurn, setCurrentTurn] = useState<Team>("white")
 	const checkingPieces = useMemo(
-		() => findCheckingPieces(board, currentTurn, room?.red_first ?? true),
-		[board, currentTurn, room?.red_first]
+		() => findCheckingPieces(board, currentTurn),
+		[board, currentTurn]
 	)
 	const [isMovePending, setIsMovePending] = useState(false)
 	const [topSideUser, setTopSideUser] = useState<RoomUser | null>(null)
@@ -447,7 +447,7 @@ const useRoomHook = () => {
 				setAvailableMoves([])
 				setBoard(fenToBoard(EMPTY_BOARD_FEN))
 				setSelected(null)
-				setCurrentTurn(roomData.room.red_first ? "white" : "black")
+				setCurrentTurn("white")
 				setPreviousMove(null)
 				setCapturedPieces({ white: [], black: [] })
 			}
@@ -499,7 +499,7 @@ const useRoomHook = () => {
 			diff = diffFenMove(prevLatest.fen, latest.fen)
 		}
 
-		const { top, bottom } = resolveSideUsers(joinedUsers, room.red_first)
+		const { top, bottom } = resolveSideUsers(joinedUsers)
 		setTopSideUser(top)
 		setBottomSideUser(bottom)
 
@@ -573,7 +573,7 @@ const useRoomHook = () => {
 		setGameButtons(menus)
 
 		if (history.length === 0) {
-			setCurrentTurn(room && room.red_first ? "white" : "black")
+			setCurrentTurn("white")
 			return
 		}
 
@@ -1429,7 +1429,7 @@ const useRoomHook = () => {
 			return
 		}
 		const nextSelected = selected === id ? null : id
-		const direction = getMoveDirection(room!.red_first, currentTurn)
+		const direction = getMoveDirection(currentTurn)
 		const nextAvailableMoves = getAvailableMoves(board, nextSelected ?? -1, direction)
 		setAvailableMoves(nextAvailableMoves)
 		setPreviousMove(null)
@@ -1448,8 +1448,6 @@ const useRoomHook = () => {
 			oldTarget,
 			to
 		} = params
-		// Board orientation drives soldier attack direction in check detection.
-		const redFirst = room?.red_first ?? true
 
 		const capturedPiecesClone = structuredClone(capturedPieces)
 		let capturedPieceCharacter: PieceCharacter | null = null
@@ -1467,10 +1465,10 @@ const useRoomHook = () => {
 		}
 
 		const enemyTeam = movedTeam === "white" ? "black" : "white"
-		const enemyCheckingPieces = findCheckingPieces(finalBoard, enemyTeam, redFirst)
+		const enemyCheckingPieces = findCheckingPieces(finalBoard, enemyTeam)
 		const enemyInCheck = enemyCheckingPieces.length > 0
 		const enemyLegalMovesCount = room
-			? countLegalMoves(finalBoard, enemyTeam, room.red_first)
+			? countLegalMoves(finalBoard, enemyTeam)
 			: 0
 		const shouldVerifyState = enemyInCheck || enemyLegalMovesCount === 0
 		if (capturedPieceCharacter) {
@@ -1680,11 +1678,8 @@ const useRoomHook = () => {
 			}
 		}
 
-		// Board orientation drives soldier attack direction in check detection.
-		const redFirst = room?.red_first ?? true
-
 		// Check if this move puts the moving team's general in check
-		const checkingPieces = findCheckingPieces(gameStateClone, movedTeam, redFirst)
+		const checkingPieces = findCheckingPieces(gameStateClone, movedTeam)
 		const isMovedTeamGeneralInCheck = checkingPieces.length > 0
 
 		if (isMovedTeamGeneralInCheck) {

@@ -19,8 +19,8 @@ export interface RequestBotMoveOptions {
 	multipvCandidates?: number
 }
 
-const buildResult = (uci: string, projectFen: string, redFirst: boolean): BotMoveResult => {
-	const { fromIdx, toIdx, promotion } = uciMoveToProjectIndices(uci, redFirst)
+const buildResult = (uci: string, projectFen: string): BotMoveResult => {
+	const { fromIdx, toIdx, promotion } = uciMoveToProjectIndices(uci)
 	const { newFen, capturePiece } = applyMoveToProjectFen(projectFen, fromIdx, toIdx, promotion)
 	return { uci, newFen, capturePiece }
 }
@@ -33,10 +33,10 @@ export const requestBotMove = async (
 	params: RequestBotMoveParams,
 	options: RequestBotMoveOptions = {}
 ): Promise<BotMoveResult | null> => {
-	const { gameId, projectFen, redFirst, botTeam, difficulty } = params
+	const { gameId, projectFen, botTeam, difficulty } = params
 	const { rejectMove, multipvCandidates = MULTIPV_CANDIDATES } = options
 	const config = getDifficultyConfig(difficulty)
-	const standardFen = projectFenToStandardFen(projectFen, redFirst, botTeam)
+	const standardFen = projectFenToStandardFen(projectFen, botTeam)
 	const engine = await engineManager.getEngineForGame(gameId)
 
 	const uci = await engine.findBestMove(standardFen, config)
@@ -44,7 +44,7 @@ export const requestBotMove = async (
 		return null
 	}
 
-	const best = buildResult(uci, projectFen, redFirst)
+	const best = buildResult(uci, projectFen)
 	if (!rejectMove || !(await rejectMove(best))) {
 		return best
 	}
@@ -58,7 +58,7 @@ export const requestBotMove = async (
 		}
 		let candidate: BotMoveResult
 		try {
-			candidate = buildResult(candidateUci, projectFen, redFirst)
+			candidate = buildResult(candidateUci, projectFen)
 		} catch {
 			// Skip an unparsable/illegal candidate rather than aborting the fallback.
 			continue

@@ -19,7 +19,6 @@ export interface PlayBotMoveParams {
 	gameId: string
 	roomId: bigint | number
 	projectFen: string
-	redFirst: boolean
 	botTeam: Team
 	difficulty: number
 }
@@ -29,7 +28,7 @@ export interface PlayBotMoveParams {
  * Auto-surrenders if no legal moves; returns the inserted record or null on failure.
  */
 export const playBotMove = async (params: PlayBotMoveParams): Promise<any | null> => {
-	const { gameId, roomId, projectFen, redFirst, botTeam, difficulty } = params
+	const { gameId, roomId, projectFen, botTeam, difficulty } = params
 
 	// The side to move after the bot — i.e. the human in a PvE game.
 	const nextTeam: Team = botTeam === "white" ? "black" : "white"
@@ -37,7 +36,6 @@ export const playBotMove = async (params: PlayBotMoveParams): Promise<any | null
 	const result = await requestBotMove({
 		gameId,
 		projectFen,
-		redFirst,
 		botTeam,
 		difficulty
 	})
@@ -144,7 +142,7 @@ export const playBotMove = async (params: PlayBotMoveParams): Promise<any | null
 	// Evaluate the human side right after the bot move so a bot-delivered checkmate or
 	// stalemate ends the game immediately.
 	const humanTeam = nextTeam
-	const humanEvaluation = evaluateTeamState(newFen, humanTeam, redFirst)
+	const humanEvaluation = evaluateTeamState(newFen, humanTeam)
 
 	if (humanEvaluation.status === "checkmate") {
 		try {

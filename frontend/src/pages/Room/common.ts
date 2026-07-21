@@ -155,8 +155,7 @@ export function getCapturedPiecesFromHistory(records: HistoryData[]) {
 
 export function findCheckingPieces(
 	board: NullableCellProps[],
-	team: Team,
-	redFirst: boolean
+	team: Team
 ): number[] {
 	const generalIndex = board.findIndex(cell => getPieceFromCharacter(cell?.piece) === "king"
 		&& getTeamFromPieceChar(cell?.piece) === team)
@@ -164,7 +163,7 @@ export function findCheckingPieces(
 
 	const enemyTeam: Team = team === "white" ? "black" : "white"
 	// Direction must follow board orientation, not piece color
-	const enemyDirection = getMoveDirection(redFirst, enemyTeam)
+	const enemyDirection = getMoveDirection(enemyTeam)
 	const checkers: number[] = []
 
 	for (let id = 0; id < board.length; id += 1) {
@@ -272,21 +271,19 @@ export function markerClass(col: number, row: number): string {
 }
 
 /**
- * Forward direction (-1 up, 1 down) for the team whose turn it is, given which
- * side moves first. The first-moving team always sits at the bottom (moves up).
+ * Forward direction (-1 up, 1 down) for the team whose turn it is. White always
+ * sits at the bottom (moves up), black at the top (moves down).
  */
-export function getMoveDirection(redFirst: boolean, turn: Team): -1 | 1 {
-	const bottomTeam: Team = redFirst ? "white" : "black"
-	return turn === bottomTeam ? -1 : 1
+export function getMoveDirection(turn: Team): -1 | 1 {
+	return turn === "white" ? -1 : 1
 }
 
 /**
- * Split the two players into top/bottom seats based on which side moves first.
+ * Split the two players into top/bottom seats. White is always the bottom seat.
  */
-export function resolveSideUsers(joinedUsers: RoomUser[], redFirst: boolean): PieceSideUser {
-	const bottomTeam: Team = redFirst ? "white" : "black"
-	const bottomUser = joinedUsers.find(ju => ju.team === bottomTeam) ?? null
-	const topUser = joinedUsers.find(ju => ju.team !== null && ju.team !== bottomTeam) ?? null
+export function resolveSideUsers(joinedUsers: RoomUser[]): PieceSideUser {
+	const bottomUser = joinedUsers.find(ju => ju.team === "white") ?? null
+	const topUser = joinedUsers.find(ju => ju.team !== null && ju.team !== "white") ?? null
 	return {
 		top: topUser,
 		bottom: bottomUser,
@@ -332,8 +329,8 @@ export function markEnPassantTarget(
 	})
 }
 
-export function countLegalMoves(board: NullableCellProps[], team: Team, redFirst: boolean): number {
-	const direction = getMoveDirection(redFirst, team)
+export function countLegalMoves(board: NullableCellProps[], team: Team): number {
+	const direction = getMoveDirection(team)
 	let legalMovesCount = 0
 
 	for (let id = 0; id < board.length; id += 1) {
@@ -345,7 +342,7 @@ export function countLegalMoves(board: NullableCellProps[], team: Team, redFirst
 		const candidateMoves = getAvailableMoves(board, id, direction)
 		for (const toId of candidateMoves) {
 			const nextBoard = applyMove(board, id, toId)
-			const checkingPieces = findCheckingPieces(nextBoard, team, redFirst)
+			const checkingPieces = findCheckingPieces(nextBoard, team)
 			if (checkingPieces.length === 0) {
 				legalMovesCount += 1
 			}

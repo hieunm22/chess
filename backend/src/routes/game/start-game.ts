@@ -213,7 +213,7 @@ router.post("/room/start", requireAuth(), async (req: AuthenticatedRequest, res:
 			const updatedRoom = await tx.room.update({
 				where: { id: roomIdBigInt },
 				data: { updated_at: getUTCNow(), status: RoomStatus.Playing },
-				select: { id: true, status: true, red_first: true }
+				select: { id: true, status: true }
 			})
 
 			if (requestedDifficulty !== null && botTeam) {
@@ -344,7 +344,6 @@ router.post("/room/start", requireAuth(), async (req: AuthenticatedRequest, res:
 				gameId: game.id,
 				roomId: Number(room.id),
 				projectFen: initialFen,
-				redFirst: room.red_first,
 				botTeam,
 				difficulty: requestedDifficulty
 			}).catch(err => {

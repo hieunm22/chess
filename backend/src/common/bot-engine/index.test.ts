@@ -26,7 +26,6 @@ import { requestBotMove } from "./index"
 const PARAMS = {
 	gameId: "g1",
 	projectFen: "pf",
-	redFirst: true,
 	botTeam: "white" as const,
 	difficulty: 1
 }

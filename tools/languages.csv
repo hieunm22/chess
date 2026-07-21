@@ -205,7 +205,6 @@ create-room.messages.invalid-bet-amount;Bet amount is required and must be one o
 create-room.messages.invalid-time-limit;Invalid time limit;Thời gian không hợp lệ
 create-room.messages.invalid-time-increment;Invalid bonus per move;Thời gian cộng mỗi nước không hợp lệ
 create-room.messages.invalid-time-per-move;Invalid time per move;Thời gian mỗi nước không hợp lệ
-create-room.messages.invalid-redFirst;'redFirst' must be a boolean;'redFirst' phải là giá trị boolean
 create-room.messages.invalid-team-name;Team name must be either 'red', 'black', or null;Tên đội phải là 'red', 'black' hoặc null
 create-room.messages.name-required;Room name (tableName) is required and must not be empty;Tên phòng (tableName) là bắt buộc và không được để trống
 create-room.messages.room-created;Room created successfully;Phòng được tạo thành công

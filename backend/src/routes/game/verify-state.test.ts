@@ -231,7 +231,6 @@ describe("POST /api/game/verify-state", () => {
 					select: {
 						bet_amount: true,
 						pve_mode: true,
-						red_first: true
 					}
 				}
 			}
@@ -253,7 +252,6 @@ describe("POST /api/game/verify-state", () => {
 			room: {
 				bet_amount: 100,
 				pve_mode: false,
-				red_first: true
 			}
 		})
 
@@ -298,7 +296,7 @@ describe("POST /api/game/verify-state", () => {
 		gameFindUniqueMock.mockResolvedValue({
 			id: "game-4",
 			room_id: 14n,
-			room: { bet_amount: 100, pve_mode: false, red_first: true }
+			room: { bet_amount: 100, pve_mode: false }
 		})
 
 		const res = await request(app)
@@ -333,7 +331,6 @@ describe("POST /api/game/verify-state", () => {
 			room: {
 				bet_amount: 100,
 				pve_mode: false,
-				red_first: true
 			}
 		})
 		roomUserFindManyMock.mockResolvedValue([
@@ -396,7 +393,6 @@ describe("POST /api/game/verify-state", () => {
 			room: {
 				bet_amount: 200,
 				pve_mode: false,
-				red_first: true
 			}
 		})
 		roomUserFindManyMock.mockResolvedValue([
@@ -455,7 +451,7 @@ describe("POST /api/game/verify-state", () => {
 		gameFindUniqueMock.mockResolvedValue({
 			id: "game-6",
 			room_id: 16n,
-			room: { bet_amount: 100, pve_mode: false, red_first: true }
+			room: { bet_amount: 100, pve_mode: false }
 		})
 		roomUserFindManyMock.mockResolvedValue([
 			{ user_id: 301n, team: "white" },
@@ -517,7 +513,7 @@ describe("POST /api/game/verify-state", () => {
 		gameFindUniqueMock.mockResolvedValue({
 			id: "game-7",
 			room_id: 17n,
-			room: { bet_amount: 100, pve_mode: false, red_first: true }
+			room: { bet_amount: 100, pve_mode: false }
 		})
 		roomUserFindManyMock.mockResolvedValue([
 			{ user_id: 401n, team: "white" },

@@ -82,7 +82,6 @@ describe("POST /api/room/create-room", () => {
 		const res = await request(app).post(PATH).send({
 			tableName: "Table 1",
 			teamName: "white",
-			redFirst: true,
 			betAmount: 10
 		})
 
@@ -104,7 +103,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "",
 				teamName: "white",
-				redFirst: true,
 				betAmount: 10
 			})
 
@@ -127,7 +125,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "blue",
-				redFirst: true,
 				betAmount: 10
 			})
 
@@ -147,7 +144,6 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(102),
 			name: "Table Null Team",
 			status: 1,
-			red_first: false,
 			pve_mode: false,
 			bet_amount: 20,
 			host_id: BigInt(11),
@@ -171,7 +167,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table Null Team",
 				teamName: null,
-				redFirst: false,
 				betAmount: 20
 			})
 
@@ -185,7 +180,6 @@ describe("POST /api/room/create-room", () => {
 					id: 102,
 					name: "Table Null Team",
 					status: 1,
-					red_first: false,
 					bet_amount: 20,
 					host_id: 11
 				}
@@ -202,7 +196,6 @@ describe("POST /api/room/create-room", () => {
 			expect.objectContaining({
 				data: expect.objectContaining({
 					name: "Table Null Team",
-					red_first: false,
 					bet_amount: 20,
 					host_id: BigInt(11),
 					room_users: {
@@ -236,7 +229,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: 50,
 				timeLimit: 123
 			})
@@ -258,7 +250,6 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(9),
 			name: "Table 1",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50,
 			time_limit: 600,
@@ -274,7 +265,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: 50,
 				timeLimit: 600
 			})
@@ -321,7 +311,7 @@ describe("POST /api/room/create-room", () => {
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 11 }))
 		userFindUniqueMock.mockResolvedValue({ total_amount: 200 })
 		roomCreateMock.mockResolvedValue({
-			id: BigInt(9), name: "T", status: 1, red_first: true, pve_mode: false,
+			id: BigInt(9), name: "T", status: 1, pve_mode: false,
 			bet_amount: 50, time_limit: 600, time_increment: 5, time_per_move: 60,
 			host_id: BigInt(11), created_at: new Date(), updated_at: new Date(),
 			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "white" }]
@@ -345,7 +335,7 @@ describe("POST /api/room/create-room", () => {
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 11 }))
 		userFindUniqueMock.mockResolvedValue({ total_amount: 200 })
 		roomCreateMock.mockResolvedValue({
-			id: BigInt(9), name: "T", status: 1, red_first: true, pve_mode: false,
+			id: BigInt(9), name: "T", status: 1, pve_mode: false,
 			bet_amount: 50, time_limit: null, time_increment: 0, time_per_move: 0,
 			host_id: BigInt(11), created_at: new Date(), updated_at: new Date(),
 			room_users: [{ users: { id: BigInt(11), display_name: "Alice", avatar_seq: 0, is_bot: false }, team: "white" }]
@@ -372,7 +362,6 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(10),
 			name: "Bot Table",
 			status: 1,
-			red_first: true,
 			pve_mode: true,
 			bet_amount: 0,
 			time_limit: null,
@@ -388,7 +377,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Bot Table",
 				teamName: "white",
-				redFirst: true,
 				pveMode: true,
 				betAmount: 0,
 				timeLimit: 600
@@ -402,28 +390,6 @@ describe("POST /api/room/create-room", () => {
 		)
 	})
 
-	it("returns 400 when redFirst is not boolean", async () => {
-		const accessToken = buildAccessToken(11, "session-room-4")
-		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 11 }))
-
-		const res = await request(app)
-			.post(PATH)
-			.set("Authorization", `Bearer ${accessToken}`)
-			.send({
-				tableName: "Table 1",
-				teamName: "white",
-				redFirst: "true",
-				betAmount: 10
-			})
-
-		expect(res.status).toBe(400)
-		expect(res.body).toMatchObject({
-			success: false,
-			message: "create-room.messages.invalid-redFirst",
-			status_code: 400
-		})
-	})
-
 	it("returns 400 when betAmount is not acceptable", async () => {
 		const accessToken = buildAccessToken(11, "session-room-5")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 11 }))
@@ -434,7 +400,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: 15
 			})
 
@@ -456,7 +421,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: "fifty"
 			})
 
@@ -478,7 +442,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: "5x"
 			})
 
@@ -502,7 +465,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: 100
 			})
 
@@ -523,7 +485,6 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(101),
 			name: "Table 1",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50,
 			host_id: BigInt(11),
@@ -547,7 +508,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: 50
 			})
 
@@ -561,7 +521,6 @@ describe("POST /api/room/create-room", () => {
 					id: 101,
 					name: "Table 1",
 					status: 1,
-					red_first: true,
 					pve_mode: false,
 					bet_amount: 50,
 					host_id: 11
@@ -586,7 +545,6 @@ describe("POST /api/room/create-room", () => {
 				data: expect.objectContaining({
 					name: "Table 1",
 					status: 1,
-					red_first: true,
 					pve_mode: false,
 					bet_amount: 50,
 					host_id: BigInt(11),
@@ -611,7 +569,6 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(102),
 			name: "PvE Table",
 			status: 1,
-			red_first: false,
 			pve_mode: true,
 			bet_amount: 0,
 			host_id: BigInt(11),
@@ -645,7 +602,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "PvE Table",
 				teamName: "black",
-				redFirst: false,
 				pveMode: true,
 				betAmount: 0
 			})
@@ -661,7 +617,6 @@ describe("POST /api/room/create-room", () => {
 					id: 102,
 					name: "PvE Table",
 					status: 1,
-					red_first: false,
 					pve_mode: true,
 					bet_amount: 0,
 					host_id: 11
@@ -687,7 +642,6 @@ describe("POST /api/room/create-room", () => {
 			expect.objectContaining({
 				data: expect.objectContaining({
 					name: "PvE Table",
-					red_first: false,
 					pve_mode: true,
 					bet_amount: 0,
 					host_id: BigInt(11),
@@ -720,7 +674,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "PvE Table Invalid",
 				teamName: "white",
-				redFirst: true,
 				pveMode: true,
 				betAmount: 50
 			})
@@ -740,7 +693,6 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(103),
 			name: "PvP Table Zero",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 0,
 			created_at: new Date("2026-05-12T00:00:00.000Z"),
@@ -763,7 +715,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "PvP Table Zero",
 				teamName: "white",
-				redFirst: true,
 				pveMode: false,
 				betAmount: 0
 			})
@@ -778,7 +729,6 @@ describe("POST /api/room/create-room", () => {
 					id: 103,
 					name: "PvP Table Zero",
 					status: 1,
-					red_first: true,
 					pve_mode: false,
 					bet_amount: 0
 				}
@@ -795,7 +745,6 @@ describe("POST /api/room/create-room", () => {
 			expect.objectContaining({
 				data: expect.objectContaining({
 					name: "PvP Table Zero",
-					red_first: true,
 					pve_mode: false,
 					bet_amount: 0,
 					room_users: {
@@ -825,7 +774,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: 50
 			})
 
@@ -847,7 +795,6 @@ describe("POST /api/room/create-room", () => {
 			id: BigInt(101),
 			name: "Table 1",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50,
 			host_id: BigInt(11),
@@ -867,7 +814,6 @@ describe("POST /api/room/create-room", () => {
 			.send({
 				tableName: "Table 1",
 				teamName: "white",
-				redFirst: true,
 				betAmount: 50
 			})
 

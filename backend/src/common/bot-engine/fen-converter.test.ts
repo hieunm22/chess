@@ -35,19 +35,13 @@ describe("fen-converter", () => {
 		// The project FEN already matches standard chess (uppercase = white, rank 8
 		// on top), so conversion only appends the side/castling/counter fields.
 		it("converts the starting position with white to move", () => {
-			expect(projectFenToStandardFen(INITIAL_FEN, true, "white")).toBe(
+			expect(projectFenToStandardFen(INITIAL_FEN, "white")).toBe(
 				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
 			)
 		})
 
 		it("emits ' b - - 0 1' when black is to move", () => {
-			expect(projectFenToStandardFen(INITIAL_FEN, true, "black").endsWith(" b - - 0 1")).toBe(true)
-		})
-
-		it("is orientation-independent: redFirst does not change the result", () => {
-			expect(projectFenToStandardFen(INITIAL_FEN, false, "white")).toBe(
-				projectFenToStandardFen(INITIAL_FEN, true, "white")
-			)
+			expect(projectFenToStandardFen(INITIAL_FEN, "black").endsWith(" b - - 0 1")).toBe(true)
 		})
 	})
 })

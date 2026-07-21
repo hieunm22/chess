@@ -74,16 +74,9 @@ export const flatArrayToProjectFen = (cells: (string | null)[]): string => {
 
 /**
  * Convert a project FEN to a standard chess FEN for fairy-stockfish.
- * The project FEN placement already matches standard chess (uppercase = white,
- * rank 8 on top), so no rotation or piece remap is needed — we validate the
- * pieces and append `<side> - - 0 1`.
- *
- * `redFirst` is accepted for signature stability but is a no-op for chess, whose
- * board is always stored in the standard orientation.
  */
 export const projectFenToStandardFen = (
 	projectFen: string,
-	_redFirst: boolean,
 	sideToMove: Team
 ): string => {
 	const cells = projectFenToFlatArray(projectFen)

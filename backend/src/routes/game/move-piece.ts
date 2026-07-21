@@ -256,7 +256,7 @@ router.post("/game/move-piece", requireAuth(), async (req: AuthenticatedRequest,
 				select: {
 					room_id: true,
 					bot_difficulty: true,
-					room: { select: { red_first: true } }
+					room: { select: { id: true } }
 				}
 			})
 
@@ -266,7 +266,6 @@ router.post("/game/move-piece", requireAuth(), async (req: AuthenticatedRequest,
 				if (game.bot_difficulty != null && game.room) {
 					pveContext = {
 						roomId: game.room_id,
-						redFirst: game.room.red_first,
 						botDifficulty: game.bot_difficulty
 					}
 				}
@@ -292,7 +291,6 @@ router.post("/game/move-piece", requireAuth(), async (req: AuthenticatedRequest,
 				gameId,
 				roomId: pveContext.roomId,
 				projectFen: newFen,
-				redFirst: pveContext.redFirst,
 				botTeam: nextTeam,
 				difficulty: pveContext.botDifficulty
 			}).catch(err => {

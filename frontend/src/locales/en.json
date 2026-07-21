@@ -413,7 +413,6 @@
 			"invalid-time-limit": "Invalid time limit",
 			"invalid-time-increment": "Invalid bonus per move",
 			"invalid-time-per-move": "Invalid time per move",
-			"invalid-redFirst": "'redFirst' must be a boolean",
 			"invalid-team-name": "Team name must be either 'red', 'black', or null",
 			"name-required": "Room name (tableName) is required and must not be empty",
 			"room-created": "Room created successfully"

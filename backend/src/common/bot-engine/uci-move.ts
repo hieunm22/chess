@@ -55,8 +55,7 @@ const indexToFileRank = (index: number): { file: string; rank: number } => {
  * trailing promotion piece is returned as `promotion`.
  */
 export const uciMoveToProjectIndices = (
-	uciMove: string,
-	_redFirst: boolean
+	uciMove: string
 ): { fromIdx: number; toIdx: number; promotion: string | null } => {
 	const match = MOVE_PATTERN.exec(uciMove.trim())
 	if (!match) {
@@ -76,8 +75,7 @@ export const uciMoveToProjectIndices = (
  */
 export const projectIndicesToUciMove = (
 	fromIdx: number,
-	toIdx: number,
-	_redFirst: boolean
+	toIdx: number
 ): string => {
 	const from = indexToFileRank(fromIdx)
 	const to = indexToFileRank(toIdx)
