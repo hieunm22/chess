@@ -219,6 +219,7 @@
 }
 
 .player-info-row, .room-action-row {
+	max-width: 200px;
 	height: calc(8 * var(--tile-size) + var(--board-padding) * 2);
 
 	&.view {

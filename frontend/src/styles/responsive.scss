@@ -77,6 +77,7 @@
 	.player-info-row, .room-action-row {
 		width: calc(8 * var(--tile-size) + 2 * var(--board-padding));
 		height: fit-content;
+		max-width: 100%;
 
 		&.view {
 			display: flex;
@@ -88,6 +89,10 @@
 		.player-section {
 			width: calc(50% - 4px);
 		}
+	}
+	
+	.captured-pieces-display {
+		font-size: 20px;
 	}
 
 	.dashboard__join-room-board {

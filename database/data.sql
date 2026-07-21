@@ -1,5 +1,5 @@
 INSERT INTO user.users (id, user_name, password, email, display_name, gender, avatar_seq, is_bot) OVERRIDING SYSTEM VALUE VALUES
-(18446744073709551615, 'bot', 'DA7E2532550C01A49F955FDD8F22B7FF', 'bot@chess.local', 'Bot', true, 0, true);
+(9223372036854, 'bot', 'DA7E2532550C01A49F955FDD8F22B7FF', 'bot@chess.local', 'Bot', true, 0, true);
 
 INSERT INTO user.users (id, user_name, password, email, display_name, gender, avatar_seq) OVERRIDING SYSTEM VALUE VALUES
 (1, 'ming.hieu.1312', 'DA7E2532550C01A49F955FDD8F22B7FF', 'hieuami@gmail.com', 'Ming Hieu', true, 5),
