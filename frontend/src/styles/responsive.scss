@@ -1,0 +1,202 @@
+@media screen and (max-width: 376px) {
+	:root {
+		--tile-size: 40px;
+		--board-padding: 10px;
+		--piece-font-size: 28px;
+	}
+}
+
+@media screen and (min-width: 376px) and (max-width: 400px) {
+	:root {
+		--tile-size: 44px;
+		--board-padding: 12px;
+		--piece-font-size: 30px;
+	}
+}
+
+@media screen and (min-width: 401px) and (max-width: 450px) {
+	:root {
+		--tile-size: 48px;
+		--board-padding: 10px;
+		--piece-font-size: 32px;
+	}
+}
+
+// all mobile devices with portrait orientation
+@media screen and (max-width: 450px) and (orientation: portrait) {
+	.layout-bg-shell {
+		&::before {
+			background-image: var(--layout-bg-image-mobile, var(--layout-bg-image, none));
+		}
+	}
+
+	.dashboard {
+		// Subtract the 56px mobile AppBar spacer; dvh fallback for mobile browser
+		height: calc(100vh - 56px);
+		height: calc(100dvh - 56px);
+		min-height: calc(100vh - 56px);
+		min-height: calc(100dvh - 56px);
+
+		&__title {
+			font-size: 2rem;
+		}
+
+		&__create-room-dialog-paper {
+			width: 100%;
+		}
+	}
+
+	.room-container {
+		flex-direction: column;
+		justify-content: flex-start;
+		height: auto;
+		padding-top: 10px;
+	}
+
+	.chess-board {
+		order: -1;
+	}
+
+	.profile-user-info {
+		flex-direction: column;
+		margin-left: 0;
+		gap: 8px;
+	}
+
+	[class^=profile-avatar] {
+		width: 80px;
+		height: 80px;
+	}
+
+	.profile-achievements,
+	.profile-history {
+		// must fixed to 317px to make it equal to profile tab's width
+		height: 317px;
+	}
+
+	.player-info-row, .room-action-row {
+		width: calc(8 * var(--tile-size) + 2 * var(--board-padding));
+		height: fit-content;
+
+		&.view {
+			display: flex;
+			justify-content: space-between;
+			flex-direction: row;
+			gap: 12px;
+		}
+		
+		.player-section {
+			width: calc(50% - 4px);
+		}
+	}
+
+	.dashboard__join-room-board {
+		display: none;
+	}
+
+	.piece-table {
+		width: 100% !important;
+	}
+
+	.top-player {
+		align-items: flex-start;
+
+		> .captured-pieces-display {
+			flex-direction: row;
+			direction: ltr;
+		}
+	}
+
+	.bottom-player {
+		> .player-info-card {
+			order: -1;
+		}
+
+		> .captured-pieces-display {
+			flex-direction: row;
+			direction: rtl;
+		}
+	}
+
+	.extra-money-page {
+		height: calc(100vh - 56px);
+		height: calc(100dvh - 56px);
+		min-height: calc(100vh - 56px);
+		min-height: calc(100dvh - 56px);
+	}
+
+	.replay-main {
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.replay-players {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: flex-start;
+		height: auto;
+		width: 100%;
+
+		.captured-pieces-display {
+			justify-content: flex-start;
+		}
+	}
+
+	.replay-player {
+		&.white-player {
+			flex-direction: column;
+			align-items: flex-end;
+
+			.captured-pieces-display {
+				justify-content: flex-end;
+			}
+		}
+
+		&.black-player {
+			align-items: flex-start;
+		}
+	}
+}
+
+@media screen and (min-height: 900px) and (min-width: 1440px) {
+	.layout-bg-shell {
+		position: relative;
+		isolation: isolate;
+
+		&::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			z-index: 0;
+			pointer-events: none;
+			opacity: 0.55;
+			background-image: var(--layout-bg-image-mobile, var(--layout-bg-image, none));
+			background-size: cover;
+			background-position: center;
+			background-attachment: fixed;
+		}
+
+		> * {
+			position: relative;
+			z-index: 1;
+		}
+	}
+
+	:root {
+		--cell-size: 63px;
+		--piece-size: 45px;
+		--river-gap: 20px;
+		--board-padding: 36px;
+		--piece-font-size: 32px;
+	}
+}
+
+@media screen and (min-height: 1080px) and (min-width: 1920px) {
+	:root {
+		--cell-size: 81px;
+		--piece-size: 63px;
+		--river-gap: 60px;
+		--board-padding: 48px;
+		--piece-font-size: 42px;
+	}
+}

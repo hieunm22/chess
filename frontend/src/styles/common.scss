@@ -1,0 +1,95 @@
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.flex {
+	display: flex;
+	justify-content: space-around;
+	
+	&.center {
+		justify-content: center;
+	}
+
+	&.start {
+		justify-content: flex-start;
+	}
+
+	&.end {
+		justify-content: flex-end;
+	}
+}
+
+.align-center {
+	align-items: center;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.no-padding {
+	padding: 0 !important;
+}
+
+@for $i from 1 through 50 {
+	$length: 1px * $i;
+	.top-#{$i} {
+		top: $length;
+	}
+	.mt-#{$i} {
+		margin-top: $length !important;
+	}
+	.mr-#{$i} {
+		margin-right: $length !important;
+	}
+	.ml-#{$i} {
+		margin-left: $length !important;
+	}
+	.mb-#{$i} {
+		margin-bottom: $length !important;
+	}
+	.pt-#{$i} {
+		padding-top: $length !important;
+	}
+	.pr-#{$i} {
+		padding-right: $length !important;
+	}
+	.pl-#{$i} {
+		padding-left: $length !important;
+	}
+	.pb-#{$i} {
+		padding-bottom: $length !important;
+	}
+	.fsx-#{$i} {
+		font-size: $length !important;
+	}
+}
+
+@for $i from 1 through 50 {
+	$length: 1rem * $i;
+	.gap-#{$i} {
+		gap: $length !important;
+	}
+	.mx-#{$i} {
+		margin-left: $length !important;
+		margin-right: $length !important;
+	}
+	.my-#{$i} {
+		margin-top: $length !important;
+		margin-bottom: $length !important;
+	}
+	.px-#{$i} {
+		padding-left: $length !important;
+		padding-right: $length !important;
+	}
+	.py-#{$i} {
+		padding-top: $length !important;
+		padding-bottom: $length !important;
+	}
+}
+
+.data-content {
+	&::after {
+		content: attr(data-content);
+	}
+}

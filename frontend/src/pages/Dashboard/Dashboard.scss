@@ -1,0 +1,316 @@
+.dashboard {
+	padding: 24px 16px;
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+	box-sizing: border-box;
+	height: 100vh;
+	height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	&__content {
+		flex: 1;
+		min-height: 0;
+	}
+
+	&__scroll-area {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
+	&__title {
+		font-weight: 700 !important;
+		-webkit-text-stroke: 2px gray;
+		font-size: 3rem;
+		color: white;
+	}
+
+	&__filter-btn {
+		width: 120px;
+		max-width: 30%;
+		border-radius: 8px !important;
+		padding: 6px 12px !important;
+	}
+
+	&__loading {
+		display: flex;
+		justify-content: center;
+		padding: 8px 0;
+	}
+
+	&__room-card {
+		border-radius: 12px !important;
+		height: 100%;
+		cursor: pointer;
+		border: 3px solid #9b613d;
+		padding: 12px;
+
+		&.zero-bet {
+			background: linear-gradient(0deg, #bd65d9, #ba1fc7);
+		}
+
+		&.low {
+			background: linear-gradient(0deg, #93532a, #ee8543);
+		}
+
+		&.medium {
+			background: linear-gradient(0deg, #23c233, #1fca1f);
+		}
+
+		&.high {
+			background: linear-gradient(0deg, #2295b8, #66ccff);
+		}
+
+		&.is-available {
+			border: solid 2px #2e06e2; // dominant solid red border
+		}
+
+		&.is-playing {
+			position: relative;
+			border: solid 4px #e20606; // dominant solid red border
+
+			&::before {
+				content: "";
+				position: absolute;
+				inset: -3px; // sit over the 3px border
+				border-radius: 12px; // match the card radius
+				padding: 3px; // ring thickness
+				background: conic-gradient(
+					from var(--room-border-angle),
+					transparent 0deg,
+					transparent 235deg,
+					rgba(255, 138, 128, 0) 260deg,
+					rgba(255, 154, 148, 0.7) 305deg,
+					rgba(255, 138, 128, 0) 360deg
+				);
+				-webkit-mask:
+					linear-gradient(#000 0 0) content-box,
+					linear-gradient(#000 0 0);
+				mask:
+					linear-gradient(#000 0 0) content-box,
+					linear-gradient(#000 0 0);
+				-webkit-mask-composite: xor;
+				mask-composite: exclude;
+				pointer-events: none;
+				animation: room-border-run 1s linear infinite;
+			}
+		}
+
+		&:hover {
+			opacity: 0.7;
+			// background-color: rgba(127, 127, 127, 0.15);
+		}
+
+		&.create {
+			min-height: 132px;
+		}
+	}
+
+	&__create-card-content {
+		height: 100%;
+		border: solid 1px gray;
+		border-radius: 12px;
+		min-height: 142px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		background-color: white;
+		color: black;
+
+		&:hover {
+			opacity: 0.5;
+		}
+	}
+
+	&__card-header {
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	&__room-name {
+		flex: 1;
+		min-width: 0;
+		text-align: left;
+	}
+
+	&__room-bet {
+		font-weight: 700 !important;
+		white-space: nowrap;
+	}
+
+	&__room-time {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		font-weight: 700 !important;
+		white-space: nowrap;
+
+		i {
+			font-size: 16px;
+		}
+	}
+
+	.bet-icon {
+		color: #fbc02d;
+		font-size: 20px;
+	}
+
+	&__card-meta {
+		min-height: 28px;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	&__avatar-group {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 2px;
+		min-width: 0;
+		max-width: 100%;
+
+		&.primary {
+			gap: 8px;
+		}
+
+		&.secondary {
+			min-height: 28px;
+			gap: 0;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+		}
+	}
+
+	&__avatar {
+		width: 28px;
+		height: 28px;
+		object-fit: cover;
+		border: solid 2px;
+		margin-left: -10px;
+
+		&:first-child {
+			margin-left: 0;
+		}
+
+		&.dashboard__avatar-more {
+			width: 28px;
+			height: 28px;
+			font-size: 12px !important;
+			font-weight: 700;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(155, 97, 61, 0.5) !important;
+			color: #fff;
+			cursor: default;
+
+			&:hover {
+				opacity: 1 !important;
+			}
+		}
+	}
+
+	&__seat {
+		display: inline-flex;
+		flex-direction: column;
+	}
+
+	&__seat-avatar {
+		width: 56px !important;
+		height: 56px !important;
+		object-fit: cover;
+		border: solid 2px #9b613d;
+		font-size: 20px !important;
+	}
+
+	&__seat-crown {
+		color: #fbc02d;
+		font-size: 30px;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+		pointer-events: none;
+		width: 56px !important;
+		height: 30px;
+	}
+
+	&__seat-crown-placeholder {
+		width: 56px;
+		height: 30px;
+	}
+
+	&__join-room-user-stack {
+		align-items: center;
+		padding-top: 8px;
+	}
+
+	&__join-room-player-stack {
+		align-items: center;
+		justify-content: space-evenly;
+		gap: 48px;
+		margin-bottom: 16px;
+	}
+
+	&__join-room-board {
+		color: #9b613d;
+		width: 160px;
+	}
+
+	&__join-room-actions {
+		padding: 16px !important;
+		justify-content: center !important;
+	}
+
+	&__join-room-help-box {
+		padding: 12px 16px;
+		background-color: #ff9800;
+	}
+
+	&__action-btn {
+		width: 120px;
+	}
+
+	&__piece-btn.MuiButton-root {
+		min-width: 56px;
+		min-height: 56px;
+		padding: 6px 12px;
+		font-size: 24px;
+		font-weight: 700;
+		border-radius: 50%;
+		background-color: #b58863;
+
+		.team-white {
+			color: #fff;
+		}
+
+		.team-black {
+			color: #000;
+		}
+
+		&:not(.active) {
+			opacity: 0.3;
+		}
+	}
+}
+
+.red-first, .pve-mode {
+	margin-left: 0;
+	margin-right: 10px;
+}
+
+.bet-amount-placeholder {
+	display: flex;
+	height: 37px;
+	align-items: center;
+}
+
+@property --room-border-angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}

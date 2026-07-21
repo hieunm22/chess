@@ -1,0 +1,9 @@
+node_modules
+src
+!src/generated
+!src/templates
+tsconfig.json
+.env
+.env.local
+.env.backend
+*.log

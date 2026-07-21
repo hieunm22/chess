@@ -1,0 +1,122 @@
+name: Manual Deploy
+run-name: Manual Deploy (${{ inputs.target }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Deploy target
+        type: choice
+        options:
+          - Full
+          - Backend
+          - Frontend
+        default: Full
+      install_deps:
+        description: Install dependencies (yarn install)
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+
+      - name: Full deploy
+        if: ${{ inputs.target == 'Full' }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.SERVER_IP }}
+          username: root
+          port: 23
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DEPLOY_BRANCH,INSTALL_DEPS,SERVER_IP,JWT_SECRET,GOOGLE_APP_PASSWORD,GOOGLE_CLIENT_ID,FACEBOOK_APP_ID,AD_TAG_URL,FACEBOOK_APP_SECRET,REDIS_PASSWORD,MONGO_PASSWORD,AWS_ACCESS_ID,AWS_SECRET_KEY,TOOL_API_KEY,POSTGRES_PASSWORD
+          script_path: .github/workflows/full-deploy.sh
+        env:
+          DEPLOY_BRANCH: ${{ github.ref_name }}
+          INSTALL_DEPS: ${{ inputs.install_deps }}
+          SERVER_IP: ${{ vars.SERVER_IP }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          FACEBOOK_APP_ID: ${{ vars.FACEBOOK_APP_ID }}
+          AD_TAG_URL: ${{ vars.AD_TAG_URL }}
+          FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+          AWS_ACCESS_ID: ${{ vars.AWS_ACCESS_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          TOOL_API_KEY: ${{ secrets.TOOL_API_KEY }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+      - name: Backend deploy
+        if: ${{ inputs.target == 'Backend' }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.SERVER_IP }}
+          username: root
+          port: 23
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DEPLOY_BRANCH,INSTALL_DEPS,SERVER_IP,JWT_SECRET,GOOGLE_APP_PASSWORD,GOOGLE_CLIENT_ID,FACEBOOK_APP_ID,AD_TAG_URL,FACEBOOK_APP_SECRET,REDIS_PASSWORD,MONGO_PASSWORD,AWS_ACCESS_ID,AWS_SECRET_KEY,TOOL_API_KEY,POSTGRES_PASSWORD
+          script_path: .github/workflows/be-deploy.sh
+        env:
+          DEPLOY_BRANCH: ${{ github.ref_name }}
+          INSTALL_DEPS: ${{ inputs.install_deps }}
+          SERVER_IP: ${{ vars.SERVER_IP }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          FACEBOOK_APP_ID: ${{ vars.FACEBOOK_APP_ID }}
+          AD_TAG_URL: ${{ vars.AD_TAG_URL }}
+          FACEBOOK_APP_SECRET: ${{ secrets.FACEBOOK_APP_SECRET }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+          AWS_ACCESS_ID: ${{ vars.AWS_ACCESS_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          TOOL_API_KEY: ${{ secrets.TOOL_API_KEY }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+      - name: Frontend deploy
+        if: ${{ inputs.target == 'Frontend' }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.SERVER_IP }}
+          username: root
+          port: 23
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DEPLOY_BRANCH,INSTALL_DEPS,GOOGLE_CLIENT_ID,FACEBOOK_APP_ID,AD_TAG_URL
+          script_path: .github/workflows/fe-deploy.sh
+        env:
+          DEPLOY_BRANCH: ${{ github.ref_name }}
+          INSTALL_DEPS: ${{ inputs.install_deps }}
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          FACEBOOK_APP_ID: ${{ vars.FACEBOOK_APP_ID }}
+          AD_TAG_URL: ${{ vars.AD_TAG_URL }}
+
+  notify:
+    needs: deploy
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram message
+        run: |
+          STATUS="${{ needs.deploy.result }}"
+          TIMESTAMP=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          if [ "$STATUS" = "success" ]; then
+            EMOJI="✅"
+          else
+            EMOJI="❌"
+          fi
+
+          printf -v MESSAGE '%s Manual Deploy [%s] (%s) finished at %s: %s\n%s' "$EMOJI" "${{ inputs.target }}" "${{ github.ref_name }}" "$TIMESTAMP" "$STATUS" "$RUN_URL"
+
+          curl -s \
+            -X POST \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            --data-urlencode "text=$MESSAGE"

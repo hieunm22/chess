@@ -1,0 +1,30 @@
+.popup-title-text {
+	display: "block";
+	justify-content: "center";
+	align-items: "center";	
+}
+
+.divider {
+	margin: 5px 0 !important;
+}
+
+.alert-message-row {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.alert-message-avatar {
+	flex-shrink: 0;
+}
+
+.alert-message {
+	margin-bottom: 0 !important;
+	display: flex;
+	align-items: center;
+}
+
+.alert-dialog .button-container {
+	justify-content: center;
+	margin-top: 1rem;
+}
