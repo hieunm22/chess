@@ -1,25 +1,31 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
 	Avatar,
-	Box,
+	Dialog,
 	DialogContent,
 	DialogTitle,
-	Divider,
 	IconButton,
-	Stack,
+	MenuItem,
+	Select,
+	Slider,
+	Tooltip,
 	Typography
 } from "@mui/material"
-import { ResponsiveDialog } from "components/ResponsiveDialog"
-import { TButton, TTypography } from "components/TranslationTag"
+import classnames from "classnames"
+import { openAlert } from "components/AlertProvider/helper"
+import { TTypography } from "components/TranslationTag"
 import Tile from "components/Tile"
+import CapturedPiecesDisplay from "pages/Room/components/CapturedPiecesDisplay"
 import { diffFenMove, getToken, requireImage } from "common/helper"
-import { fenToBoard } from "pages/Room/common"
+import { fenToBoard, getCapturedPiecesFromHistory } from "pages/Room/common"
 import { EMPTY_BOARD_FEN, INITIAL_FEN } from "pages/Room/constant"
-import { GameMovements } from "pages/Room/types"
+import { GameMovements, RoomUser } from "pages/Room/types"
 import { useAPI } from "hooks/useAPI"
 import { translate } from "locales/translate"
 import { APIResponse, EmptyVoid } from "types/Common"
-import { GameHistoryItem } from "../Layout/types"
+import { CapturedPieces, Team } from "types/GameState"
+import { GameHistoryItem, GameHistoryUser } from "../Layout/types"
+import "pages/Room/Room.scss"
 import "./GameReplay.scss"
 
 interface GameReplayPopupProps {
@@ -27,7 +33,17 @@ interface GameReplayPopupProps {
 	onClose: EmptyVoid
 }
 
-const STEP_INTERVAL_MS = 900
+interface AnimMove {
+	from: number
+	to: number
+}
+
+// Playback speed → wait between moves (higher multiplier = shorter wait).
+const SPEED_OPTIONS = [
+	{ label: "1x", ms: 1500 },
+	{ label: "1.5x", ms: 1000 },
+	{ label: "2x", ms: 500 }
+]
 
 // Terminal reasons that map to a `page.replay.reason-*` key.
 const KNOWN_END_REASONS = new Set([
@@ -40,6 +56,22 @@ const KNOWN_END_REASONS = new Set([
 	"per-move-timeout"
 ])
 
+// GameHistoryUser lacks the extra RoomUser fields; fill read-only defaults for the avatar.
+const toRoomUser = (user: GameHistoryUser | null): RoomUser | null => {
+	if (!user) {
+		return null
+	}
+	return {
+		id: user.id,
+		display_name: user.display_name,
+		avatar_url: user.avatar_url,
+		back_ready: null,
+		team: user.team,
+		total_amount: 0,
+		is_bot: false
+	}
+}
+
 export const GameReplayPopup = (props: GameReplayPopupProps) => {
 	const { game, onClose } = props
 	const { getGameMovementHistory } = useAPI()
@@ -47,8 +79,13 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 	const [positions, setPositions] = useState<string[]>([INITIAL_FEN])
 	const [movements, setMovements] = useState<GameMovements[]>([])
 	const [step, setStep] = useState(0)
+	const [renderIndex, setRenderIndex] = useState(0)
+	const [animMove, setAnimMove] = useState<AnimMove | null>(null)
 	const [isPlaying, setIsPlaying] = useState(false)
+	const [speed, setSpeed] = useState(SPEED_OPTIONS[0].ms)
 	const [loading, setLoading] = useState(false)
+	// Fire the game-over alert once per arrival at the final position.
+	const endAlertedRef = useRef(false)
 
 	const isOpen = game !== null
 	const lastStep = positions.length - 1
@@ -65,6 +102,8 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 		const load = async () => {
 			setLoading(true)
 			setStep(0)
+			setRenderIndex(0)
+			setAnimMove(null)
 			setIsPlaying(false)
 			const token = getToken()
 			const response = await getGameMovementHistory(token, game.game.gameId) as APIResponse<GameMovements[]>
@@ -82,9 +121,29 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 		return () => {
 			cancelled = true
 		}
+		// getGameMovementHistory is recreated each render; key the fetch off the game id.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [game?.game.gameId])
 
-	// Auto-advance one position per tick while playing; stop at the final position.
+	// Drive the board toward `step`: animate a single forward move, snap everything else.
+	useEffect(() => {
+		if (step === renderIndex) {
+			setAnimMove(null)
+			return
+		}
+		if (step === renderIndex + 1 && positions[renderIndex] && positions[step]) {
+			const diff = diffFenMove(positions[renderIndex], positions[step])
+			if (diff) {
+				setAnimMove({ from: diff.oldIndex, to: diff.newIndex })
+				return
+			}
+		}
+		// Backward, multi-step jump, castling or en passant → snap without animation.
+		setAnimMove(null)
+		setRenderIndex(step)
+	}, [step, renderIndex, positions])
+
+	// Auto-advance one move per tick while playing; stop at the final position.
 	useEffect(() => {
 		if (!isPlaying) {
 			return
@@ -93,13 +152,67 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 			setIsPlaying(false)
 			return
 		}
-		const timer = setTimeout(() => setStep(current => current + 1), STEP_INTERVAL_MS)
+		const timer = setTimeout(() => setStep(current => current + 1), speed)
 		return () => clearTimeout(timer)
-	}, [isPlaying, step, lastStep])
+	}, [isPlaying, step, lastStep, speed])
 
-	const board = fenToBoard(positions[step] ?? EMPTY_BOARD_FEN)
-	// Highlight the move that produced the current position (null for castling/en passant).
-	const lastMove = step > 0 ? diffFenMove(positions[step - 1], positions[step]) : null
+	const board = fenToBoard(positions[renderIndex] ?? EMPTY_BOARD_FEN)
+	if (animMove) {
+		const mover = board[animMove.from]
+		if (mover) {
+			board[animMove.from] = { ...mover, animateTo: animMove.to }
+		}
+	}
+	// Highlight the move that produced the displayed position (null for castling/en passant).
+	const highlight = renderIndex > 0
+		? diffFenMove(positions[renderIndex - 1], positions[renderIndex])
+		: null
+
+	// First mover (white) sits at the bottom, opponent (black) at the top — as in Room.
+	const whiteUser = toRoomUser(game?.users.find(user => user.team === "white") ?? null)
+	const blackUser = toRoomUser(game?.users.find(user => user.team === "black") ?? null)
+	const toMove: Team = renderIndex % 2 === 0 ? "white" : "black"
+
+	// Captured pieces accumulated up to the displayed position.
+	const captured: CapturedPieces = getCapturedPiecesFromHistory(movements.slice(0, renderIndex))
+
+	const lastMovement = hasMoves ? movements[movements.length - 1] : null
+	const endReason = lastMovement?.end_reason ?? ""
+
+	// Announce the result with an alert when the replay reaches the final position.
+	useEffect(() => {
+		const atEnd = renderIndex === lastStep && hasMoves && KNOWN_END_REASONS.has(endReason)
+		if (!atEnd) {
+			endAlertedRef.current = false
+			return
+		}
+		if (endAlertedRef.current) {
+			return
+		}
+		endAlertedRef.current = true
+
+		const last = movements[movements.length - 1]
+		// Surrender/leave name the acting player; other reasons name the winner.
+		let actorId: number | null
+		if (endReason === "surrender") {
+			actorId = last.surrender_id ?? null
+		} else if (endReason === "leave") {
+			actorId = last.leave ?? null
+		} else {
+			actorId = last.winner_id ?? game?.game.winner_id ?? null
+		}
+		const name = game?.users.find(user => user.id === actorId)?.display_name ?? ""
+		openAlert({
+			title: "page.replay.end-title",
+			message: translate(`page.replay.reason-${endReason}`, { name })
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [renderIndex, lastStep, hasMoves, endReason])
+
+	const onAnimateEnd = () => {
+		setAnimMove(null)
+		setRenderIndex(current => current + 1)
+	}
 
 	const goTo = (next: number) => {
 		setIsPlaying(false)
@@ -107,125 +220,105 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 	}
 
 	const togglePlay = () => {
-		// Restart from the beginning if play is pressed on the final position.
+		if (isPlaying) {
+			setIsPlaying(false)
+			return
+		}
+		// Replay from the start when play is pressed on the final position.
 		if (step >= lastStep) {
+			setRenderIndex(0)
+			setAnimMove(null)
 			setStep(0)
 		}
-		setIsPlaying(playing => !playing)
+		setIsPlaying(true)
 	}
 
-	// End-of-game banner, shown once the replay reaches the final position.
-	const lastMovement = hasMoves ? movements[movements.length - 1] : null
-	const endReason = lastMovement?.end_reason ?? ""
-	const showEnd = step === lastStep && hasMoves && KNOWN_END_REASONS.has(endReason)
-	const resolveEndName = () => {
-		if (!showEnd || !game || !lastMovement) {
-			return ""
-		}
-		// Surrender/leave name the acting player; other reasons name the winner.
-		let actorId: number | null
-		if (endReason === "surrender") {
-			actorId = lastMovement.surrender_id ?? null
-		} else if (endReason === "leave") {
-			actorId = lastMovement.leave ?? null
-		} else {
-			actorId = lastMovement.winner_id ?? game.game.winner_id
-		}
-		return game.users.find(user => user.id === actorId)?.display_name ?? ""
-	}
+	const renderPlayer = (user: RoomUser | null, team: Team) => (
+		<div className={`replay-player ${team}-player`}>
+			<Tooltip title={user?.display_name ?? ""} arrow>
+				<Avatar
+					className={classnames("replay-avatar", { active: toMove === team })}
+					src={requireImage(user?.avatar_url || "")}
+					sx={{ width: 60, height: 60 }}
+					alt={user?.display_name}
+				/>
+			</Tooltip>
+			<CapturedPiecesDisplay capturedPieces={captured} team={team} />
+		</div>
+	)
 
 	return (
-		<ResponsiveDialog
-			drawerAnchor="bottom"
-			open={isOpen}
-			onClose={onClose}
-			className="game-replay-dialog"
-			maxWidth="xs"
-			fullWidth
-			disableEnforceFocus
-		>
-			<DialogTitle className="popup-title">
-				<TTypography component="div" className="flex" content="page.replay.title" />
+		<Dialog fullScreen open={isOpen} onClose={onClose} className="game-replay-dialog">
+			<DialogTitle className="popup-title replay-title">
+				<TTypography component="span" content="page.replay.title" />
+				<IconButton className="replay-close" onClick={onClose} aria-label="close">
+					<i className="fas fa-xmark" />
+				</IconButton>
 			</DialogTitle>
-			<Divider className="mt-5 mb-5" />
-			<DialogContent>
-				{game && (
-					<Stack direction="row" spacing={2} className="replay-players" sx={{ justifyContent: "center" }}>
-						{game.users.map(user => (
-							<Stack key={user.id} direction="row" spacing={1} sx={{ alignItems: "center" }}>
-								<Avatar
-									src={requireImage(user.avatar_url)}
-									className={`replay-avatar ${user.team ?? ""}`}
-									sx={{ width: 28, height: 28 }}
-								/>
-								<Typography variant="body2">{user.display_name}</Typography>
-							</Stack>
-						))}
-					</Stack>
-				)}
+			<DialogContent className="replay-content">
+				<div className="replay-layout">
+					<div className="replay-main">
+						<div className="board-container">
+							<div className="chess-board">
+								{board.map((cell, index) => (
+									<Tile
+										key={index}
+										element={cell}
+										index={index}
+										isRotated={false}
+										isPreviousMove={
+											highlight !== null &&
+											(highlight.oldIndex === index || highlight.newIndex === index)
+										}
+										onAnimateEnd={onAnimateEnd}
+									/>
+								))}
+							</div>
+						</div>
+						<div className="replay-players">
+							{renderPlayer(blackUser, "black")}
+							{renderPlayer(whiteUser, "white")}
+						</div>
+					</div>
 
-				<div className="replay-board">
-					{board.map((cell, index) => (
-						<Tile
-							key={index}
-							element={cell}
-							index={index}
-							isPreviousMove={
-								lastMove !== null &&
-								(lastMove.oldIndex === index || lastMove.newIndex === index)
-							}
+					{!loading && !hasMoves && (
+						<TTypography className="replay-no-moves" component="div" content="page.replay.no-moves" />
+					)}
+
+					<div className="replay-toolbar">
+						<IconButton
+							className="replay-play"
+							onClick={togglePlay}
+							disabled={!hasMoves}
+							aria-label={translate(isPlaying ? "page.replay.pause" : "page.replay.play")}
+						>
+							<i className={isPlaying ? "fas fa-pause" : "fas fa-play"} />
+						</IconButton>
+						<Select
+							className="replay-speed"
+							variant="standard"
+							value={speed}
+							onChange={event => setSpeed(Number(event.target.value))}
+						>
+							{SPEED_OPTIONS.map(option => (
+								<MenuItem key={option.ms} value={option.ms}>{option.label}</MenuItem>
+							))}
+						</Select>
+						<Slider
+							className="replay-progress"
+							value={step}
+							min={0}
+							max={Math.max(lastStep, 1)}
+							onChange={(_, value) => goTo(value as number)}
+							disabled={!hasMoves}
 						/>
-					))}
-				</div>
-
-				{showEnd && (
-					<Box className="replay-end">
-						<TTypography variant="subtitle2" color="primary" content="page.replay.end-title" />
-						<Typography variant="body2">
-							{translate(`page.replay.reason-${endReason}`, { name: resolveEndName() })}
+						<Typography variant="caption" className="replay-counter">
+							{step} / {lastStep}
 						</Typography>
-					</Box>
-				)}
-
-				{!loading && !hasMoves && (
-					<TTypography className="replay-no-moves" component="div" content="page.replay.no-moves" />
-				)}
-
-				<Stack
-					direction="row"
-					spacing={1}
-					className="replay-controls"
-					sx={{ justifyContent: "center", alignItems: "center" }}
-				>
-					<IconButton onClick={() => goTo(0)} disabled={step === 0} aria-label="first">
-						<i className="fas fa-backward-step" />
-					</IconButton>
-					<IconButton onClick={() => goTo(step - 1)} disabled={step === 0} aria-label="previous">
-						<i className="fas fa-caret-left" />
-					</IconButton>
-					<IconButton
-						onClick={togglePlay}
-						disabled={!hasMoves}
-						aria-label={translate(isPlaying ? "page.replay.pause" : "page.replay.play")}
-					>
-						<i className={isPlaying ? "fas fa-pause" : "fas fa-play"} />
-					</IconButton>
-					<IconButton onClick={() => goTo(step + 1)} disabled={step === lastStep} aria-label="next">
-						<i className="fas fa-caret-right" />
-					</IconButton>
-					<IconButton onClick={() => goTo(lastStep)} disabled={step === lastStep} aria-label="last">
-						<i className="fas fa-forward-step" />
-					</IconButton>
-				</Stack>
-				<Typography variant="caption" component="div" align="center" className="replay-counter">
-					{step} / {lastStep}
-				</Typography>
-
-				<Stack direction="row" sx={{ justifyContent: "flex-end", mt: 1 }}>
-					<TButton variant="outlined" size="small" value="settings.close" onClick={onClose} />
-				</Stack>
+					</div>
+				</div>
 			</DialogContent>
-		</ResponsiveDialog>
+		</Dialog>
 	)
 }
 

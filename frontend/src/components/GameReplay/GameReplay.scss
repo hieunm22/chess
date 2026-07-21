@@ -1,50 +1,172 @@
+// Desktop styles only. Mobile reflow lives in styles/responsive.scss.
+.game-replay-dialog {
+	.MuiDialog-paper {
+		background-color: #383838;
+		background-image: none;
+		color: #f0f0f0;
+	}
+
+	.replay-title {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		color: #f5f5f5;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	.replay-close {
+		margin-left: auto;
+		color: #f5f5f5;
+	}
+
+	.replay-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 16px;
+		overflow: auto;
+	}
+}
+
+.replay-layout {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+}
+
+// Player column on the left, board on the right.
+.replay-main {
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: center;
+	gap: 16px;
+}
+
 .replay-players {
-	margin-bottom: 12px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: calc(8 * var(--tile-size) + 2 * var(--board-padding));
+	width: 140px;
+
+	// Captured pieces as small cream tokens (readable on the dark ground).
+	.captured-pieces-display {
+		max-width: none;
+		justify-content: center;
+		direction: ltr;
+		gap: 4px;
+		font-size: 18px;
+		padding: 4px 0;
+	}
+
+	.captured-piece {
+		width: 26px;
+		height: 26px;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		border: 1px solid #6b3d20;
+		background: radial-gradient(circle at 35% 30%, #fff8e4 0, #f4dfb2 64%, #e0be84 100%);
+	}
+}
+
+.replay-player {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+
+	// White sits at the bottom of the board: avatar below its captured pieces.
+	&.white-player {
+		flex-direction: column-reverse;
+	}
 }
 
 .replay-avatar {
-	border: 2px solid transparent;
+	width: 72px;
+	height: 72px;
+	border: 3px solid transparent;
 
-	&.white {
-		border-color: #f0d9b5;
+	// Ring the side that is to move at the current position.
+	&.active {
+		border-color: #e05a4f;
 	}
-
-	&.black {
-		border-color: #333333;
-	}
-}
-
-.replay-board {
-	--tile-size: 40px;
-	--piece-font-size: 28px;
-
-	display: grid;
-	grid-template-columns: repeat(8, var(--tile-size));
-	grid-template-rows: repeat(8, var(--tile-size));
-	width: calc(8 * var(--tile-size));
-	max-width: 100%;
-	margin: 0 auto;
-	border: 2px solid #b58863;
-	border-radius: 4px;
-	overflow: hidden;
 }
 
 .replay-no-moves {
 	text-align: center;
 	opacity: 0.7;
-	margin-top: 12px;
 }
 
-.replay-end {
-	text-align: center;
-	margin-top: 12px;
-}
+.replay-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+	max-width: calc(8 * var(--tile-size) + 2 * var(--board-padding) + 140px + 16px);
+	padding: 8px 4px;
+	box-sizing: border-box;
+	color: #f0f0f0;
 
-.replay-controls {
-	margin-top: 12px;
-}
+	.replay-play {
+		color: #f0f0f0;
+		font-size: 22px;
 
-.replay-counter {
-	opacity: 0.7;
-	margin-top: 4px;
+		&:hover {
+			background: rgba(255, 255, 255, 0.1);
+		}
+
+		&.Mui-disabled {
+			color: rgba(255, 255, 255, 0.35);
+		}
+	}
+
+	.replay-speed {
+		min-width: 56px;
+		color: #f0f0f0;
+
+		.MuiSelect-select {
+			color: #f0f0f0;
+			padding: 4px 24px 4px 4px;
+		}
+
+		.MuiSelect-icon {
+			color: #f0f0f0;
+		}
+
+		&::before {
+			border-bottom-color: rgba(255, 255, 255, 0.3);
+		}
+
+		&::after {
+			border-bottom-color: #4a90e2;
+		}
+	}
+
+	.replay-progress {
+		flex: 1;
+
+		.MuiSlider-rail {
+			background-color: rgba(255, 255, 255, 0.35);
+		}
+
+		.MuiSlider-track {
+			background-color: #4a90e2;
+			border-color: #4a90e2;
+		}
+
+		.MuiSlider-thumb {
+			background-color: #4a90e2;
+		}
+	}
+
+	.replay-counter {
+		min-width: 52px;
+		text-align: right;
+		font-variant-numeric: tabular-nums;
+		color: #f0f0f0;
+	}
 }
