@@ -167,12 +167,11 @@ const useRoomHook = () => {
 	// Latest server countdown snapshot; useGameClock ticks it locally for display.
 	const [clock, setClock] = useState<ClockSnapshot | null>(null)
 	const boardRef = useRef(board)
-	// Opponent's last move (from/to), keyed to the FEN it produces; captured in handleMovePiece.
-	// History-based diff is unreliable in real time since local moves are never in history.
+	// Opponent's last move (from/to)
 	const remoteMoveRef = useRef<RemoteMoveProps | null>(null)
-	// Castling animates two pieces (king + rook) → two transitionend events for one move;
-	// this latch makes onAnimateEnd commit exactly once.
+	// Castling animates two pieces (king + rook) → two transitionend events for one move
 	const moveCommitRef = useRef(false)
+	const revertingRef = useRef(false)
 	// A promotion's phase-2 morph in flight, plus a safety timer that finishes it if the
 	// morph animation's animationend never fires (e.g. the tile unmounts mid-animation).
 	const promotionMorphRef = useRef<PromotionMorph | null>(null)
@@ -1590,6 +1589,17 @@ const useRoomHook = () => {
 	}
 
 	const onAnimateEnd = async () => {
+		// A revert slide (illegal move sliding back) just finished
+		if (revertingRef.current) {
+			revertingRef.current = false
+			moveCommitRef.current = false
+			setSelected(null)
+			setBoard(prev => prev.map(cell =>
+				cell && cell.animateTo !== undefined ? { id: cell.id, piece: cell.piece } : cell
+			))
+			return
+		}
+
 		// Animation finished - commit remote move to history.
 		// updateToState rebuilds from FEN; seamless since piece is already at its final position.
 		if (pendingRemoteMove) {
@@ -1683,20 +1693,17 @@ const useRoomHook = () => {
 		const isMovedTeamGeneralInCheck = checkingPieces.length > 0
 
 		if (isMovedTeamGeneralInCheck) {
-			// Revert an illegal move by stripping every pending animateTo (king + rook for
-			// castling), restoring the exact pre-move position.
-			const revertedBoard = board.map(cell =>
-				cell && cell.animateTo !== undefined ? { id: cell.id, piece: cell.piece } : cell
-			)
-
 			await openAlert({
 				title: "popup.alert.title",
 				message: "game.general.in-check"
 			})
 
-			setSelected(null)
-			setBoard(revertedBoard)
+			// Slide the piece(s) back with the same animation as the forward move
+			revertingRef.current = true
 			moveCommitRef.current = false
+			setBoard(prev => prev.map(cell =>
+				cell && cell.animateTo !== undefined ? { ...cell, animateTo: cell.id } : cell
+			))
 			return
 		}
 
