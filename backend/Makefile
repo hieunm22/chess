@@ -28,7 +28,7 @@ docker:
 	npx prisma generate
 	yarn build
 	docker build -t chess-api -f Dockerfile .
-	docker run --name chess-api -ditp 5001:8000 --restart unless-stopped --env-file ./.env.local --network chess-network chess-api
+	docker run --name chess-api -ditp 5002:8000 --restart unless-stopped --env-file ./.env.local --network chess-network chess-api
 
 publish:
 	make destroy

@@ -105,7 +105,7 @@ services:
       - chess-network
   # run this command in the backend directory to build and run the container
   # docker run -dit \
-  #   -p 5001:8000 \
+  #   -p 5002:8000 \
   #   --env-file ./.env.local \
   #   --network chess-network \
   #   --name chess-api \
