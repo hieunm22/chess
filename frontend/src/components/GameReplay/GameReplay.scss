@@ -1,9 +1,7 @@
 // Desktop styles only. Mobile reflow lives in styles/responsive.scss.
 .game-replay-dialog {
 	.MuiDialog-paper {
-		background-color: #383838;
 		background-image: none;
-		color: #f0f0f0;
 	}
 
 	.replay-title {
@@ -11,13 +9,10 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 12px;
-		color: #f5f5f5;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 	}
 
 	.replay-close {
 		margin-left: auto;
-		color: #f5f5f5;
 	}
 
 	.replay-content {
@@ -52,7 +47,6 @@
 	height: calc(8 * var(--tile-size) + 2 * var(--board-padding));
 	width: 140px;
 
-	// Captured pieces as small cream tokens (readable on the dark ground).
 	.captured-pieces-display {
 		max-width: none;
 		display: flex;
@@ -63,6 +57,7 @@
 		padding: 4px 0;
 	}
 
+	// Cream piece token; the brown ring keeps it legible on both light and dark grounds.
 	.captured-piece {
 		width: 27px;
 		height: 27px;
@@ -91,6 +86,7 @@
 	height: 80px;
 	border: 3px solid transparent;
 
+	// Ring the side that is to move at the current position.
 	&.active {
 		border-color: #e05a4f;
 	}
@@ -109,64 +105,26 @@
 	max-width: calc(8 * var(--tile-size) + 2 * var(--board-padding) + 140px + 16px);
 	padding: 8px 4px;
 	box-sizing: border-box;
-	color: #f0f0f0;
 
 	.replay-play {
-		color: #f0f0f0;
 		font-size: 22px;
-
-		&:hover {
-			background: rgba(255, 255, 255, 0.1);
-		}
-
-		&.Mui-disabled {
-			color: rgba(255, 255, 255, 0.35);
-		}
 	}
 
 	.replay-speed {
 		min-width: 56px;
-		color: #f0f0f0;
 
 		.MuiSelect-select {
-			color: #f0f0f0;
 			padding: 4px 24px 4px 4px;
-		}
-
-		.MuiSelect-icon {
-			color: #f0f0f0;
-		}
-
-		&::before {
-			border-bottom-color: rgba(255, 255, 255, 0.3);
-		}
-
-		&::after {
-			border-bottom-color: #4a90e2;
 		}
 	}
 
 	.replay-progress {
 		flex: 1;
-
-		.MuiSlider-rail {
-			background-color: rgba(255, 255, 255, 0.35);
-		}
-
-		.MuiSlider-track {
-			background-color: #4a90e2;
-			border-color: #4a90e2;
-		}
-
-		.MuiSlider-thumb {
-			background-color: #4a90e2;
-		}
 	}
 
 	.replay-counter {
 		min-width: 52px;
 		text-align: right;
 		font-variant-numeric: tabular-nums;
-		color: #f0f0f0;
 	}
 }

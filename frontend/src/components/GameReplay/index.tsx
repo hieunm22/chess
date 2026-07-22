@@ -23,7 +23,7 @@ import { GameMovements, RoomUser } from "pages/Room/types"
 import { useAPI } from "hooks/useAPI"
 import { translate } from "locales/translate"
 import { APIResponse, EmptyVoid } from "types/Common"
-import { CapturedPieces, Team } from "types/GameState"
+import { CapturedPieces, PieceCharacter, Team } from "types/GameState"
 import { GameHistoryItem, GameHistoryUser } from "../Layout/types"
 import "pages/Room/Room.scss"
 import "./GameReplay.scss"
@@ -36,6 +36,16 @@ interface GameReplayPopupProps {
 interface AnimMove {
 	from: number
 	to: number
+	// The promoted piece when this move is a pawn promotion; null otherwise.
+	promoteTo: PieceCharacter | null
+}
+
+// Phase 2 of a promotion: the pawn has slid to `at` and morphs into `promoteTo`.
+interface PromoMorph {
+	from: number
+	at: number
+	pawn: PieceCharacter
+	promoteTo: PieceCharacter
 }
 
 // Playback speed → wait between moves (higher multiplier = shorter wait).
@@ -81,6 +91,7 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 	const [step, setStep] = useState(0)
 	const [renderIndex, setRenderIndex] = useState(0)
 	const [animMove, setAnimMove] = useState<AnimMove | null>(null)
+	const [promoMorph, setPromoMorph] = useState<PromoMorph | null>(null)
 	const [isPlaying, setIsPlaying] = useState(false)
 	const [speed, setSpeed] = useState(SPEED_OPTIONS[0].ms)
 	const [loading, setLoading] = useState(false)
@@ -104,6 +115,7 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 			setStep(0)
 			setRenderIndex(0)
 			setAnimMove(null)
+			setPromoMorph(null)
 			setIsPlaying(false)
 			const token = getToken()
 			const response = await getGameMovementHistory(token, game.game.gameId) as APIResponse<GameMovements[]>
@@ -134,16 +146,20 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 		if (step === renderIndex + 1 && positions[renderIndex] && positions[step]) {
 			const diff = diffFenMove(positions[renderIndex], positions[step])
 			if (diff) {
-				setAnimMove({ from: diff.oldIndex, to: diff.newIndex })
+				setAnimMove({ from: diff.oldIndex, to: diff.newIndex, promoteTo: diff.promoteTo })
 				return
 			}
 		}
 		// Backward, multi-step jump, castling or en passant → snap without animation.
 		setAnimMove(null)
+		setPromoMorph(null)
 		setRenderIndex(step)
 	}, [step, renderIndex, positions])
 
-	// Auto-advance one move per tick while playing; stop at the final position.
+	// Auto-advance while playing. Wait until the current move has fully animated
+	// (renderIndex caught up to step) before pausing for the configured delay and moving
+	// on. This makes `speed` a true gap *after* the animation: a longer animation — e.g. a
+	// pawn promotion's slide + morph — just pushes the next move later, never gets cut off.
 	useEffect(() => {
 		if (!isPlaying) {
 			return
@@ -152,12 +168,23 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 			setIsPlaying(false)
 			return
 		}
+		if (renderIndex !== step) {
+			return
+		}
 		const timer = setTimeout(() => setStep(current => current + 1), speed)
 		return () => clearTimeout(timer)
-	}, [isPlaying, step, lastStep, speed])
+	}, [isPlaying, step, renderIndex, lastStep, speed])
 
 	const board = fenToBoard(positions[renderIndex] ?? EMPTY_BOARD_FEN)
-	if (animMove) {
+	if (promoMorph) {
+		// Phase 2: the pawn has landed on the promotion square; morph it into the piece.
+		board[promoMorph.from] = null
+		board[promoMorph.at] = {
+			id: promoMorph.at,
+			piece: promoMorph.pawn,
+			promoteTo: promoMorph.promoteTo
+		}
+	} else if (animMove) {
 		const mover = board[animMove.from]
 		if (mover) {
 			board[animMove.from] = { ...mover, animateTo: animMove.to }
@@ -210,7 +237,27 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 	}, [renderIndex, lastStep, hasMoves, endReason])
 
 	const onAnimateEnd = () => {
+		// Promotion: phase-1 slide done → play the phase-2 morph before advancing.
+		if (animMove && animMove.promoteTo !== null) {
+			const pawn: PieceCharacter = animMove.promoteTo === animMove.promoteTo.toUpperCase()
+				? "P"
+				: "p"
+			setPromoMorph({
+				from: animMove.from,
+				at: animMove.to,
+				pawn,
+				promoteTo: animMove.promoteTo
+			})
+			setAnimMove(null)
+			return
+		}
 		setAnimMove(null)
+		setRenderIndex(current => current + 1)
+	}
+
+	// The promotion morph finished: settle on the post-move position.
+	const onPromoteEnd = () => {
+		setPromoMorph(null)
 		setRenderIndex(current => current + 1)
 	}
 
@@ -228,6 +275,7 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 		if (step >= lastStep) {
 			setRenderIndex(0)
 			setAnimMove(null)
+			setPromoMorph(null)
 			setStep(0)
 		}
 		setIsPlaying(true)
@@ -248,7 +296,7 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 
 	return (
 		<Dialog fullScreen open={isOpen} onClose={onClose} className="game-replay-dialog">
-			<DialogTitle className="popup-title replay-title">
+			<DialogTitle className="popup-title replay-title" sx={{ borderBottom: 1, borderColor: "divider" }}>
 				<TTypography component="span" content="page.replay.title" />
 				<IconButton className="replay-close" onClick={onClose} aria-label="close">
 					<i className="fas fa-xmark" />
@@ -270,6 +318,7 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 											(highlight.oldIndex === index || highlight.newIndex === index)
 										}
 										onAnimateEnd={onAnimateEnd}
+										onPromoteEnd={onPromoteEnd}
 									/>
 								))}
 							</div>
