@@ -1,5 +1,5 @@
 INSERT INTO user.users (id, user_name, password, email, display_name, gender, avatar_seq, is_bot) OVERRIDING SYSTEM VALUE VALUES
-(18446744073709551615, 'bot', 'DA7E2532550C01A49F955FDD8F22B7FF', 'bot@chess.local', 'Bot', true, 0, true);
+(9223372036854, 'bot', 'DA7E2532550C01A49F955FDD8F22B7FF', 'bot@chess.local', 'Bot', true, 0, true);
 
 INSERT INTO user.users (id, user_name, password, email, display_name, gender, avatar_seq) OVERRIDING SYSTEM VALUE VALUES
 (1, 'ming.hieu.1312', 'DA7E2532550C01A49F955FDD8F22B7FF', 'hieuami@gmail.com', 'Ming Hieu', true, 5),
@@ -95,10 +95,10 @@ INSERT INTO user.users (id, user_name, password, email, display_name, gender, av
 
 SELECT setval(pg_get_serial_sequence('user.users', 'id'), 90);
 
-INSERT INTO game.rooms (id, name, status, red_first, bet_amount, host_id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES
-(1, 'chờ', 1, true, 10000, 9, '2026-05-01T10:00:00Z', '2026-05-01T10:00:00Z'),
-(2, 'đang chơi', 1, false, 500, 83, '2026-05-01T11:00:00Z', '2026-05-01T11:03:10Z'),
-(3, 'xem', 1, true, 100, 72, '2026-05-01T12:00:00Z', '2026-05-01T12:05:10Z');
+INSERT INTO game.rooms (id, name, status, bet_amount, host_id, created_at, updated_at) OVERRIDING SYSTEM VALUE VALUES
+(1, 'chờ', 1, 10000, 9, '2026-05-01T10:00:00Z', '2026-05-01T10:00:00Z'),
+(2, 'đang chơi', 1, 500, 83, '2026-05-01T11:00:00Z', '2026-05-01T11:03:10Z'),
+(3, 'xem', 1, 100, 72, '2026-05-01T12:00:00Z', '2026-05-01T12:05:10Z');
 
 SELECT setval(pg_get_serial_sequence('game.rooms', 'id'), (SELECT MAX(id) FROM game.rooms));
 

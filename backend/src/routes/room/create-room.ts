@@ -44,10 +44,6 @@ const ACCEPTABLE_BET_AMOUNTS = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 100
  *               teamName:
  *                 type: string
  *                 description: Team name for the current user
- *               redFirst:
- *                 type: boolean
- *                 description: Whether red moves first
- *                 default: true
  *               pveMode:
  *                 type: boolean
  *                 description: Whether the game is in PvE mode
@@ -101,8 +97,6 @@ const ACCEPTABLE_BET_AMOUNTS = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 100
  *                           type: string
  *                         status:
  *                           type: integer
- *                         red_first:
- *                           type: boolean
  *                         pve_mode:
  *                           type: boolean
  *                         bet_amount:
@@ -150,7 +144,6 @@ router.post(
 		const {
 			tableName,
 			teamName,
-			redFirst = true,
 			pveMode = false,
 			betAmount = 10,
 			timeLimit = null,
@@ -177,16 +170,6 @@ router.post(
 			res.status(400).json({
 				success: false,
 				message: "create-room.messages.invalid-team-name",
-				status_code: 400
-			})
-			return
-		}
-
-		// Validate redFirst
-		if (typeof redFirst !== "boolean") {
-			res.status(400).json({
-				success: false,
-				message: "create-room.messages.invalid-redFirst",
 				status_code: 400
 			})
 			return
@@ -301,7 +284,6 @@ router.post(
 				data: {
 					name: tableName,
 					status: 1, // 1 = waiting for opponent
-					red_first: redFirst,
 					pve_mode: pveMode,
 					bet_amount: betAmount,
 					time_limit: effectiveTimeLimit,
@@ -316,7 +298,6 @@ router.post(
 					id: true,
 					name: true,
 					status: true,
-					red_first: true,
 					pve_mode: true,
 					bet_amount: true,
 					time_limit: true,

@@ -165,7 +165,6 @@ describe("POST /api/room/start", () => {
 		roomUpdateMock.mockResolvedValue({
 			id: BigInt(101),
 			status: 2,
-			red_first: true
 		})
 		gameCreateMock.mockResolvedValue({
 			id: "c5afe4a6-48fd-47de-ac7e-1f635f859919",
@@ -225,7 +224,6 @@ describe("POST /api/room/start", () => {
 			select: {
 				id: true,
 				status: true,
-				red_first: true
 			}
 		})
 		expect(gameCreateMock).toHaveBeenCalledWith({
@@ -273,7 +271,7 @@ describe("POST /api/room/start", () => {
 		roomUserFindUniqueMock.mockResolvedValue({ team: "white" })
 
 		const roomUserUpsertMock = vi.fn().mockResolvedValue({})
-		roomUpdateMock.mockResolvedValue({ id: BigInt(101), status: 2, red_first: true })
+		roomUpdateMock.mockResolvedValue({ id: BigInt(101), status: 2 })
 		gameCreateMock.mockResolvedValue({
 			id: "pve-game-uuid",
 			status: 1,
@@ -334,7 +332,7 @@ describe("POST /api/room/start", () => {
 		expect(playBotMoveMock).not.toHaveBeenCalled()
 	})
 
-	it("always starts with white to move and the standard FEN, even when red_first is false", async () => {
+	it("always starts with white to move and the standard FEN", async () => {
 		const accessToken = buildAccessToken(61, "session-start-2b")
 		redisGetMock.mockResolvedValue(JSON.stringify({ userId: 61 }))
 		gameHistoryInsertOneMock.mockResolvedValue({ insertedId: "mongo-id-2" })
@@ -347,7 +345,6 @@ describe("POST /api/room/start", () => {
 		roomUpdateMock.mockResolvedValue({
 			id: BigInt(102),
 			status: 2,
-			red_first: false
 		})
 		gameCreateMock.mockResolvedValue({
 			id: "d8d18f53-95f8-4e30-b834-f4b5adce4f22",
@@ -428,7 +425,7 @@ describe("POST /api/room/start", () => {
 		})
 		userFindUniqueMock.mockResolvedValue({ total_amount: 200 })
 		getGameHistoryCollectionMock.mockResolvedValue({ insertOne: gameHistoryInsertOneMock })
-		roomUpdateMock.mockResolvedValue({ id: BigInt(101), status: 2, red_first: true })
+		roomUpdateMock.mockResolvedValue({ id: BigInt(101), status: 2 })
 		gameCreateMock.mockResolvedValue({
 			id: "clocked-game-uuid",
 			status: 1,

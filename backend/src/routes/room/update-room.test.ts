@@ -352,7 +352,6 @@ describe("PATCH /api/room/update", () => {
 			id: BigInt(1),
 			name: "Room",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50,
 			time_limit: 900
@@ -380,7 +379,6 @@ describe("PATCH /api/room/update", () => {
 			id: BigInt(1),
 			name: "Room",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50,
 			time_limit: 900,
@@ -415,7 +413,6 @@ describe("PATCH /api/room/update", () => {
 			id: BigInt(1),
 			name: "Room",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50,
 			time_limit: null
@@ -445,7 +442,6 @@ describe("PATCH /api/room/update", () => {
 			id: BigInt(1),
 			name: "New Room Name",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50
 		})
@@ -468,7 +464,6 @@ describe("PATCH /api/room/update", () => {
 					id: 1,
 					name: "New Room Name",
 					status: 1,
-					red_first: true,
 					pve_mode: false,
 					bet_amount: 50
 				}
@@ -481,7 +476,6 @@ describe("PATCH /api/room/update", () => {
 				id: true,
 				name: true,
 				status: true,
-				red_first: true,
 				pve_mode: true,
 				bet_amount: true,
 				time_limit: true,
@@ -502,7 +496,6 @@ describe("PATCH /api/room/update", () => {
 			id: BigInt(1),
 			name: "Trimmed Room",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50
 		})
@@ -524,7 +517,6 @@ describe("PATCH /api/room/update", () => {
 				id: true,
 				name: true,
 				status: true,
-				red_first: true,
 				pve_mode: true,
 				bet_amount: true,
 				time_limit: true,
@@ -598,7 +590,6 @@ describe("PATCH /api/room/update", () => {
 			id: BigInt(largeId),
 			name: "Large ID Room",
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50
 		})
@@ -627,7 +618,6 @@ describe("PATCH /api/room/update", () => {
 			id: BigInt(1),
 			name: specialName,
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50
 		})
@@ -656,7 +646,6 @@ describe("PATCH /api/room/update", () => {
 			id: BigInt(1),
 			name: unicodeName,
 			status: 1,
-			red_first: true,
 			pve_mode: false,
 			bet_amount: 50
 		})

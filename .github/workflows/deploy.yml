@@ -97,7 +97,7 @@ jobs:
               echo "FACEBOOK_APP_SECRET=$FACEBOOK_APP_SECRET" >> "$backend_env"
               echo "REDIS_HOST=cache" >> "$backend_env"
               echo "REDIS_PASSWORD=$REDIS_PASSWORD" >> "$backend_env"
-              echo "CORS_ORIGINS=http://localhost:3003,http://localhost:5001,http://localhost:8000,https://xaq.hieunm.io.vn,https://xaa.hieunm.io.vn" >> "$backend_env"
+              echo "CORS_ORIGINS=http://localhost:3003,http://localhost:5002,http://localhost:8000,https://xaq.hieunm.io.vn,https://xaa.hieunm.io.vn" >> "$backend_env"
               echo "API_HOST=https://xaa.hieunm.io.vn" >> "$backend_env"
               echo "APP_EMAIL=hieuami@gmail.com" >> "$backend_env"
               echo "MONGODB_DB_NAME=chess" >> "$backend_env"

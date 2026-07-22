@@ -314,7 +314,7 @@ export const CreateRoomDialog = () => {
 					onClick={handleCreateRoom}
 					disabled={isRoomNameEmpty || submitting || !canAffordBet(betAmount)}
 					value="popup.confirm.ok"
-					startIcon={<ClaimIconButton isClaiming={submitting} icon="fa-plus" />}
+					startIcon={<ClaimIconButton claiming={submitting} icon="fa-plus" />}
 				/>
 				<TButton
 					variant="outlined"

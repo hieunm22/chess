@@ -219,6 +219,7 @@
 }
 
 .player-info-row, .room-action-row {
+	max-width: 220px;
 	height: calc(8 * var(--tile-size) + var(--board-padding) * 2);
 
 	&.view {
@@ -532,6 +533,7 @@
 	flex-direction: column;
 	gap: 8px;
 	align-items: flex-end;
+	width: 200px;
 
 	&.bottom-player {
 		flex-direction: column;

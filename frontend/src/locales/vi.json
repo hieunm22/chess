@@ -413,7 +413,6 @@
 			"invalid-time-limit": "Thời gian không hợp lệ",
 			"invalid-time-increment": "Thời gian cộng mỗi nước không hợp lệ",
 			"invalid-time-per-move": "Thời gian mỗi nước không hợp lệ",
-			"invalid-redFirst": "'redFirst' phải là giá trị boolean",
 			"invalid-team-name": "Tên đội phải là 'red', 'black' hoặc null",
 			"name-required": "Tên phòng (tableName) là bắt buộc và không được để trống",
 			"room-created": "Phòng được tạo thành công"

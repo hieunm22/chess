@@ -80,8 +80,6 @@ const router = Router()
  *                           type: string
  *                         status:
  *                           type: integer
- *                         red_first:
- *                           type: boolean
  *                         pve_mode:
  *                           type: boolean
  *                         bet_amount:
@@ -245,7 +243,6 @@ router.patch("/room/update", requireAuth(), async (req: AuthenticatedRequest, re
 				id: true,
 				name: true,
 				status: true,
-				red_first: true,
 				pve_mode: true,
 				bet_amount: true,
 				time_limit: true,

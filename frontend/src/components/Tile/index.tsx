@@ -14,7 +14,7 @@ const PIECE_ICON: Record<string, string> = {
 }
 
 // In FEN, uppercase = white, lowercase = black
-const isWhitePiece = (piece: PieceCharacter) => piece === piece.toUpperCase()
+const isWhitePiece = (piece?: PieceCharacter | null) => piece && piece === piece.toUpperCase()
 
 const Tile = ({
 	element,
@@ -25,7 +25,8 @@ const Tile = ({
 	isChecking = false,
 	isRotated = false,
 	onClick,
-	onAnimateEnd
+	onAnimateEnd,
+	onPromoteEnd,
 }: TileProps) => {
 	const row = Math.floor(index / 8)
 	const col = index % 8
@@ -40,6 +41,10 @@ const Tile = ({
 	// `onAnimateEnd` when the slide finishes so the parent can commit the move.
 	const targetIndex = element?.animateTo
 	const isAnimating = targetIndex !== undefined
+
+	const promoteTo = element?.promoteTo
+	const promoteIcon = promoteTo ? PIECE_ICON[promoteTo.toLowerCase()] : null
+	const isPromoting = promoteTo !== undefined
 
 	// The board flips via a 180° rotation on the container; the slide translate is in
 	// board space (applied first), then the counter-rotation keeps the glyph upright.
@@ -62,18 +67,39 @@ const Tile = ({
 		"selected": isSelected,
 		"capture": isCaptureMove,
 		"checking": isChecking,
-		"animating": isAnimating
+		"animating": isAnimating,
+		"promoting": isPromoting,
 	})
+
+	const morphOutClass = classnames(
+		"tile-piece morph-out",
+		isWhitePiece(piece) ? "white" : "black",
+		`fas fa-chess-${iconName}`
+	)
+	const morphInClass = classnames(
+		"tile-piece morph-in",
+		isWhitePiece(promoteTo) ? "white" : "black",
+		`fas fa-chess-${promoteIcon}`
+	)
+	const tilePieceClass = classnames(
+		"tile-piece",
+		isWhitePiece(piece) ? "white" : "black",
+		`fas fa-chess-${iconName}`
+	)
 
 	return (
 		<div className={cellClass} onClick={onClick}>
-			{piece && iconName && (
+			{isPromoting && piece && iconName && promoteIcon ? (
+				<span
+					className="tile-morph"
+					style={isRotated ? { transform: "rotate(180deg)" } : undefined}
+				>
+					<i className={morphOutClass} />
+					<i className={morphInClass} onAnimationEnd={onPromoteEnd} />
+				</span>
+			) : piece && iconName && (
 				<i
-					className={classnames(
-						"tile-piece",
-						isWhitePiece(piece) ? "white" : "black",
-						`fas fa-chess-${iconName}`
-					)}
+					className={tilePieceClass}
 					style={pieceStyle}
 					onTransitionEnd={isAnimating ? onAnimateEnd : undefined}
 				/>

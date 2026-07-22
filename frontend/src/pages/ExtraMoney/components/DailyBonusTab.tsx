@@ -135,7 +135,7 @@ export default function DailyBonusTab() {
 							variant="contained"
 							color="success"
 							disabled={isClaiming || adOpen}
-							startIcon={<ClaimIconButton isClaiming={isClaiming} icon="fa-hand-holding-dollar" />}
+							startIcon={<ClaimIconButton claiming={isClaiming} icon="fa-hand-holding-dollar" />}
 							value="extra-money.bonus-coin.collect"
 							onClick={collect}
 						/>
@@ -144,7 +144,7 @@ export default function DailyBonusTab() {
 							variant="contained"
 							color="warning"
 							disabled={isClaiming || adOpen}
-							startIcon={<ClaimIconButton isClaiming={isClaiming} icon="fa-circle-play" />}
+							startIcon={<ClaimIconButton claiming={isClaiming} icon="fa-circle-play" />}
 							value="extra-money.bonus-coin.watch-video"
 							onClick={openAd}
 						/>

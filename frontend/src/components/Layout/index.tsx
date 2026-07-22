@@ -67,7 +67,7 @@ const miniWidth = 90
 
 export default function Layout() {
 	useAutoTitle()
-	const [drawerOpen, setDrawerOpen] = useState(false)
+	const [drawerOpen, setDrawerOpen] = useState(true)
 	const [mobileOpen, setMobileOpen] = useState(false)
 	const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null)
 	const [currentUserId, setCurrentUserId] = useState<number | null>(null)

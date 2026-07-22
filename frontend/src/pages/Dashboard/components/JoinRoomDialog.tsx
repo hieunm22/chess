@@ -10,6 +10,7 @@ import {
 	Divider,
 	Stack,
 } from "@mui/material"
+import BoardImage from "assets/board.png"
 import { PopupState } from "common/enums"
 import { openAlert } from "components/AlertProvider/helper"
 import { ResponsiveDialog } from "components/ResponsiveDialog"
@@ -186,7 +187,7 @@ export const JoinRoomDialog = () => {
 							isHost={player1 !== null && room !== null && player1.id === room.host_id}
 							onUserClick={handleAvatarClick}
 						/>
-						{/* <img src={BoardImage} alt="Board" className="dashboard__join-room-board" /> */}
+						<img src={BoardImage} alt="Board" className="dashboard__join-room-board" />
 						<SeatAvatar
 							user={player2}
 							isHost={player2 !== null && room !== null && player2.id === room.host_id}

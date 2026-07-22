@@ -46,14 +46,12 @@ export interface DrawGameRequest {
 
 export interface PVEContext {
 	roomId: bigint
-	redFirst: boolean
 	botDifficulty: number
 }
 
 export interface RequestBotMoveParams {
 	gameId: string
 	projectFen: string
-	redFirst: boolean
 	botTeam: Team
 	difficulty: number
 }

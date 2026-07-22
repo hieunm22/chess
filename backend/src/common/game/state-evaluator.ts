@@ -180,10 +180,9 @@ const countLegalMoves = (board: BoardState, team: Team): number => {
 
 /**
  * Evaluate `checkedTeam`'s position: check + whether it has any legal move, yielding
- * one of ongoing / check / checkmate / stalemate. `_redFirst` is accepted for signature
- * stability but unused — chess pawn direction follows piece colour, not board seat.
+ * one of ongoing / check / checkmate / stalemate.
  */
-export const evaluateTeamState = (fen: string, checkedTeam: Team, _redFirst: boolean): TeamStateEvaluation => {
+export const evaluateTeamState = (fen: string, checkedTeam: Team): TeamStateEvaluation => {
 	const board = fenToBoard(fen)
 	if (board.length !== TOTAL_CELLS) {
 		throw new Error(`Invalid board size: expected ${TOTAL_CELLS}, got ${board.length}`)

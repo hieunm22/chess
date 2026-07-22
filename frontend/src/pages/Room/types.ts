@@ -72,7 +72,6 @@ export interface RoomInfo {
 	game_type: string
 	bet_amount: number
 	team: Team | null
-	red_first: boolean
 	pve_mode: boolean
 	host_id: number | null
 	time_limit: number | null
@@ -202,6 +201,24 @@ export interface PendingPromotion {
 export interface RemoteMoveProps extends MoveProps {
 	fen: string
 	isCapture: boolean
+	// The promoted piece character when this remote move is a pawn promotion; null otherwise.
+	promotion: PieceCharacter | null
+}
+
+export interface FinalizeMoveParams {
+	from: number
+	to: number
+	finalBoard: NullableCellProps[]
+	movedTeam: Team
+	oldTarget: NullableCellProps
+	isEnPassant: boolean
+	enPassantCapturedPiece: PieceCharacter | null
+}
+
+export interface PromotionMorph {
+	to: number
+	remoteMove: HistoryData | null
+	finalizeParams: FinalizeMoveParams | null
 }
 
 export interface PieceSideUser {

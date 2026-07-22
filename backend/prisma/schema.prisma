@@ -73,7 +73,6 @@ model Room {
   name       String
   status     Int        @db.SmallInt
   game_type  String     @default("chess") @db.VarChar(16)
-  red_first  Boolean    @default(true)
   pve_mode   Boolean    @default(false)
   bet_amount Int        @default(10)
   time_limit     Int?

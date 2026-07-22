@@ -1,3 +1,26 @@
+.layout-bg-shell {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		opacity: 0.55;
+		background-image: var(--layout-bg-image, var(--layout-bg-image-mobile, none));
+		background-size: cover;
+		background-position: center;
+		background-attachment: fixed;
+	}
+
+	> * {
+		position: relative;
+		z-index: 1;
+	}
+}
+
 .menu-text {
 	font-size: 14px;
 	margin-left: 8px;

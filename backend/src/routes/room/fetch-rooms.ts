@@ -50,8 +50,6 @@ const router = Router()
  *                         type: string
  *                       status:
  *                         type: integer
- *                       red_first:
- *                         type: boolean
  *                       bet_amount:
  *                         type: integer
  *                       time_limit:
@@ -120,7 +118,6 @@ router.get("/room/fetch-rooms", requireAuth(), async (req: AuthenticatedRequest,
 				id: true,
 				name: true,
 				status: true,
-				red_first: true,
 				bet_amount: true,
 				time_limit: true,
 				time_increment: true,

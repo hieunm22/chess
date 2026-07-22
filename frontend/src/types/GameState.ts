@@ -10,6 +10,7 @@ export interface CellProps {
 	piece: PieceCharacter | null
 	animateTo?: number
 	canBeEnPassant?: boolean
+	promoteTo?: PieceCharacter
 }
 
 export type Team = "white" | "black"

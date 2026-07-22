@@ -68,7 +68,6 @@ const PARAMS = {
 	gameId: "game-1",
 	roomId: 5n,
 	projectFen: INITIAL,
-	redFirst: true,
 	botTeam: "white" as const,
 	difficulty: 1
 }

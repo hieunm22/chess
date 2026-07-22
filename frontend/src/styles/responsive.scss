@@ -77,6 +77,7 @@
 	.player-info-row, .room-action-row {
 		width: calc(8 * var(--tile-size) + 2 * var(--board-padding));
 		height: fit-content;
+		max-width: 100%;
 
 		&.view {
 			display: flex;
@@ -88,6 +89,10 @@
 		.player-section {
 			width: calc(50% - 4px);
 		}
+	}
+	
+	.captured-pieces-display {
+		font-size: 20px;
 	}
 
 	.dashboard__join-room-board {
@@ -143,6 +148,7 @@
 	}
 
 	.replay-player {
+		width: calc(50% - 4px);
 		&.white-player {
 			flex-direction: column;
 			align-items: flex-end;
@@ -155,33 +161,15 @@
 		&.black-player {
 			align-items: flex-start;
 		}
+
+		.replay-avatar {
+			width: 60px;
+			height: 60px;
+		}
 	}
 }
 
 @media screen and (min-height: 900px) and (min-width: 1440px) {
-	.layout-bg-shell {
-		position: relative;
-		isolation: isolate;
-
-		&::before {
-			content: "";
-			position: absolute;
-			inset: 0;
-			z-index: 0;
-			pointer-events: none;
-			opacity: 0.55;
-			background-image: var(--layout-bg-image-mobile, var(--layout-bg-image, none));
-			background-size: cover;
-			background-position: center;
-			background-attachment: fixed;
-		}
-
-		> * {
-			position: relative;
-			z-index: 1;
-		}
-	}
-
 	:root {
 		--cell-size: 63px;
 		--piece-size: 45px;
