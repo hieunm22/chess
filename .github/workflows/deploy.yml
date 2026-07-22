@@ -75,7 +75,7 @@ jobs:
 
             env_path="frontend/.env.local"
             echo "creating env file at $env_path"
-            echo "VITE_BACKEND_BASE_URL=https://xaa.hieunm.io.vn" > $env_path
+            echo "VITE_BACKEND_BASE_URL=https://chess-api.hieunm.io.vn" > $env_path
             echo "VITE_PUBLIC_DISTRIBUTION=https://clf.hieunm.io.vn" >> $env_path
             echo "VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> $env_path
             echo "VITE_FACEBOOK_APP_ID=$FACEBOOK_APP_ID" >> $env_path
@@ -90,15 +90,15 @@ jobs:
               echo "DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@${SERVER_IP}:5432/chess" > "$backend_env"
               echo "SERVER_IP=$SERVER_IP" >> "$backend_env"
               echo "JWT_SECRET=$JWT_SECRET" >> "$backend_env"
-              echo "JWT_ISSUER=xaa.hieunm.io.vn" >> "$backend_env"
+              echo "JWT_ISSUER=chess-api.hieunm.io.vn" >> "$backend_env"
               echo "GOOGLE_APP_PASSWORD=$GOOGLE_APP_PASSWORD" >> "$backend_env"
               echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> "$backend_env"
               echo "FACEBOOK_APP_ID=$FACEBOOK_APP_ID" >> "$backend_env"
               echo "FACEBOOK_APP_SECRET=$FACEBOOK_APP_SECRET" >> "$backend_env"
               echo "REDIS_HOST=cache" >> "$backend_env"
               echo "REDIS_PASSWORD=$REDIS_PASSWORD" >> "$backend_env"
-              echo "CORS_ORIGINS=http://localhost:3003,http://localhost:5002,http://localhost:8000,https://xaq.hieunm.io.vn,https://xaa.hieunm.io.vn" >> "$backend_env"
-              echo "API_HOST=https://xaa.hieunm.io.vn" >> "$backend_env"
+              echo "CORS_ORIGINS=http://localhost:3003,http://localhost:5002,http://localhost:8000,https://xaq.hieunm.io.vn,https://chess-api.hieunm.io.vn" >> "$backend_env"
+              echo "API_HOST=https://chess-api.hieunm.io.vn" >> "$backend_env"
               echo "APP_EMAIL=hieuami@gmail.com" >> "$backend_env"
               echo "MONGODB_DB_NAME=chess" >> "$backend_env"
               echo "MONGO_PASSWORD=$MONGO_PASSWORD" >> "$backend_env"

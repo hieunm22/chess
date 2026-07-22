@@ -41,7 +41,7 @@ load_config "AD_TAG_URL"
 
 # Generate frontend/.env.local with VITE_ prefix
 cat > frontend/.env.local << EOF
-VITE_BACKEND_BASE_URL=https://xaa.hieunm.io.vn
+VITE_BACKEND_BASE_URL=https://chess-api.hieunm.io.vn
 VITE_PUBLIC_DISTRIBUTION=https://clf.hieunm.io.vn
 VITE_FACEBOOK_APP_ID=$FACEBOOK_APP_ID
 VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
