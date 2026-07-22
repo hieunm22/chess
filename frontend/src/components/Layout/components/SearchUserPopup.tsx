@@ -199,7 +199,7 @@ export const SearchUserPopup = () => {
 					variant="contained"
 					size="medium"
 					value="search.button.search"
-					startIcon={<ClaimIconButton isClaiming={loading} icon="fa-magnifying-glass" />}
+					startIcon={<ClaimIconButton claiming={loading} icon="fa-magnifying-glass" />}
 				/>
 				<TButton
 					variant="outlined"

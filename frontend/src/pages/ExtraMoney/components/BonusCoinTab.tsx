@@ -116,7 +116,7 @@ export default function BonusCoinTab() {
 						variant="contained"
 						color="warning"
 						disabled={isClaiming || adOpen}
-						startIcon={<ClaimIconButton isClaiming={isClaiming} icon="fa-circle-play" />}
+						startIcon={<ClaimIconButton claiming={isClaiming} icon="fa-circle-play" />}
 						value="extra-money.bonus-coin.watch-video"
 						onClick={openAd}
 					/>

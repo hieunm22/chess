@@ -12,6 +12,7 @@ import { BotDifficultySlider } from "components/BotDifficulty/Slider"
 import { ResponsiveDialog } from "components/ResponsiveDialog"
 import { TButton, TTextField, TTypography } from "components/TranslationTag"
 import { UserAvatarGroup } from "pages/Dashboard/components/UserAvatar"
+import { ClaimIconButton } from "pages/ExtraMoney/components/Icons"
 import { getToken } from "common/helper"
 import { useAPI } from "hooks/useAPI"
 import { useRoomSettingsDialogContext } from "hooks/useAppContext"
@@ -174,12 +175,14 @@ const RoomSettingsDialog = () => {
 						onClick={handleSave}
 						value="room.settings.save"
 						disabled={submitting}
+						startIcon={<ClaimIconButton claiming={submitting} icon="fa-save" />}
 					/>
 				)}
 				<TButton
 					variant="outlined"
 					onClick={closeSettings}
 					value="popup.confirm.cancel"
+					startIcon={<i className="fas fa-xmark" />}
 				/>
 			</DialogActions>
 		</ResponsiveDialog>

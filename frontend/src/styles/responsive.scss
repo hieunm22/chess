@@ -148,6 +148,7 @@
 	}
 
 	.replay-player {
+		width: calc(50% - 4px);
 		&.white-player {
 			flex-direction: column;
 			align-items: flex-end;
@@ -159,6 +160,11 @@
 
 		&.black-player {
 			align-items: flex-start;
+		}
+
+		.replay-avatar {
+			width: 60px;
+			height: 60px;
 		}
 	}
 }

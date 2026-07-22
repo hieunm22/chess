@@ -55,7 +55,8 @@
 	// Captured pieces as small cream tokens (readable on the dark ground).
 	.captured-pieces-display {
 		max-width: none;
-		justify-content: center;
+		display: flex;
+		justify-content: flex-end;
 		direction: ltr;
 		gap: 4px;
 		font-size: 18px;
@@ -63,8 +64,8 @@
 	}
 
 	.captured-piece {
-		width: 26px;
-		height: 26px;
+		width: 27px;
+		height: 27px;
 		align-items: center;
 		justify-content: center;
 		border-radius: 50%;
@@ -85,12 +86,11 @@
 	}
 }
 
-.replay-avatar {
-	width: 72px;
-	height: 72px;
+.replay-player .replay-avatar {
+	width: 80px;
+	height: 80px;
 	border: 3px solid transparent;
 
-	// Ring the side that is to move at the current position.
 	&.active {
 		border-color: #e05a4f;
 	}

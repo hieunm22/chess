@@ -20,6 +20,6 @@ export type SelectedTab = {
 }
 
 export interface ClaimButtonIconProps {
-	isClaiming: boolean
+	claiming: boolean
 	icon: string
 }

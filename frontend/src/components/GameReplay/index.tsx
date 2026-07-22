@@ -239,7 +239,6 @@ export const GameReplayPopup = (props: GameReplayPopupProps) => {
 				<Avatar
 					className={classnames("replay-avatar", { active: toMove === team })}
 					src={requireImage(user?.avatar_url || "")}
-					sx={{ width: 60, height: 60 }}
 					alt={user?.display_name}
 				/>
 			</Tooltip>
