@@ -133,7 +133,7 @@
 		},
 		"popup": {
 			"piece-selection": "Select team",
-			"red-first": "Red first",
+			"white-first": "White first",
 			"pve-mode": "PVE mode",
 			"bet-amount": "Bet amount",
 			"time-limit": "Time limit",
@@ -177,9 +177,9 @@
 		}
 	},
 	"game": {
-		"general": {
-			"captured": "General has been captured. Room over",
-			"in-check": "Your general is under attack"
+		"king": {
+			"checkmated": "King is checkmated. Game over",
+			"in-check": "Your king is in check"
 		},
 		"piece": {
 			"queen": "Queen",
@@ -603,70 +603,71 @@
 			"quantity": "Quantity"
 		},
 		"objective": {
-			"paragraph1": "A match is played between two players: one controls the Red pieces, and the other controls the Black pieces. The objective of each player is to use their pieces on the board to <b>checkmate</b> the opponent's General, and win the game."
+			"paragraph1": "A chess game is played between two players: White and Black. The goal is to <b>checkmate</b> the opponent's King."
 		},
 		"pieces": {
-			"paragraph1": "At the start of each game, there must be 32 pieces in total, consisting of <b>7 piece types</b> split evenly between both sides: 16 Red pieces and 16 Black pieces. The 7 piece types with their symbols and quantities are as follows:"
+			"paragraph1": "A standard game starts with 32 pieces in total (16 per side), with <b>6 piece types</b>: King, Queen, Rook, Bishop, Knight, and Pawn."
 		},
 		"piece": {
-			"general": "General",
-			"advisor": "Advisor",
-			"elephant": "Elephant",
-			"chariot": "Chariot",
-			"horse": "Horse",
-			"cannon": "Cannon",
-			"soldier": "Soldier"
+			"king": "King",
+			"queen": "Queen",
+			"bishop": "Bishop",
+			"rook": "Rook",
+			"knight": "Knight",
+			"pawn": "Pawn"
 		},
 		"moving-pieces": {
-			"paragraph1": "On each turn, each side may move only one of its own pieces according to the rules. The movement rules are as follows:"
+			"paragraph1": "Players move alternately, one legal move at a time. Piece movement rules are:"
 		},
-		"general": {
-			"paragraph1": "General",
-			"paragraph2": "Moves one step <b>horizontally or vertically</b> within the palace. The two Generals may not face each other directly on the same file. If they are facing each other, there must be at least one piece of either side placed between them."
+		"king": {
+			"paragraph1": "King",
+			"paragraph2": "Moves one square in any direction. The King may not move into check."
 		},
-		"advisor": {
-			"paragraph1": "Advisor",
-			"paragraph2": "Moves one step <b>diagonally</b> within the palace."
+		"queen": {
+			"paragraph1": "Queen",
+			"paragraph2": "Moves any number of squares horizontally, vertically, or diagonally, as long as no piece blocks the path."
 		},
-		"elephant": {
-			"paragraph1": "Elephant",
-			"paragraph2": "Moves <b>two steps diagonally</b> on its own side of the board and may not cross the river. If there is another piece on the midpoint of that diagonal path, the Elephant is blocked and cannot move."
+		"bishop": {
+			"paragraph1": "Bishop",
+			"paragraph2": "Moves any number of squares diagonally and cannot jump over pieces."
 		},
-		"chariot": {
-			"paragraph1": "Chariot",
-			"paragraph2": "Moves <b>horizontally or vertically</b> with no limit on distance, as long as no piece blocks the path."
+		"rook": {
+			"paragraph1": "Rook",
+			"paragraph2": "Moves any number of squares horizontally or vertically and cannot jump over pieces."
 		},
-		"horse": {
-			"paragraph1": "Horse",
-			"paragraph2": "Moves in an <b>L-shape</b> (one step orthogonally then one step diagonally outward). If the adjacent orthogonal point is occupied by any piece, the Horse is blocked and cannot move."
+		"knight": {
+			"paragraph1": "Knight",
+			"paragraph2": "Moves in an <b>L-shape</b> (two squares in one direction and one perpendicular). The Knight can jump over pieces."
 		},
-		"cannon": {
-			"paragraph1": "Cannon",
-			"paragraph2": "Moves <b>horizontally or vertically</b> like a Chariot when not capturing. To capture, it must <b>jump over exactly one piece</b> to reach its target. If there are zero or more than one pieces between the Cannon and the target, it cannot capture."
+		"pawn": {
+			"paragraph1": "Pawn",
+			"paragraph2": "Moves one square forward (or two squares from its starting rank if both squares are empty). Captures one square diagonally forward."
 		},
-		"soldier": {
-			"paragraph1": "Soldier",
-			"paragraph2": "Moves <b>one step</b> each turn. Before crossing the river, it can only move forward. After crossing the river, it may move <b>forward or sideways</b>, but never backward."
+		"special-moves": {
+			"paragraph1": "Special Moves",
+			"paragraph2": "<b>Castling</b>: King moves two squares toward a rook and the rook jumps over.",
+			"paragraph3": "<b>En passant</b>: special pawn capture <b>right after</b> an opponent pawn advances two squares.",
+			"paragraph4": "<b>Promotion</b>: when a pawn reaches the last rank, it promotes to Queen, Rook, Bishop, or Knight."
 		},
 		"capturing": {
-			"paragraph1": "When a piece moves to an intersection occupied by an opponent's piece, it may <b>capture that piece</b> and occupy its position.",
-			"paragraph2": "You may not capture your own pieces. You may sacrifice your own pieces to be captured by the opponent, <b>except for the General</b>.",
-			"paragraph3": "A captured piece is removed from the board. <b>Chasing one piece for more than 6 consecutive moves is not allowed</b>."
+			"paragraph1": "A piece captures by moving to a square occupied by an opponent piece. Captured pieces are removed from the board.",
+			"paragraph2": "You cannot capture your own pieces. Except for the Knight, pieces cannot jump over other pieces.",
+			"paragraph3": "The King is never captured. The game is won by checkmate, or ends by resignation/draw."
 		},
 		"check": {
-			"paragraph1": "If a player makes a move that threatens to capture the opponent's General on the next move (by the same piece or another piece), it is called a <b>Check</b>. The checked side must respond to avoid check. Otherwise, that side loses",
-			"paragraph2": "When the General is checked from any direction (including from behind), the checked side may respond in one of the following ways:",
-			"paragraph3": "Move the General to another position to escape check",
-			"paragraph4": "Capture the checking piece",
-			"paragraph5": "Block the checking line with another piece to protect the General",
-			"paragraph6": "Repeatedly checking for more than 6 consecutive moves is not allowed"
+			"paragraph1": "A King is in <b>check</b> when attacked by one or more opponent pieces. You must respond immediately.",
+			"paragraph2": "To respond to check, a player may choose one of the following legal options:",
+			"paragraph3": "Move the King to a safe square",
+			"paragraph4": "Capture the attacking piece",
+			"paragraph5": "Block the line of attack (if possible)",
+			"paragraph6": "If none of these is possible, it is checkmate and the game is lost."
 		},
 		"result": {
-			"paragraph1": "When one side gives Check and the other side has no legal way to protect the General, it is called a <b>Checkmate</b>. The side that delivers Checkmate wins.",
-			"paragraph2": "If a player runs out of time for a single move (for example: 90s) without moving, the other side is awarded a <b>win</b>.",
-			"paragraph3": "If a player runs out of total game time (for example: 5 minutes or 10 minutes), the other side is awarded a <b>win</b>.",
-			"paragraph4": "If both sides have no pieces that have crossed the river, the game is declared a <b>draw</b>. If one side still has pieces across the river but runs out of time, while the other side still has time but has no pieces across the river, the game is declared a <b>draw</b>.",
-			"paragraph5": "Within 50 moves, if there is no capture and no Soldier advances by one square, the game is declared a <b>draw</b>."
+			"paragraph1": "A game is won by <b>checkmate</b>, when the checked King has no legal escape.",
+			"paragraph2": "If a player runs out of move time (in modes that use per-move time), that player loses.",
+			"paragraph3": "If a player runs out of total game time, that player loses (unless the opponent has no possible mating sequence).",
+			"paragraph4": "A game is drawn by stalemate, dead position (insufficient mating material), or draw agreement.",
+			"paragraph5": "A game can also be drawn by the <b>50-move rule</b> or <b>threefold repetition</b> according to the rules."
 		}
 	},
 	"extra-money": {

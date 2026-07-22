@@ -16,13 +16,12 @@ import "./Guide.scss"
 
 export const Guide = () => {
 	const pieceSymbols = [
-		{ red: "將", black: "帥", name: translate("guide.piece.general"), count: 1 },
-		{ red: "士", black: "仕", name: translate("guide.piece.advisor"), count: 2 },
-		{ red: "象", black: "相", name: translate("guide.piece.elephant"), count: 2 },
-		{ red: "馬", black: "傌", name: translate("guide.piece.horse"), count: 2 },
-		{ red: "車", black: "俥", name: translate("guide.piece.chariot"), count: 2 },
-		{ red: "砲", black: "炮", name: translate("guide.piece.cannon"), count: 2 },
-		{ red: "卒", black: "兵", name: translate("guide.piece.soldier"), count: 5 }
+		{ icon: "king", name: translate("guide.piece.king"), count: 1 },
+		{ icon: "queen", name: translate("guide.piece.queen"), count: 1 },
+		{ icon: "bishop", name: translate("guide.piece.bishop"), count: 2 },
+		{ icon: "knight", name: translate("guide.piece.knight"), count: 2 },
+		{ icon: "rook", name: translate("guide.piece.rook"), count: 2 },
+		{ icon: "pawn", name: translate("guide.piece.pawn"), count: 8 },
 	]
 
 	return (
@@ -54,12 +53,12 @@ export const Guide = () => {
 								<TableCell>
 									<Box className="piece-chip">
 										<Chip
-											label={piece.red}
-											className="piece-red sample"
+											label={<i className={`piece-icon fas fa-chess-${piece.icon}`} />}
+											className="piece-white sample"
 											title={piece.name}
 										/>
 										<Chip
-											label={piece.black}
+											label={<i className={`piece-icon fas fa-chess-${piece.icon}`} />}
 											className="piece-black sample"
 											title={piece.name}
 										/>
@@ -78,45 +77,52 @@ export const Guide = () => {
 				{parse(translate("guide.moving-pieces.paragraph1"))}
 			</Typography>
 
-			{/* General */}
-			<TTypography variant="subtitle1" className="paragraph" content="guide.general.paragraph1" />
+			{/* King */}
+			<TTypography variant="subtitle1" className="paragraph" content="guide.king.paragraph1" />
 			<Typography component="div">
-				{parse(translate("guide.general.paragraph2"))}
+				{parse(translate("guide.king.paragraph2"))}
 			</Typography>
 
-			{/* Advisor */}
-			<TTypography variant="subtitle1" className="paragraph" content="guide.advisor.paragraph1" />
+			{/* Queen */}
+			<TTypography variant="subtitle1" className="paragraph" content="guide.queen.paragraph1" />
 			<Typography component="div">
-				{parse(translate("guide.advisor.paragraph2"))}
+				{parse(translate("guide.queen.paragraph2"))}
 			</Typography>
 
-			{/* Elephant */}
-			<TTypography variant="subtitle1" className="paragraph" content="guide.elephant.paragraph1" />
+			{/* Bishop */}
+			<TTypography variant="subtitle1" className="paragraph" content="guide.bishop.paragraph1" />
 			<Typography component="div">
-				{parse(translate("guide.elephant.paragraph2"))}
+				{parse(translate("guide.bishop.paragraph2"))}
 			</Typography>
 
-			{/* Chariot */}
-			<TTypography variant="subtitle1" className="paragraph" content="guide.chariot.paragraph1" />
+			{/* Rook */}
+			<TTypography variant="subtitle1" className="paragraph" content="guide.rook.paragraph1" />
 			<Typography component="div">
-				{parse(translate("guide.chariot.paragraph2"))}
+				{parse(translate("guide.rook.paragraph2"))}
 			</Typography>
 
-			{/* Horse */}
-			<TTypography variant="subtitle1" className="paragraph" content="guide.horse.paragraph1" />
+			{/* Knight */}
+			<TTypography variant="subtitle1" className="paragraph" content="guide.knight.paragraph1" />
 			<Typography component="div">
-				{parse(translate("guide.horse.paragraph2"))}
+				{parse(translate("guide.knight.paragraph2"))}
 			</Typography>
 
-			<TTypography variant="subtitle1" className="paragraph" content="guide.cannon.paragraph1" />
+			{/* Pawn */}
+			<TTypography variant="subtitle1" className="paragraph" content="guide.pawn.paragraph1" />
 			<Typography component="div">
-				{parse(translate("guide.cannon.paragraph2"))}
+				{parse(translate("guide.pawn.paragraph2"))}
 			</Typography>
 
-			{/* Soldier */}
-			<TTypography variant="subtitle1" className="paragraph" content="guide.soldier.paragraph1" />
-			<Typography component="div">
-				{parse(translate("guide.soldier.paragraph2"))}
+			{/* Special moves */}
+			<TTypography variant="subtitle1" className="paragraph" content="guide.special-moves.paragraph1" />
+			<Typography component="div" className="list-item">
+				{parse(translate("guide.special-moves.paragraph2"))}
+			</Typography>
+			<Typography component="div" className="list-item">
+				{parse(translate("guide.special-moves.paragraph3"))}
+			</Typography>
+			<Typography component="div" className="list-item">
+				{parse(translate("guide.special-moves.paragraph4"))}
 			</Typography>
 
 			{/* Capturing */}

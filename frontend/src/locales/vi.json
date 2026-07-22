@@ -73,7 +73,7 @@
 		"title-02": "Thắng trận đầu khi chơi game",
 		"title-03": "Đánh cho đối thủ không còn nước đi",
 		"title-04": "Thắng đối thủ cùng hoặc hơn đẳng cấp 10 ván",
-		"title-05": "Cầm hoà đối thủ khi chỉ còn tướng",
+		"title-05": "Cầm hoà đối thủ khi chỉ còn vua",
 		"title-06": "Thắng 100 trận",
 		"title-07": "Hoà 50 trận",
 		"title-08": "Chiếu bí khi đối thủ khi chỉ còn 1 quân tấn công",
@@ -133,7 +133,7 @@
 		},
 		"popup": {
 			"piece-selection": "Chọn quân",
-			"red-first": "Đỏ tiên",
+			"white-first": "Trắng tiên",
 			"pve-mode": "Chơi với máy",
 			"bet-amount": "Giá trị cược",
 			"time-limit": "Giới hạn thời gian",
@@ -177,9 +177,9 @@
 		}
 	},
 	"game": {
-		"general": {
-			"captured": "Tướng đã bị bắt. Game kết thúc",
-			"in-check": "Tướng của bạn đang bị chiếu"
+		"king": {
+			"checkmated": "Vua đã bị chiếu bí. Ván cờ kết thúc",
+			"in-check": "Vua của bạn đang bị chiếu"
 		},
 		"piece": {
 			"queen": "Hậu",
@@ -594,7 +594,7 @@
 			"pieces": "Quân cờ",
 			"moving-pieces": "Đi quân",
 			"capturing": "Bắt quân",
-			"check": "Chiếu tướng",
+			"check": "Chiếu",
 			"result": "Kết quả"
 		},
 		"table": {
@@ -603,70 +603,71 @@
 			"quantity": "Số lượng"
 		},
 		"objective": {
-			"paragraph1": "Ván cờ được tiến hành giữa 2 đấu thủ, một người cầm Quân Đỏ, một người cầm Quân Đen. Mục đích của mỗi đấu thủ là tìm mọi cách sử dụng các quân trên bàn cờ để <b>chiếu bí Tướng</b> của đối phương, giành thắng lợi."
+			"paragraph1": "Một ván cờ vua được chơi giữa hai bên: Trắng và Đen. Mục tiêu là <b>chiếu bí</b> Vua của đối phương."
 		},
 		"pieces": {
-			"paragraph1": "Mỗi ván cờ lúc bắt đầu phải có đủ 32 quân, gồm 7 loại chia đều cho mỗi bên gồm 16 quân Đỏ và 16 quân Đen. <b>7 loại quân</b> có ký hiệu và số lượng như sau:"
+			"paragraph1": "Một ván cờ tiêu chuẩn bắt đầu với 32 quân (mỗi bên 16 quân), gồm <b>6 loại quân</b>: Vua, Hậu, Xe, Tượng, Mã và Tốt."
 		},
 		"piece": {
-			"general": "Tướng",
-			"advisor": "Sĩ",
-			"elephant": "Tượng",
-			"chariot": "Xe",
-			"horse": "Mã",
-			"cannon": "Pháo",
-			"soldier": "Tốt"
+			"king": "Vua",
+			"queen": "Hậu",
+			"bishop": "Tượng",
+			"rook": "Xe",
+			"knight": "Mã",
+			"pawn": "Tốt"
 		},
 		"moving-pieces": {
-			"paragraph1": "Mỗi nước đi, mỗi bên chỉ được di chuyển quân của mình theo đúng quy định. Quy định di chuyển của các quân như sau:"
+			"paragraph1": "Hai bên lần lượt đi quân, mỗi lượt một nước đi hợp lệ. Quy tắc di chuyển như sau:"
 		},
-		"general": {
-			"paragraph1": "Tướng",
-			"paragraph2": "Mỗi nước được đi một bước <b>ngang hoặc dọc</b> tùy ý trong cung Tướng. Hai tướng của 2 bên không được đối mặt nhau trực tiếp trên cùng một đường thẳng. Nếu đối mặt, bắt buộc phải có quân của bất kỳ bên nào đứng che mặt."
+		"king": {
+			"paragraph1": "Vua",
+			"paragraph2": "Di chuyển một ô theo mọi hướng. Vua không được đi vào ô đang bị chiếu."
 		},
-		"advisor": {
-			"paragraph1": "Sĩ",
-			"paragraph2": "Mỗi nước <b>đi chéo một bước</b> trong cung Tướng."
+		"queen": {
+			"paragraph1": "Hậu",
+			"paragraph2": "Di chuyển không giới hạn số ô theo hàng, cột hoặc đường chéo, miễn là không bị quân khác cản đường."
 		},
-		"elephant": {
+		"bishop": {
 			"paragraph1": "Tượng",
-			"paragraph2": "Mỗi nước <b>đi chéo hai bước</b> tại trận địa bên mình, không được qua sông. Nếu ở giữa đường chéo đó có quân khác đứng thì quân Tượng bị cản, không đi được."
+			"paragraph2": "Di chuyển không giới hạn số ô theo đường chéo và không được nhảy qua quân khác."
 		},
-		"chariot": {
+		"rook": {
 			"paragraph1": "Xe",
-			"paragraph2": "Mỗi nước được <b>đi dọc hoặc đi ngang</b>, không hạn chế số bước đi nếu không có quân khác cản đường."
+			"paragraph2": "Di chuyển không giới hạn số ô theo hàng hoặc cột và không được nhảy qua quân khác."
 		},
-		"horse": {
+		"knight": {
 			"paragraph1": "Mã",
-			"paragraph2": "Đi theo <b>đường chéo hình chữ nhật</b> của hai ô vuông liền nhau. Nếu giao điểm liền kề bước thẳng dọc ngang có một quân khác đứng thì Mã bị cản, không đi được."
+			"paragraph2": "Di chuyển theo <b>hình chữ L</b> (2 ô theo một hướng rồi 1 ô vuông góc). Mã có thể nhảy qua quân khác."
 		},
-		"cannon": {
-			"paragraph1": "Pháo",
-			"paragraph2": "Đi ngang hoặc dọc giống Xe khi không bắt quân. Để bắt quân, nó phải <b>nhảy qua đúng một quân khác</b> để đến mục tiêu. Nếu không có hoặc có nhiều hơn một quân giữa Pháo và mục tiêu, nó không thể bắt quân."
-		},
-		"soldier": {
+		"pawn": {
 			"paragraph1": "Tốt",
-			"paragraph2": "Mỗi nước đi <b>một bước</b>. Khi chưa qua sông, Tốt chỉ được tiến. Khi Tốt đã qua sông được quyền <b>đi tiến và đi ngang</b>, không được phép lùi."
+			"paragraph2": "Đi thẳng một ô (hoặc hai ô ở nước đi đầu tiên nếu cả hai ô đều trống). Bắt quân theo đường chéo lên trước một ô."
+		},
+		"special-moves": {
+			"paragraph1": "Nước đi đặc biệt",
+			"paragraph2": "<b>Nhập thành</b>: Vua đi hai ô về phía Xe và Xe nhảy qua Vua.",
+			"paragraph3": "<b>Bắt tốt qua đường</b> (en passant): bắt tốt đối phương <b>ngay sau khi</b> tốt đó đi hai ô.",
+			"paragraph4": "<b>Phong cấp</b>: khi Tốt tới hàng cuối, được phong thành Hậu, Xe, Tượng hoặc Mã."
 		},
 		"capturing": {
-			"paragraph1": "Khi một quân đi tới một giao điểm khác đã có quân đối phương đứng thì được quyền <b>bắt quân đó</b>, đồng thời chiếm giữ vị trí quân bị bắt.",
-			"paragraph2": "Không được bắt quân bên mình. Được phép cho đối phương bắt đầu quân mình chủ động hiến mình cho đối phương, <b>trừ Tướng</b>.",
-			"paragraph3": "Quân bị bắt phải bị loại và bị nhấc ra khỏi bàn cờ. <b>Không được đuổi 1 quân quá 6 nước cờ liên tiếp</b>."
+			"paragraph1": "Quân cờ bắt bằng cách đi đến ô có quân đối phương. Quân bị bắt sẽ bị loại khỏi bàn cờ.",
+			"paragraph2": "Không được bắt quân của chính mình. Trừ Mã, các quân khác không được nhảy qua quân cờ.",
+			"paragraph3": "Vua không bao giờ bị bắt trực tiếp. Ván cờ thắng bằng chiếu bí, hoặc kết thúc bằng đầu hàng/hòa."
 		},
 		"check": {
-			"paragraph1": "Nếu người chơi thực hiện một nước đi đe dọa bắt Tướng của đối phương ở nước đi tiếp theo (bằng chính quân cờ đó hoặc một quân cờ khác), thì đó được gọi là <b>Chiếu</b>. Bên bị chiếu phải đáp trả để tránh bị chiếu. Nếu không sẽ bị xử thua",
-			"paragraph2": "Tướng bị chiếu từ cả bốn hướng (bị chiếu cả từ phía sau) có thể ứng phó với nước chiếu tướng bằng một trong các cách sau:",
-			"paragraph3": "Di chuyển tướng sang vị trí khác để tránh nước chiếu",
+			"paragraph1": "<b>Chiếu</b> là khi Vua bị một hoặc nhiều quân đối phương tấn công. Bên bị chiếu phải xử lý ngay.",
+			"paragraph2": "Để thoát chiếu, người chơi có thể chọn một trong các cách hợp lệ sau:",
+			"paragraph3": "Di chuyển Vua đến ô an toàn",
 			"paragraph4": "Bắt quân đang chiếu",
-			"paragraph5": "Dùng quân khác cản quân chiếu, đi quân che đỡ cho tướng",
-			"paragraph6": "Không được chiếu tướng quá 6 nước cờ liên tiếp"
+			"paragraph5": "Chặn đường chiếu (nếu có thể)",
+			"paragraph6": "Nếu không thể làm cách nào ở trên, đó là chiếu bí và ván cờ kết thúc thua."
 		},
 		"result": {
-			"paragraph1": "Khi một bên chiếu Tướng mà bên còn lại không thể làm gì để bảo vệ Tướng thì được gọi là <b>Chiếu Hết</b>, bên thực hiện được Chiếu Hết sẽ giành chiến thắng.",
-			"paragraph2": "Khi hết thời gian một nước đi (ví dụ: 90s) mà vẫn chưa di chuyển quân thì bên còn lại sẽ được <b>xử Thắng</b>.",
-			"paragraph3": "Khi một bên hết thời gian ván đấu (ví dụ: 5 phút, 10 phút) thì bên còn lại sẽ được <b>xử Thắng</b>.",
-			"paragraph4": "Khi cả 2 bên đều không còn quân qua sông, ván đấu sẽ được <b>xử Hòa</b>. Khi một bên còn quân qua sông nhưng cạn thời gian, một bên còn thời gian nhưng hết quân qua sông, ván đấu sẽ được <b>xử Hòa</b>.",
-			"paragraph5": "Trong vòng 50 nước nếu không phát sinh nước bắt quân, Tốt không tiến 1 ô thì ván đấu sẽ được <b>xử Hòa</b>."
+			"paragraph1": "Ván cờ thắng bằng <b>chiếu bí</b>, khi Vua bị chiếu và không còn nước hợp lệ để thoát.",
+			"paragraph2": "Nếu người chơi hết thời gian cho một nước đi (ở chế độ có giới hạn thời gian mỗi nước), người đó thua.",
+			"paragraph3": "Nếu người chơi hết tổng thời gian ván đấu, người đó thua (trừ khi đối phương không còn khả năng chiếu bí bằng bất kỳ chuỗi nước hợp lệ nào).",
+			"paragraph4": "Ván cờ hòa khi rơi vào thế bí không bị chiếu (stalemate), thế chết (không đủ lực chiếu bí), hoặc hai bên đồng ý hòa.",
+			"paragraph5": "Ván cờ cũng có thể hòa theo <b>luật 50 nước</b> hoặc <b>lặp lại vị trí 3 lần</b> theo luật."
 		}
 	},
 	"extra-money": {
