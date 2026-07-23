@@ -1,19 +1,24 @@
 name: Manual Deploy
-run-name: Manual Deploy (${{ inputs.target }})
+run-name: >-
+  Manual Deploy (${{ inputs.frontend && inputs.backend && 'Full' || inputs.frontend && 'Frontend' || inputs.backend && 'Backend' || 'Invalid' }})
 
 on:
   workflow_dispatch:
     inputs:
-      target:
-        description: Deploy target
-        type: choice
-        options:
-          - Full
-          - Backend
-          - Frontend
-        default: Full
-      install_deps:
-        description: Install dependencies (yarn install)
+      frontend:
+        description: Deploy frontend
+        type: boolean
+        default: false
+      install_frontend_deps:
+        description: Install dependencies for frontend (yarn install)
+        type: boolean
+        default: false
+      backend:
+        description: Deploy backend
+        type: boolean
+        default: false
+      install_backend_deps:
+        description: Install dependencies for backend (yarn install)
         type: boolean
         default: false
 
@@ -25,19 +30,37 @@ jobs:
       - name: Checkout selected branch
         uses: actions/checkout@v4
 
+      - name: Validate selection
+        run: |
+          if [ "${{ inputs.frontend }}" != "true" ] && [ "${{ inputs.backend }}" != "true" ]; then
+            echo "Please select at least one deploy target (frontend or backend)."
+            exit 1
+          fi
+
+          if [ "${{ inputs.install_frontend_deps }}" = "true" ] && [ "${{ inputs.frontend }}" != "true" ]; then
+            echo "install_frontend_deps is only allowed when frontend is selected."
+            exit 1
+          fi
+
+          if [ "${{ inputs.install_backend_deps }}" = "true" ] && [ "${{ inputs.backend }}" != "true" ]; then
+            echo "install_backend_deps is only allowed when backend is selected."
+            exit 1
+          fi
+
       - name: Full deploy
-        if: ${{ inputs.target == 'Full' }}
+        if: ${{ inputs.frontend && inputs.backend }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ vars.SERVER_IP }}
           username: root
           port: 23
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DEPLOY_BRANCH,INSTALL_DEPS,SERVER_IP,JWT_SECRET,GOOGLE_APP_PASSWORD,GOOGLE_CLIENT_ID,FACEBOOK_APP_ID,AD_TAG_URL,FACEBOOK_APP_SECRET,REDIS_PASSWORD,MONGO_PASSWORD,AWS_ACCESS_ID,AWS_SECRET_KEY,TOOL_API_KEY,POSTGRES_PASSWORD
+          envs: DEPLOY_BRANCH,INSTALL_FRONTEND_DEPS,INSTALL_BACKEND_DEPS,SERVER_IP,JWT_SECRET,GOOGLE_APP_PASSWORD,GOOGLE_CLIENT_ID,FACEBOOK_APP_ID,AD_TAG_URL,FACEBOOK_APP_SECRET,REDIS_PASSWORD,MONGO_PASSWORD,AWS_ACCESS_ID,AWS_SECRET_KEY,TOOL_API_KEY,POSTGRES_PASSWORD
           script_path: .github/workflows/full-deploy.sh
         env:
           DEPLOY_BRANCH: ${{ github.ref_name }}
-          INSTALL_DEPS: ${{ inputs.install_deps }}
+          INSTALL_FRONTEND_DEPS: ${{ inputs.install_frontend_deps }}
+          INSTALL_BACKEND_DEPS: ${{ inputs.install_backend_deps }}
           SERVER_IP: ${{ vars.SERVER_IP }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
@@ -53,7 +76,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
       - name: Backend deploy
-        if: ${{ inputs.target == 'Backend' }}
+        if: ${{ inputs.backend && !inputs.frontend }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ vars.SERVER_IP }}
@@ -64,7 +87,7 @@ jobs:
           script_path: .github/workflows/be-deploy.sh
         env:
           DEPLOY_BRANCH: ${{ github.ref_name }}
-          INSTALL_DEPS: ${{ inputs.install_deps }}
+          INSTALL_DEPS: ${{ inputs.install_backend_deps }}
           SERVER_IP: ${{ vars.SERVER_IP }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           GOOGLE_APP_PASSWORD: ${{ secrets.GOOGLE_APP_PASSWORD }}
@@ -80,7 +103,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
       - name: Frontend deploy
-        if: ${{ inputs.target == 'Frontend' }}
+        if: ${{ inputs.frontend && !inputs.backend }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ vars.SERVER_IP }}
@@ -91,7 +114,7 @@ jobs:
           script_path: .github/workflows/fe-deploy.sh
         env:
           DEPLOY_BRANCH: ${{ github.ref_name }}
-          INSTALL_DEPS: ${{ inputs.install_deps }}
+          INSTALL_DEPS: ${{ inputs.install_frontend_deps }}
           GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
           FACEBOOK_APP_ID: ${{ vars.FACEBOOK_APP_ID }}
           AD_TAG_URL: ${{ vars.AD_TAG_URL }}
@@ -104,6 +127,16 @@ jobs:
       - name: Send Telegram message
         run: |
           STATUS="${{ needs.deploy.result }}"
+          if [ "${{ inputs.frontend }}" = "true" ] && [ "${{ inputs.backend }}" = "true" ]; then
+            TARGET_LABEL="Full"
+          elif [ "${{ inputs.frontend }}" = "true" ]; then
+            TARGET_LABEL="Frontend"
+          elif [ "${{ inputs.backend }}" = "true" ]; then
+            TARGET_LABEL="Backend"
+          else
+            TARGET_LABEL="Invalid"
+          fi
+
           TIMESTAMP=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
@@ -113,7 +146,7 @@ jobs:
             EMOJI="❌"
           fi
 
-          printf -v MESSAGE '%s Manual Deploy [%s] (%s) finished at %s: %s\n%s' "$EMOJI" "${{ inputs.target }}" "${{ github.ref_name }}" "$TIMESTAMP" "$STATUS" "$RUN_URL"
+          printf -v MESSAGE '%s Manual Deploy [%s] (%s) finished at %s: %s\n%s' "$EMOJI" "$TARGET_LABEL" "${{ github.ref_name }}" "$TIMESTAMP" "$STATUS" "$RUN_URL"
 
           curl -s \
             -X POST \

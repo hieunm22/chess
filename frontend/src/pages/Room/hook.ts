@@ -1531,7 +1531,7 @@ const useRoomHook = () => {
 
 		if (getPieceFromCharacter(oldTarget?.piece) === "king") {
 			await openAlert({
-				message: "game.general.captured",
+				message: "game.king.checkmated",
 				title: translate("popup.alert.title")
 			})
 			await enforcePostGameBalance()
@@ -1695,7 +1695,7 @@ const useRoomHook = () => {
 		if (isMovedTeamGeneralInCheck) {
 			await openAlert({
 				title: "popup.alert.title",
-				message: "game.general.in-check"
+				message: "game.king.in-check"
 			})
 
 			// Slide the piece(s) back with the same animation as the forward move
